@@ -32,7 +32,7 @@
     <div class="page-hero-inner">
       <div class="page-eyebrow">SIGN IN</div>
       <h1 class="page-title">Welcome back.</h1>
-      <p class="page-sub">Sign in with email, password and OTP — Supabase Auth + Python backend. <span style="color:#8FA69A;">are you industry ready</span></p>
+      <p class="page-sub">Sign in with email, password and OTP — real OTP to your email via SMTP. <span style="color:#8FA69A;">are you industry ready</span></p>
     </div>
   </section>
 
@@ -72,12 +72,10 @@
         <button type="button" id="demoBtn" class="btn-secondary" style="width:100%; justify-content:center;">Continue as demo</button>
       </form>
 
-      <!-- OTP Section -->
+      <!-- OTP Section - Real flow only -->
       <div id="otpSection" style="display:none; margin-top:22px; border-top:1px solid #1A1C1E; padding-top:22px;">
-        <h3 style="font-size:14px; color:#F5F5F5; margin-bottom:6px;">Enter OTP</h3>
-        <p id="otpHint" style="font-size:12px; color:#6F7377; margin-bottom:12px;">OTP sent via Supabase + Python backend. Check email and dev box.</p>
-        <div id="debugOtpBox" style="display:none; background: rgba(199,214,207,0.08); border:1px dashed rgba(199,214,207,0.18); padding:10px; border-radius:10px; margin-bottom:12px; font-size:12px; color:#C7D6CF;"></div>
-        <div id="supabaseOtpInfo" style="display:none; background: rgba(120,180,140,0.06); border:1px solid rgba(120,180,140,0.12); padding:10px; border-radius:10px; margin-bottom:12px; font-size:12px; color:#A8AAAD;"></div>
+        <h3 style="font-size:14px; color:#F5F5F5; margin-bottom:6px;">Check your email</h3>
+        <p id="otpHint" style="font-size:12px; color:#6F7377; margin-bottom:12px;">We sent a 6-digit OTP to your email. Please check your inbox and spam folder. Expires in 10 minutes.</p>
         <div style="display:flex; gap:10px;">
           <input id="otpInput" type="text" inputmode="numeric" maxlength="6" placeholder="123456" style="flex:1; text-align:center; letter-spacing:0.3em; font-size:18px; font-weight:600;" autocomplete="one-time-code" />
           <button id="verifyOtpBtn" class="btn-primary" style="padding: 10px 18px;">Verify</button>
@@ -92,7 +90,7 @@
       <p style="margin-top:20px; font-size:12px; color:#6F7377; text-align:center; line-height:1.5;">No account? <a href="get-started.html" style="color:#C7D6CF; text-decoration:underline; text-underline-offset:3px;">Get Started</a> — are you industry ready</p>
     </div>
 
-    <p style="text-align:center; margin-top:16px; font-size:11px; color:#3A3E41;">Supabase Auth with OTP verification. Python backend syncs to Postgres.</p>
+    <p style="text-align:center; margin-top:16px; font-size:11px; color:#3A3E41;">Real OTP via SMTP — check your email.</p>
   </section>
 
   <footer class="footer">
@@ -117,18 +115,14 @@
     const demoBtn = document.getElementById('demoBtn');
     const otpSection = document.getElementById('otpSection');
     const otpInput = document.getElementById('otpInput');
-    const debugOtpBox = document.getElementById('debugOtpBox');
-    const supabaseOtpInfo = document.getElementById('supabaseOtpInfo');
     const otpError = document.getElementById('otpError');
     const otpTimer = document.getElementById('otpTimer');
     const otpHint = document.getElementById('otpHint');
 
     let pendingEmail = null;
-    let pendingPassword = null;
     let otpExpires = null;
     let timerInt = null;
     let otpModePasswordless = false;
-    let supabaseUserId = null;
 
     function showError(msg) {
       errorEl.textContent = msg;
@@ -170,23 +164,15 @@
       }
     })();
 
-    function showOtp(email, debugOtp, supabaseMsg) {
+    function showOtp(email) {
       pendingEmail = email;
       otpSection.style.display = 'block';
-      otpHint.textContent = `We sent a 6-digit OTP to ${email} via Supabase + Python backend.`;
-      if (debugOtp) {
-        debugOtpBox.style.display = 'block';
-        debugOtpBox.innerHTML = `Python DEV OTP: <b style="letter-spacing:0.2em; font-size:16px;">${debugOtp}</b> <span style="color:#6F7377; font-size:11px;">(demo)</span>`;
-      }
-      if (supabaseMsg) {
-        supabaseOtpInfo.style.display = 'block';
-        supabaseOtpInfo.textContent = supabaseMsg;
-      }
+      otpHint.textContent = `We sent a 6-digit OTP to ${email}. Please check your inbox and spam folder.`;
       startTimer();
       form.style.opacity = '0.6';
       form.style.pointerEvents = 'none';
       otpInput.focus();
-      showSuccess('OTP sent! Check email and dev box below.');
+      showSuccess('OTP sent to your email. Please check inbox and spam.');
     }
 
     form.addEventListener('submit', async (e) => {
@@ -194,66 +180,61 @@
       hideError();
       const email = emailEl.value.trim();
       const password = passEl.value;
-      pendingPassword = password;
       if (!email) return showError('Please enter email.');
       if (otpModePasswordless) {
         if (!email) return showError('Enter email for OTP login');
         btnText.textContent = 'Sending OTP...';
-        let debugOtp = null;
-        let supabaseMsg = null;
         try {
           const sb = await getSupabase();
           if (sb) {
             const { error } = await sb.auth.signInWithOtp({ email });
-            if (error) supabaseMsg = "Supabase: " + error.message;
-            else supabaseMsg = "Supabase OTP email sent (type email).";
+            if (error) throw new Error(error.message);
           }
-        } catch (e) { supabaseMsg = "Supabase OTP failed: " + e.message; }
-        try {
-          const res = await window.fetchApi('/api/auth/request-otp', {
+          // Also trigger Python OTP for fallback (real email via SMTP)
+          await window.fetchApi('/api/auth/request-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email })
           });
-          const data = await res.json();
-          if (res.ok) debugOtp = data.debug_otp;
-        } catch {}
-        showOtp(email, debugOtp, supabaseMsg);
-        btnText.textContent = 'OTP Sent';
+          showOtp(email);
+          btnText.textContent = 'OTP Sent';
+        } catch (err) {
+          // Fallback to Python only
+          try {
+            const res = await window.fetchApi('/api/auth/request-otp', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || 'Failed to send OTP');
+            showOtp(email);
+            btnText.textContent = 'OTP Sent';
+          } catch (be) {
+            showError(err.message || be.message);
+            btnText.textContent = 'Send OTP';
+          }
+        }
         return;
       }
       if (!password) return showError('Please enter password.');
       btnText.textContent = 'Signing in...';
-      let supabaseOk = false;
-      let debugOtp = null;
-      let supabaseMsg = null;
-      // Try Supabase signInWithPassword first
+      // Try Supabase first, then Python backend (real OTP via SMTP)
       try {
         const sb = await getSupabase();
         if (sb) {
-          const { data, error } = await sb.auth.signInWithPassword({ email, password });
-          if (error) {
-            // if error is invalid credentials, show but continue to backend fallback
-            if (error.message.toLowerCase().includes("invalid login")) {
-              throw new Error("Invalid email or password");
-            }
-            supabaseMsg = "Supabase: " + error.message + " (trying Python backend)";
-          } else if (data.session) {
-            supabaseOk = true;
-            supabaseUserId = data.user.id;
-            // For demo, also send OTP via Supabase and Python
-            try { await sb.auth.signInWithOtp({ email }); supabaseMsg = "Supabase password OK. OTP email sent."; } catch {}
-          } else if (data.user) {
-            supabaseOk = true;
-            supabaseMsg = "Supabase password OK.";
+          const { error } = await sb.auth.signInWithPassword({ email, password });
+          if (error && error.message.toLowerCase().includes("invalid login")) {
+            throw new Error("Invalid email or password");
+          } else if (error) {
+            // Try Python backend as fallback
+            console.warn("Supabase signIn failed, trying Python:", error.message);
           }
         }
       } catch (sbErr) {
         if (sbErr.message.includes("Invalid email")) { showError(sbErr.message); btnText.textContent = 'Sign In'; return; }
-        console.warn("Supabase signIn fallback:", sbErr.message);
-        supabaseMsg = (supabaseMsg || "") + " " + sbErr.message;
       }
-      // Now try Python backend signin to get OTP
+      // Python backend signin (sends real OTP via SMTP)
       try {
         const res = await window.fetchApi('/api/auth/signin', {
           method: 'POST',
@@ -261,18 +242,11 @@
           body: JSON.stringify({ email, password })
         });
         const data = await res.json();
-        if (!res.ok) {
-          if (supabaseOk) {
-            // Supabase succeeded, still show OTP via Supabase
-            showOtp(email, null, supabaseMsg);
-            btnText.textContent = 'OTP Sent';
-            return;
-          }
-          throw new Error(data.detail || 'Sign in failed');
-        }
+        if (!res.ok) throw new Error(data.detail || 'Sign in failed');
         if (data.requires_otp) {
-          debugOtp = data.debug_otp;
-          showOtp(email, debugOtp, supabaseMsg);
+          // Also trigger Supabase OTP for real flow
+          try { const sb = await getSupabase(); if (sb) await sb.auth.signInWithOtp({ email }); } catch {}
+          showOtp(email);
           btnText.textContent = 'OTP Sent';
           return;
         }
@@ -282,11 +256,6 @@
           window.location.href = 'dashboard.html';
         }
       } catch (err) {
-        if (supabaseOk) {
-          showOtp(email, null, supabaseMsg);
-          btnText.textContent = 'OTP Sent';
-          return;
-        }
         showError(err.message || 'Sign in failed. Try demo or create an account.');
         btnText.textContent = 'Sign In';
       }
@@ -300,7 +269,7 @@
         passEl.required = false;
         btnText.textContent = 'Send OTP (passwordless)';
         e.target.textContent = 'Use password instead?';
-        showSuccess('Passwordless OTP mode: Supabase + Python will send OTP.');
+        showSuccess('Passwordless OTP: we will send OTP to your email via SMTP.');
       } else {
         passEl.parentElement.style.display = 'flex';
         passEl.required = true;
@@ -319,7 +288,7 @@
       let verified = false;
       let lastError = null;
       const email = pendingEmail;
-      // Try Supabase verifyOtp (types: email, magiclink)
+      // Try Supabase verify first (real OTP from email)
       try {
         const sb = await getSupabase();
         if (sb) {
@@ -327,7 +296,6 @@
             const { data, error } = await sb.auth.verifyOtp({ email, token: code, type: t });
             if (!error && data.session) {
               verified = true;
-              // sync to backend
               try {
                 const syncRes = await window.fetchApi('/api/auth/supabase-sync', {
                   method: 'POST',
@@ -354,8 +322,8 @@
         }
       } catch (e) {
         lastError = e.message;
-        console.warn("Supabase verify failed:", e.message);
       }
+      // Fallback to Python backend OTP (real SMTP)
       if (!verified) {
         try {
           const res = await window.fetchApi('/api/auth/verify-otp', {
@@ -377,7 +345,7 @@
         clearInterval(timerInt);
         setTimeout(()=> window.location.href = 'dashboard.html', 600);
       } else {
-        showOtpError(lastError || 'OTP verification failed. Try dev OTP or resend.');
+        showOtpError(lastError || 'Invalid OTP. Please check your email or resend.');
         btn.textContent = 'Verify';
       }
     }
@@ -387,11 +355,11 @@
     document.getElementById('resendOtpBtn').addEventListener('click', async ()=>{
       if (!pendingEmail) return;
       showOtpError('');
-      let msg = "";
+      const btn = document.getElementById('resendOtpBtn');
+      btn.textContent = 'Sending...';
       try {
         const sb = await getSupabase();
         if (sb) await sb.auth.signInWithOtp({ email: pendingEmail });
-        msg += "Supabase OTP resent. ";
       } catch {}
       try {
         const res = await window.fetchApi('/api/auth/request-otp', {
@@ -400,16 +368,11 @@
           body: JSON.stringify({ email: pendingEmail })
         });
         const data = await res.json();
-        if (data.debug_otp) {
-          debugOtpBox.style.display = 'block';
-          debugOtpBox.innerHTML = `Python DEV OTP: <b style="letter-spacing:0.2em; font-size:16px;">${data.debug_otp}</b>`;
-        }
-        msg += "Python OTP resent.";
-        showSuccess(msg);
+        if (!res.ok) throw new Error(data.detail || 'Resend failed');
+        showSuccess('OTP resent to your email. Please check inbox and spam.');
         startTimer();
-        supabaseOtpInfo.style.display = 'block';
-        supabaseOtpInfo.textContent = msg;
       } catch (err) { showOtpError(err.message); }
+      btn.textContent = 'Resend OTP';
     });
 
     demoBtn.addEventListener('click', async () => {

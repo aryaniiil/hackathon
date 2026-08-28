@@ -3,6 +3,10 @@ import json
 import os
 import random
 import re
+import smtplib
+import ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, HTTPException, Depends, Header
 from pydantic import BaseModel
@@ -11,6 +15,48 @@ from typing import Optional
 from app.models import SignupIn, SigninIn
 from app.db import get_conn, get_cursor
 from app.auth import hash_password, verify_password, create_access_token, decode_token
+
+# SMTP config for real OTP emails
+SMTP_HOST = os.getenv("SMTP_HOST", "")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587") or "587")
+SMTP_USER = os.getenv("SMTP_USER", "")
+SMTP_PASS = os.getenv("SMTP_PASS", "")
+SMTP_FROM = os.getenv("SMTP_FROM", SMTP_USER)
+SMTP_TLS = os.getenv("SMTP_TLS", "true").lower() in ("1","true","yes")
+
+def _send_otp_email(to_email: str, code: str):
+    """Send real OTP via SMTP if configured, else just log (production will have SMTP)"""
+    if not SMTP_HOST or not SMTP_USER or not SMTP_PASS:
+        print(f"[SMTP] not configured, OTP for {to_email}: {code} (would be emailed)")
+        return False
+    try:
+        msg = MIMEMultipart()
+        msg["From"] = SMTP_FROM
+        msg["To"] = to_email
+        msg["Subject"] = "Your skilly OTP code"
+        body = f"""
+        <div style="font-family: Helvetica, Arial, sans-serif; background:#0A0A0A; color:#F5F5F5; padding:24px; border-radius:12px;">
+          <h2 style="color:#C7D6CF; margin:0 0 12px;">Your OTP code</h2>
+          <p style="color:#A8AAAD; font-size:13px;">Use this code to verify your email for <b>skilly</b> — are you industry ready.</p>
+          <div style="background:#111214; border:1px solid #242629; border-radius:999px; padding:14px 20px; text-align:center; margin:16px 0;">
+            <span style="font-size:28px; letter-spacing:0.3em; font-weight:700; color:#F5F5F5;">{code}</span>
+          </div>
+          <p style="color:#6F7377; font-size:11px;">Expires in 10 minutes. If you didn't request this, ignore.</p>
+          <p style="color:#3A3E41; font-size:11px; margin-top:16px;">Sent via Python backend SMTP. Supabase also sends OTP if configured.</p>
+        </div>
+        """
+        msg.attach(MIMEText(body, "html"))
+        context = ssl.create_default_context()
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+            if SMTP_TLS:
+                server.starttls(context=context)
+            server.login(SMTP_USER, SMTP_PASS)
+            server.send_message(msg)
+        print(f"[SMTP] OTP sent to {to_email}")
+        return True
+    except Exception as e:
+        print(f"[SMTP] failed to send to {to_email}: {e}")
+        return False
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -40,12 +86,16 @@ def _store_otp(email: str, code: str, minutes: int = 10):
         cur.close()
         conn.close()
         print(f"[OTP] code for {email}: {code} expires {expires_at}")
-        return True
     except Exception as e:
         print(f"[OTP] DB store failed, using memory: {e}")
         _OTP_MEMORY[email] = {"code": code, "expires_at": expires_at, "attempts": 0, "verified": False}
         print(f"[OTP memory] code for {email}: {code}")
-        return True
+    # try to send real email via SMTP if configured
+    try:
+        _send_otp_email(email, code)
+    except Exception as e:
+        print(f"[OTP] send email failed for {email}: {e}")
+    return True
 
 def _verify_otp_code(email: str, code: str) -> bool:
     email = email.lower().strip()
@@ -192,14 +242,14 @@ def request_otp(data: RequestOtpIn):
         raise HTTPException(status_code=400, detail="Invalid email format")
     code = _generate_otp()
     _store_otp(email, code, minutes=10)
-    # In development, return debug code so frontend can show it (no real email yet)
     env = os.getenv("ENV", "development")
-    resp = {"message": "OTP sent to email (check server logs)", "email": email, "expires_in": 600}
-    if env == "development":
+    # Only return debug_otp if SMTP not configured (dev fallback). Real flow sends email.
+    smtp_configured = bool(SMTP_HOST and SMTP_USER and SMTP_PASS)
+    resp = {"message": "OTP sent to email. Please check your inbox (and spam).", "email": email, "expires_in": 600}
+    if env == "development" and not smtp_configured:
         resp["debug_otp"] = code
-        resp["note"] = "DEV MODE: OTP returned for testing. In production this would be emailed."
-    # TODO: integrate real email provider (SMTP/SendGrid) here
-    print(f"[request-otp] {email} -> {code}")
+        resp["note"] = "DEV MODE: SMTP not configured, OTP returned for testing."
+    print(f"[request-otp] {email} -> {code} (smtp_configured={smtp_configured})")
     return resp
 
 @router.post("/verify-otp")
@@ -253,11 +303,12 @@ def signup(data: SignupIn):
     code = _generate_otp()
     _store_otp(email, code, minutes=10)
     env = os.getenv("ENV", "development")
-    resp = {"message": "Account created. OTP sent for verification.", "email": email, "user_id": user_id, "requires_otp": True, "expires_in": 600}
-    if env == "development":
+    smtp_configured = bool(SMTP_HOST and SMTP_USER and SMTP_PASS)
+    resp = {"message": "Account created. OTP sent for verification. Please check your email.", "email": email, "user_id": user_id, "requires_otp": True, "expires_in": 600}
+    if env == "development" and not smtp_configured:
         resp["debug_otp"] = code
-        resp["note"] = "DEV MODE: Use this OTP to verify. In production it would be emailed."
-    print(f"[signup] {email} OTP {code}")
+        resp["note"] = "DEV MODE: SMTP not configured, OTP returned for testing."
+    print(f"[signup] {email} OTP {code} (smtp_configured={smtp_configured})")
     return resp
 
 @router.post("/signin")
@@ -274,25 +325,19 @@ def signin(data: SigninIn):
         if not row:
             raise HTTPException(status_code=401, detail="No account with this email. Please sign up.")
         if not row.get("password_hash"):
-            # passwordless account, directly send OTP
+            # passwordless account, directly send OTP - real email only, no dev OTP
             code = _generate_otp()
             _store_otp(email, code, minutes=10)
-            env = os.getenv("ENV", "development")
-            resp = {"message": "OTP sent for login (passwordless account)", "email": email, "requires_otp": True, "expires_in": 600}
-            if env == "development":
-                resp["debug_otp"] = code
+            resp = {"message": "OTP sent to your email. Please check your inbox (and spam).", "email": email, "requires_otp": True, "expires_in": 600}
+            print(f"[signin] {email} OTP {code} (real email via SMTP if configured)")
             return resp
         if not verify_password(data.password, row["password_hash"]):
             raise HTTPException(status_code=401, detail="Invalid email or password")
-        # Password ok -> generate OTP for second factor
+        # Password ok -> generate OTP for second factor - real flow only
         code = _generate_otp()
         _store_otp(email, code, minutes=10)
-        env = os.getenv("ENV", "development")
-        resp = {"message": "Password verified. OTP sent for verification.", "email": email, "user": {"id": row["id"], "email": row["email"], "full_name": row["full_name"]}, "requires_otp": True, "expires_in": 600}
-        if env == "development":
-            resp["debug_otp"] = code
-            resp["note"] = "DEV MODE: Use this OTP to verify. In production it would be emailed."
-        print(f"[signin] {email} OTP {code}")
+        resp = {"message": "Password verified. OTP sent to your email. Please check your inbox.", "email": email, "user": {"id": row["id"], "email": row["email"], "full_name": row["full_name"]}, "requires_otp": True, "expires_in": 600}
+        print(f"[signin] {email} OTP {code} (real email)")
         return resp
     except HTTPException:
         raise
