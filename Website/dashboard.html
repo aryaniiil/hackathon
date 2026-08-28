@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - skilly</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <style>
+    .dash-wrap { max-width: 860px; margin: 0 auto; padding: 28px 24px; }
+    .dash-header { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom: 28px; }
+    .dash-header h1 { font-size: 24px; font-weight: 500; letter-spacing: -0.03em; }
+    .dash-header p { font-size: 12.5px; color:#6F7377; margin-top:4px; }
+    .dash-card { background: rgba(26,28,30,0.72); border:1px solid #242629; border-radius:20px; padding:24px; backdrop-filter: blur(12px); margin-bottom:16px; }
+    .dash-card h3 { font-size:14px; font-weight:500; color:#F5F5F5; margin-bottom:12px; letter-spacing:-0.01em; display:flex; align-items:center; gap:8px; }
+    .dash-card h3 .badge { font-size:9px; letter-spacing:0.12em; color:#8FA69A; border:1px solid #242629; padding:3px 8px; border-radius:999px; background:rgba(199,214,207,0.06); }
+    .dash-card p { font-size:12.5px; color:#6F7377; line-height:1.6; margin-bottom:10px; }
+    .dash-input { width:100%; background:#0A0A0A; border:1px solid #242629; border-radius:10px; padding:10px 12px; color:#F5F5F5; font-size:13px; outline:none; }
+    .dash-input:focus{ border-color:#2E3133; }
+    .dash-stat { display:flex; gap:12px; }
+    .stat-box { flex:1; background:#0A0A0A; border:1px solid #1A1C1E; border-radius:14px; padding:16px; text-align:center; }
+    .stat-num { font-size:24px; font-weight:300; color:#F5F5F5; }
+    .stat-label { font-size:10px; letter-spacing:0.1em; color:#6F7377; margin-top:4px; }
+    .progress-bar { height:10px; background:#111214; border-radius:999px; overflow:hidden; border:1px solid #1A1C1E; }
+    .progress-fill { height:100%; background: linear-gradient(90deg, #C7D6CF, #8FA69A); transition: width 0.6s; }
+    .level-badge { display:inline-flex; align-items:center; padding:6px 14px; border-radius:999px; font-size:12px; font-weight:600; letter-spacing:0.04em; border:1px solid #242629; }
+    .level-beginner { background:rgba(220,80,80,0.08); color:#E8A0A0; border-color:rgba(220,80,80,0.18); }
+    .level-intermediate { background:rgba(216,201,168,0.08); color:#D8C9A8; border-color:rgba(216,201,168,0.18); }
+    .level-advanced { background:rgba(199,214,207,0.08); color:#C7D6CF; border-color:rgba(199,214,207,0.18); }
+    .level-expert { background:rgba(120,180,140,0.12); color:#8FCCA0; border-color:rgba(120,180,140,0.22); }
+    .tag { font-size:12px; font-weight:500; padding:7px 12px; border-radius:999px; border:1px solid #242629; background:#1A1C1E; color:#F5F5F5; display:inline-flex; gap:6px; align-items:center; }
+    .tag.muted { background:transparent; color:#6F7377; border-style:dashed; }
+    .tag.strong { background:rgba(199,214,207,0.10); color:#DCEBE1; border-color:rgba(199,214,207,0.18); }
+    .onboard-overlay { position:fixed; inset:0; z-index:100; background: rgba(10,10,10,0.72); backdrop-filter: blur(12px); display:none; align-items:center; justify-content:center; padding:24px; }
+    .onboard-overlay.active { display:flex; }
+    .onboard-card { background: linear-gradient(180deg, rgba(26,28,30,0.96) 0%, rgba(18,20,22,0.98) 100%); border:1px solid #242629; border-radius:24px; padding:28px; max-width:760px; width:100%; max-height:90vh; overflow:auto; box-shadow: 0 24px 80px rgba(0,0,0,0.6); }
+    .onboard-card h2 { font-size:22px; font-weight:500; letter-spacing:-0.03em; color:#F5F5F5; margin-bottom:6px; }
+    .onboard-card p { font-size:12.5px; color:#6F7377; margin-bottom:18px; line-height:1.6; }
+    .grid-2x4 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media (min-width:640px){ .grid-2x4 { grid-template-columns:1fr 1fr 1fr 1fr; } }
+    .choice-card { position:relative; background:#0A0A0A; border:1px solid #1A1C1E; border-radius:14px; padding:14px 12px; cursor:pointer; transition: all 0.2s; text-align:left; min-height:72px; display:flex; flex-direction:column; justify-content:center; }
+    .choice-card:hover { border-color:#2A2E30; background:#111214; }
+    .choice-card.selected { border-color:#C7D6CF; background: rgba(199,214,207,0.08); box-shadow: 0 0 0 1px rgba(199,214,207,0.12); }
+    .choice-card input { position:absolute; opacity:0; pointer-events:none; }
+    .choice-card .choice-title { font-size:13px; font-weight:500; color:#F5F5F5; line-height:1.2; }
+    .choice-card .choice-sub { font-size:10.5px; color:#6F7377; margin-top:4px; line-height:1.3; }
+    .choice-card.selected .choice-title { color:#DCEBE1; }
+    .onboard-search { width:100%; background:#0A0A0A; border:1px solid #242629; border-radius:999px; padding:11px 14px 11px 40px; color:#F5F5F5; font-size:13px; outline:none; margin-bottom:14px; height:40px; }
+    .search-wrap { position:relative; display:flex; align-items:center; width:100%; }
+    .search-wrap .search-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#6F7377; display:flex; align-items:center; justify-content:center; width:18px; height:18px; pointer-events:none; }
+    #testQuestions, .onboard-card, #skillsGridOnboard, #roleGridOnboard { scrollbar-width:none; -ms-overflow-style:none; }
+    #testQuestions::-webkit-scrollbar, .onboard-card::-webkit-scrollbar { display:none; }
+    .onboard-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:18px; }
+    .test-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+    .timer { font-size:12px; font-weight:600; letter-spacing:0.06em; color:#C7D6CF; border:1px solid rgba(199,214,207,0.18); background:rgba(199,214,207,0.08); padding:6px 10px; border-radius:999px; }
+    .q-card { background:#0A0A0A; border:1px solid #1A1C1E; border-radius:14px; padding:16px; margin-bottom:12px; }
+    .q-card h4 { font-size:13px; color:#F5F5F5; margin-bottom:10px; line-height:1.5; }
+    .q-opts { display:flex; flex-direction:column; gap:8px; }
+    .q-opt { display:flex; align-items:center; gap:12px; padding:13px 14px; border:1px solid #1E2022; border-radius:12px; cursor:pointer; background:#111214; font-size:12.5px; color:#A8AAAD; position:relative; }
+    .q-opt:hover { border-color:#2E3133; background:#15171A; }
+    .q-opt.selected { border-color:#C7D6CF; background: rgba(199,214,207,0.10); color:#F5F5F5; }
+    .q-opt input { position:absolute; opacity:0; pointer-events:none; }
+    .q-opt::before { content:""; width:18px; height:18px; min-width:18px; border:1.7px solid #2A2E30; border-radius:50%; background:#0A0A0A; flex-shrink:0; }
+    .q-opt.selected::before { border-color:#C7D6CF; background:#C7D6CF; }
+    .q-text-input { width:100%; background:#111214; border:1px solid #1E2022; border-radius:12px; padding:12px 14px; color:#F5F5F5; font-size:12.5px; min-height:90px; resize:vertical; font-family:Helvetica,Arial,sans-serif; outline:none; margin-top:8px; }
+    .q-text-input:focus { border-color:#2E3133; background:#15171A; }
+    .q-text-input.filled { border-color:rgba(199,214,207,0.22); background:rgba(199,214,207,0.06); }
+    .section-label { font-size:11px; letter-spacing:0.12em; color:#8FA69A; border:1px solid rgba(199,214,207,0.18); background:rgba(199,214,207,0.06); padding:6px 10px; border-radius:999px; display:inline-flex; align-items:center; gap:6px; margin-bottom:12px; }
+    .nav-link.active { color:#F5F5F5 !important; }
+    .view { display:none; }
+    .view.active { display:block; }
+    /* Pricing */
+    .pricing-grid { display:grid; grid-template-columns:1fr; gap:16px; }
+    @media (min-width:720px){ .pricing-grid{ grid-template-columns:1fr 1fr 1fr; } }
+    .price-card { background: linear-gradient(180deg, rgba(26,28,30,0.96) 0%, rgba(18,20,22,0.98) 100%); border:1px solid #242629; border-radius:20px; padding:22px; position:relative; overflow:hidden; }
+    .price-card.popular { border-color:#C7D6CF; box-shadow: 0 0 0 1px rgba(199,214,207,0.12), 0 20px 60px rgba(0,0,0,0.4); }
+    .price-card.popular::before{ content:""; position:absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, #C7D6CF, #8FA69A); }
+    .price-badge { font-size:10px; letter-spacing:0.1em; color:#0A0A0A; background:#C7D6CF; padding:4px 8px; border-radius:999px; font-weight:700; position:absolute; top:14px; right:14px; }
+    .price-title { font-size:14px; font-weight:600; color:#F5F5F5; margin-bottom:4px; }
+    .price-desc { font-size:12px; color:#6F7377; margin-bottom:14px; line-height:1.5; }
+    .price-amount { font-size:28px; font-weight:300; color:#F5F5F5; letter-spacing:-0.03em; }
+    .price-amount span{ font-size:12px; color:#6F7377; font-weight:400; }
+    .price-features{ margin:16px 0; display:flex; flex-direction:column; gap:8px; }
+    .price-features div{ font-size:12px; color:#A8AAAD; display:flex; gap:8px; align-items:center; }
+    .price-features div::before{ content:"✓"; color:#8FA69A; font-weight:700; }
+    /* History */
+    .history-item{ display:flex; justify-content:space-between; align-items:center; gap:12px; background:#0A0A0A; border:1px solid #1A1C1E; border-radius:14px; padding:14px 16px; margin-bottom:10px; }
+    .history-item:hover{ border-color:#242629; }
+  </style>
+</head>
+<body>
+  <div class="bg"><div class="bg-glow bg-glow-1"></div><div class="bg-grain"></div><div class="bg-lines"></div><div class="bg-particles"></div></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="dashboard.html" class="nav-logo"><span class="nav-mark"></span><span>skilly</span></a>
+      <div class="nav-links">
+        <a href="#" data-view="dashboard" class="nav-link active">Dashboard</a>
+        <a href="#" data-view="history" class="nav-link">History</a>
+        <a href="#" data-view="pricing" class="nav-link">Pricing</a>
+        <a href="#" data-view="account" class="nav-link">Account</a>
+      </div>
+      <div class="nav-actions">
+        <span id="userEmail" style="font-size:12px; color:#A8AAAD;"></span>
+        <a href="#" id="logoutBtn" class="btn-secondary" style="padding:7px 12px; font-size:12px;">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="dash-wrap">
+    <!-- Dashboard View -->
+    <div id="view-dashboard" class="view active">
+      <div class="dash-header">
+        <div>
+          <h1>are you industry ready</h1>
+          <p id="welcomeMsg">Loading your personalized assessment...</p>
+        </div>
+        <div class="dash-stat" style="min-width: 220px;">
+          <div class="stat-box"><div class="stat-num" id="statReadiness">-</div><div class="stat-label">READINESS</div></div>
+          <div class="stat-box"><div class="stat-num" id="statLevel">-</div><div class="stat-label">LEVEL</div></div>
+        </div>
+      </div>
+
+      <div id="onboardingPrompt" class="dash-card" style="text-align:center; padding:32px;">
+        <h3 style="justify-content:center; font-size:18px; margin-bottom:8px;">Start your assessment</h3>
+        <p style="max-width:540px; margin:0 auto 18px; text-align:center;">Pick your target role, select skills you know, then take a 15-question test (12 quick choices + 3 short written reasoning). Our AI will synthesize your <b style="color:#C7D6CF;">current state</b> from role requirements + your claimed skills + test performance.</p>
+        <button id="startSetupBtn" class="btn-primary" style="font-size:14px; padding:12px 22px;">Start setup: Choose role & skills <span class="arrow">→</span></button>
+        <p style="font-size:11px; color:#6F7377; margin-top:10px;">2 steps: Role → Skills → 5-min AI test → AI summary</p>
+      </div>
+
+      <div id="aiStateCard" class="dash-card" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
+          <div>
+            <h3 style="margin:0; font-size:18px;">Your Current State <span class="badge" style="margin-left:8px;">AI POWERED</span></h3>
+            <p id="aiRoleLine" style="margin:4px 0 0; font-size:12px; color:#A8AAAD;"></p>
+          </div>
+          <div id="aiLevelBadge"></div>
+        </div>
+        <div class="progress-bar" style="margin-bottom:16px;"><div id="aiProgressFill" class="progress-fill" style="width:0%;"></div></div>
+        <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:14px; padding:16px; margin-bottom:16px;">
+          <div style="font-size:11px; letter-spacing:0.08em; color:#8FA69A; margin-bottom:8px;">AI SUMMARY</div>
+          <p id="aiSummary" style="color:#F5F5F5; font-size:13.5px; line-height:1.7; margin:0;"></p>
+          <p id="aiValidationNote" style="margin-top:10px; font-size:11px; color:#6F7377; font-style:italic;"></p>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+          <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:14px; padding:14px;">
+            <div style="font-size:11px; letter-spacing:0.08em; color:#8FA69A; margin-bottom:8px;">✓ WHAT YOU HAVE</div>
+            <div id="aiHave" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+          </div>
+          <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:14px; padding:14px;">
+            <div style="font-size:11px; letter-spacing:0.08em; color:#E8A0A0; margin-bottom:8px;">○ WHAT YOU LACK (priority)</div>
+            <div id="aiLack" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+          <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:14px; padding:14px;">
+            <div style="font-size:11px; letter-spacing:0.08em; color:#8FA69A; margin-bottom:8px;">STRENGTHS (test-validated)</div>
+            <div id="aiStrengths" style="font-size:12px; color:#DCEBE1; line-height:1.6;"></div>
+          </div>
+          <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:14px; padding:14px;">
+            <div style="font-size:11px; letter-spacing:0.08em; color:#E8A0A0; margin-bottom:8px;">GAPS TO CLOSE</div>
+            <div id="aiGaps" style="font-size:12px; color:#A8AAAD; line-height:1.6;"></div>
+          </div>
+        </div>
+        <div style="background: rgba(199,214,207,0.06); border:1px solid rgba(199,214,207,0.12); border-radius:14px; padding:16px; margin-bottom:16px;">
+          <div style="font-size:11px; letter-spacing:0.08em; color:#8FA69A; margin-bottom:8px;">RECOMMENDATION</div>
+          <p id="aiRecommendation" style="color:#DCEBE1; font-size:12.5px; line-height:1.7; margin:0;"></p>
+        </div>
+        <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:14px; padding:16px; margin-bottom:16px;">
+          <div style="font-size:11px; letter-spacing:0.08em; color:#8FA69A; margin-bottom:10px;">NEXT STEPS (priority order)</div>
+          <div id="aiNextSteps" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
+          <button id="changeRoleBtn2" class="btn-secondary" style="font-size:12px;">Change role / skills</button>
+          <button id="retakeTestBtn2" class="btn-secondary" style="font-size:12px;">Retake test</button>
+          <button id="resetBtn2" class="btn-secondary" style="font-size:12px; opacity:0.7;">Reset</button>
+        </div>
+        <p style="font-size:11px; color:#3A3E41; margin-top:10px;">Powered by Gemini AI • Fed with: role requirements + your claimed skills + test results (MCQ + reasoning).</p>
+      </div>
+
+      <div id="processingCard" class="dash-card" style="display:none; text-align:center; padding:32px;">
+        <div style="font-size:14px; color:#C7D6CF; margin-bottom:8px;">Generating your AI current state...</div>
+        <p style="font-size:12px; color:#6F7377;">Feeding role skills + your selections + test performance to Gemini.</p>
+        <div style="margin-top:16px; height:6px; background:#111214; border-radius:999px; overflow:hidden;"><div style="height:100%; width:60%; background: linear-gradient(90deg, #C7D6CF, #8FA69A);"></div></div>
+      </div>
+    </div>
+
+    <!-- History View -->
+    <div id="view-history" class="view">
+      <div class="dash-card">
+        <h3>Test History <span class="badge">ALL ATTEMPTS</span></h3>
+        <p>Every test you take is saved here. Click a test to reload its AI assessment.</p>
+        <div id="historyList" style="margin-top:14px;"></div>
+        <div id="historyEmpty" style="text-align:center; padding:24px; color:#6F7377; font-size:12px; display:none;">No history yet. Take your first test from Dashboard.</div>
+      </div>
+      <div class="dash-card">
+        <h3>How scoring works</h3>
+        <p style="font-size:12.5px; color:#A8AAAD; line-height:1.7;">
+          <b style="color:#F5F5F5;">12 multiple-choice</b> = 1 point each • <b style="color:#F5F5F5;">3 written reasoning</b> = 0-2 points each (AI scores your explanation).<br>
+          Total <b style="color:#F5F5F5;">18 points</b>. <b>Beginner 0-40%</b> • <b>Intermediate 41-70%</b> • <b>Advanced 71-85%</b> • <b>Expert 86-100%</b>.
+        </p>
+      </div>
+    </div>
+
+    <!-- Pricing View -->
+    <div id="view-pricing" class="view">
+      <div style="text-align:center; margin-bottom:22px;">
+        <h2 style="font-size:22px; font-weight:500; letter-spacing:-0.03em; color:#F5F5F5;">Simple pricing for every stage</h2>
+        <p style="font-size:12.5px; color:#6F7377; margin-top:6px;">Start free. Upgrade when you need AI coaching & history.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="price-title">Free</div>
+          <div class="price-desc">Explore roles & take the quick test.</div>
+          <div class="price-amount">$0 <span>/ forever</span></div>
+          <div class="price-features">
+            <div>1 role assessment</div>
+            <div>15-question test (MCQ + written)</div>
+            <div>Basic AI summary</div>
+            <div>Community support</div>
+          </div>
+          <button class="btn-secondary" style="width:100%; justify-content:center; margin-top:8px;">Current plan</button>
+        </div>
+        <div class="price-card popular">
+          <div class="price-badge">MOST POPULAR</div>
+          <div class="price-title">Pro</div>
+          <div class="price-desc">For serious upskilling & job readiness.</div>
+          <div class="price-amount">$9 <span>/ month</span></div>
+          <div class="price-features">
+            <div>Unlimited tests & roles</div>
+            <div>AI current-state with reasoning scoring</div>
+            <div>Full history & progress tracking</div>
+            <div>Personalized roadmap & next steps</div>
+            <div>Export PDF report</div>
+          </div>
+          <button class="btn-primary" style="width:100%; justify-content:center; margin-top:8px;">Upgrade to Pro <span class="arrow">↗</span></button>
+          <p style="font-size:11px; color:#6F7377; text-align:center; margin-top:8px;">Cancel anytime. No hidden fees.</p>
+        </div>
+        <div class="price-card">
+          <div class="price-title">Team</div>
+          <div class="price-desc">For cohorts & hiring pipelines.</div>
+          <div class="price-amount">$29 <span>/ month</span></div>
+          <div class="price-features">
+            <div>Everything in Pro</div>
+            <div>5 seats included</div>
+            <div>Cohort analytics & comparison</div>
+            <div>Priority AI & support</div>
+          </div>
+          <button class="btn-secondary" style="width:100%; justify-content:center; margin-top:8px;">Contact sales</button>
+        </div>
+      </div>
+      <div class="dash-card" style="text-align:center; margin-top:16px;">
+        <p style="margin:0; font-size:12px; color:#A8AAAD;">All plans include secure OTP login via Python backend. No hardcoded secrets. <span style="color:#8FA69A;">Hackathon demo: pretend Pro is active.</span></p>
+      </div>
+    </div>
+
+    <!-- Account View -->
+    <div id="view-account" class="view">
+      <div class="dash-card">
+        <h3>Account <span class="badge">PROFILE</span></h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+          <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:12px; padding:14px;">
+            <div style="font-size:11px; color:#6F7377; letter-spacing:0.08em;">EMAIL</div>
+            <div id="accEmail" style="font-size:13px; color:#F5F5F5; margin-top:4px; word-break:break-all;">-</div>
+          </div>
+          <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:12px; padding:14px;">
+            <div style="font-size:11px; color:#6F7377; letter-spacing:0.08em;">TARGET ROLE</div>
+            <div id="accRole" style="font-size:13px; color:#F5F5F5; margin-top:4px;">-</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px;">
+          <div class="stat-box" style="padding:12px;"><div class="stat-num" id="accTests">0</div><div class="stat-label">TESTS TAKEN</div></div>
+          <div class="stat-box" style="padding:12px;"><div class="stat-num" id="accAvg">-</div><div class="stat-label">AVG SCORE</div></div>
+          <div class="stat-box" style="padding:12px;"><div class="stat-num" id="accLevel">-</div><div class="stat-label">CURRENT LEVEL</div></div>
+        </div>
+      </div>
+      <div class="dash-card">
+        <h3>Recent tests <span class="badge">HISTORY</span></h3>
+        <div id="accHistoryList"></div>
+      </div>
+      <div class="dash-card" style="text-align:center;">
+        <p style="margin-bottom:12px;">Need to start fresh?</p>
+        <button id="accResetBtn" class="btn-secondary" style="font-size:12px;">Clear all local data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Onboarding: Role Selection -->
+  <div id="roleDialog" class="onboard-overlay">
+    <div class="onboard-card">
+      <h2>Choose your target role</h2>
+      <p>Select one role to personalize your assessment. Search or pick from grid.</p>
+      <div class="search-wrap">
+        <input id="roleSearchOnboard" class="onboard-search" placeholder="Search roles - e.g. Frontend, Data Scientist..." />
+        <span class="search-icon" style="left:14px; width:22px; height:22px; color:#A8AAAD; background: rgba(199,214,207,0.06); border-radius:50%; border:1px solid rgba(36,38,41,0.5);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A8AAAD" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20L16.8 16.8"/></svg>
+        </span>
+      </div>
+      <div id="roleGridOnboard" class="grid-2x4"></div>
+      <div class="onboard-actions">
+        <button id="roleNextBtn" class="btn-primary" disabled style="opacity:0.5;">Continue <span class="arrow">→</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skills Selection -->
+  <div id="skillsDialog" class="onboard-overlay">
+    <div class="onboard-card">
+      <h2>What skills do you already know?</h2>
+      <p>Select all that apply. You can also type custom skills; they’ll be considered. Search from 200+ skills.</p>
+      <div class="search-wrap">
+        <input id="skillsSearchOnboard" class="onboard-search" placeholder="Search from 200 skills - e.g. Python, React, SQL..." />
+        <span class="search-icon" style="left:14px; width:22px; height:22px; color:#A8AAAD; background: rgba(199,214,207,0.06); border-radius:50%; border:1px solid rgba(36,38,41,0.5);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A8AAAD" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20L16.8 16.8"/></svg>
+        </span>
+      </div>
+      <div id="skillsGridOnboard" class="grid-2x4"></div>
+      <div style="margin-top:12px;">
+        <label style="font-size:11px; color:#8FA69A; letter-spacing:0.06em;">OR TYPE CUSTOM SKILLS (comma separated)</label>
+        <textarea id="customSkillsInput" class="dash-input" style="margin-top:6px; min-height:60px;" placeholder="e.g. Figma, Solidity, Prompt Engineering..."></textarea>
+        <span style="font-size:11px; color:#6F7377;">Alias-aware: ml, py, reactjs all work. Custom skills are included in test generation.</span>
+      </div>
+      <div class="onboard-actions" style="justify-content:space-between; align-items:center;">
+        <span id="skillsCount" style="font-size:12px; color:#6F7377;">0 selected</span>
+        <button id="findLevelBtn" class="btn-primary" disabled style="opacity:0.5;">Take skill test (12 MCQ + 3 written) <span class="arrow">↗</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test Dialog -->
+  <div id="testDialog" class="onboard-overlay" style="align-items: flex-start; padding-top: 24px;">
+    <div class="onboard-card" style="max-width:760px;">
+      <div class="test-header">
+        <h2 style="margin:0; font-size:18px;">Skill level test</h2>
+        <div class="timer" id="testTimer">05:00</div>
+      </div>
+      <p id="testProgress" style="font-size:11px; color:#6F7377; margin-bottom:12px;">Generating 15 questions (12 MCQ + 3 short written) via Gemini...</p>
+      <div id="testQuestions" style="max-height: 58vh; overflow:auto; padding-right:4px;"></div>
+      <div class="onboard-actions">
+        <button id="testSubmitBtn" class="btn-primary">Submit test <span class="arrow">↗</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result Dialog - Human Friendly -->
+  <div id="resultDialog" class="onboard-overlay">
+    <div class="onboard-card" style="max-width:640px; text-align:left;">
+      <div style="text-align:center; margin-bottom:16px;">
+        <div style="width:56px; height:56px; border-radius:50%; background: rgba(199,214,207,0.10); border:1px solid rgba(199,214,207,0.18); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:24px;" id="resultEmoji">🎯</div>
+        <h2 style="margin:0;">Test complete!</h2>
+        <p style="margin:6px 0 0; font-size:12px; color:#6F7377;">Here’s how you did — in plain language.</p>
+      </div>
+
+      <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:16px; padding:16px; margin-bottom:14px; text-align:center;">
+        <div id="resultLevel" style="margin: 0 0 8px;"></div>
+        <div id="resultScoreLine" style="font-size:13px; color:#F5F5F5; margin-bottom:4px;"></div>
+        <div id="resultBreakdown" style="font-size:12px; color:#6F7377;"></div>
+        <div style="margin-top:12px; height:8px; background:#111214; border-radius:999px; overflow:hidden; border:1px solid #1A1C1E;"><div id="resultBar" style="height:100%; width:0%; background: linear-gradient(90deg, #C7D6CF, #8FA69A); transition: width 0.6s;"></div></div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+        <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:12px; padding:12px; text-align:center;">
+          <div style="font-size:11px; letter-spacing:0.08em; color:#8FA69A;">MULTIPLE CHOICE</div>
+          <div id="resultMcq" style="font-size:18px; font-weight:300; color:#F5F5F5; margin-top:4px;">-</div>
+          <div style="font-size:11px; color:#6F7377;">12 questions • 1 pt each</div>
+        </div>
+        <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:12px; padding:12px; text-align:center;">
+          <div style="font-size:11px; letter-spacing:0.08em; color:#8FA69A;">WRITTEN REASONING</div>
+          <div id="resultText" style="font-size:18px; font-weight:300; color:#F5F5F5; margin-top:4px;">-</div>
+          <div style="font-size:11px; color:#6F7377;">3 questions • 0-2 pts each</div>
+        </div>
+      </div>
+
+      <div style="background: rgba(199,214,207,0.06); border:1px solid rgba(199,214,207,0.12); border-radius:12px; padding:14px; margin-bottom:14px;">
+        <div style="font-size:11px; letter-spacing:0.08em; color:#8FA69A; margin-bottom:6px;">WHAT THIS MEANS</div>
+        <p id="resultDesc" style="color:#DCEBE1; font-size:12.5px; line-height:1.6; margin:0;"></p>
+      </div>
+
+      <div id="resultPerSkill" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;"></div>
+
+      <div id="resultTextFeedback" style="margin-bottom:14px;"></div>
+
+      <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:12px; padding:14px; margin-bottom:14px;">
+        <div style="font-size:11px; letter-spacing:0.08em; color:#8FA69A; margin-bottom:6px;">NEXT FOCUS</div>
+        <p id="resultReco" style="font-size:12.5px; color:#A8AAAD; line-height:1.6; margin:0;"></p>
+      </div>
+
+      <div class="onboard-actions" style="justify-content:center;">
+        <button id="resultContinueBtn" class="btn-primary" style="width:100%; justify-content:center;">See my AI current state <span class="arrow">→</span></button>
+      </div>
+      <p style="font-size:11px; color:#6F7377; text-align:center; margin-top:8px;">Same scoring as before — now explained clearly. Includes your written answers.</p>
+    </div>
+  </div>
+
+  <footer class="footer" style="margin-top:40px;">
+    <div class="footer-inner">
+      <div class="footer-brand"><div class="footer-logo"><span class="nav-mark small"></span> skilly</div><p class="footer-desc">are you industry ready</p></div>
+      <div class="footer-col"><div class="footer-heading">Product</div><a href="how-it-works.html">How It Works</a><a href="roles.html">Roles</a><a href="github.html">GitHub</a><a href="contact.html">Contact</a></div>
+      <div class="footer-col"><div class="footer-heading">Resources</div><a href="documentation.html">Documentation</a><a href="dataset.html">Skill Dataset</a><a href="privacy.html">Privacy</a></div>
+    </div>
+    <div class="footer-huge"><div class="footer-huge-inner"><div class="footer-huge-text">skilly</div></div></div>
+    <div class="footer-bottom"><span>© 2026 skilly</span><span>are you industry ready</span></div>
+  </footer>
+
+  <script src="js/supabase.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    let currentAiResult = null;
+    let allRolesData = [];
+    let onboardingRole = null;
+    let onboardingSkills = new Set();
+    let testQuestions = [];
+    let testAnswers = [];
+    let timerInterval = null;
+    let timeLeft = 300;
+    let lastTestResult = null;
+
+    // View switching
+    function switchView(view) {
+      document.querySelectorAll('.view').forEach(v=> v.classList.remove('active'));
+      document.getElementById('view-'+view).classList.add('active');
+      document.querySelectorAll('.nav-link').forEach(l=> l.classList.toggle('active', l.dataset.view===view));
+      if (view==='history') renderHistory();
+      if (view==='account') renderAccount();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    document.querySelectorAll('.nav-link').forEach(l=>{
+      l.addEventListener('click', (e)=> { e.preventDefault(); switchView(l.dataset.view); });
+    });
+
+    async function checkAuth() {
+      const token = localStorage.getItem("skilly_token");
+      const localUser = JSON.parse(localStorage.getItem("skilly_user") || "null");
+      if (token && token !== "demo-token") {
+        try {
+          const r = await window.fetchApi("/api/auth/me", { headers: { Authorization: "Bearer " + token } });
+          if (r.ok) {
+            const u = await r.json();
+            document.getElementById("userEmail").textContent = u.email;
+            document.getElementById("welcomeMsg").textContent = "Welcome, " + (u.full_name || u.email) + " — your AI assessment is below.";
+            return u;
+          }
+        } catch {}
+      }
+      if (localUser) {
+        document.getElementById("userEmail").textContent = localUser.email;
+        document.getElementById("welcomeMsg").textContent = "Welcome, " + localUser.email + (localUser.demo ? " (demo)" : "");
+        if (localUser.demo) return localUser;
+      }
+      const hasToken = !!token || !!localUser;
+      if (!hasToken) {
+        document.getElementById("welcomeMsg").textContent = "Sign in to save your AI assessment, or continue as demo.";
+      }
+      if (localUser) return localUser;
+      return localUser;
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      localStorage.removeItem("skilly_user");
+      localStorage.removeItem("skilly_token");
+      localStorage.removeItem("skilly_onboarding_done");
+      localStorage.removeItem("skilly_ai_state");
+      if (window.supabaseClient) try { await supabaseClient.auth.signOut(); } catch {}
+      window.location.href = "signin.html";
+    });
+
+    async function loadRoles() {
+      const fallback = [
+        {role:"Software Engineer", aliases:["Software Developer"], skills:{python:4, javascript:4, sql:4}},
+        {role:"Frontend Developer", aliases:["Frontend Engineer"], skills:{html:5, css:5, javascript:5, react:5}},
+        {role:"Backend Developer", aliases:["Backend Engineer"], skills:{python:4, nodejs:4, sql:5}},
+        {role:"Data Scientist", aliases:["Data Science Engineer"], skills:{python:5, machine_learning:5, sql:4}},
+        {role:"Data Engineer", aliases:[], skills:{python:5, sql:5, spark:5}},
+        {role:"DevOps Engineer", aliases:[], skills:{docker:5, kubernetes:5, linux:5}},
+        {role:"Machine Learning Engineer", aliases:["ML Engineer"], skills:{python:5, tensorflow:4, pytorch:4}},
+        {role:"Product Manager", aliases:[], skills:{product_management:5, agile:4}},
+      ];
+      try {
+        let roles = [];
+        try {
+          const r = await window.fetchApi("/api/roles");
+          if (r.ok) roles = await r.json();
+        } catch {}
+        if (!roles.length) {
+          const paths = ["../Dataset/data.json", "./Dataset/data.json", "/Dataset/data.json", "Dataset/data.json", "../dataset/role_skills_dataset.json"];
+          for (const p of paths) {
+            try {
+              const res = await fetch(p);
+              if (res.ok) {
+                const data = await res.json();
+                roles = data.roles || data;
+                if (roles.length) break;
+              }
+            } catch {}
+          }
+        }
+        if (!roles.length) roles = fallback;
+        allRolesData = roles;
+      } catch (e) {
+        allRolesData = fallback;
+      }
+    }
+
+    function shouldShowOnboarding() {
+      if (localStorage.getItem("skilly_onboarding_done") === "true" && localStorage.getItem("skilly_ai_state")) return false;
+      return true;
+    }
+
+    function renderAiState(ai) {
+      if (!ai) return;
+      currentAiResult = ai;
+      document.getElementById("onboardingPrompt").style.display = "none";
+      const card = document.getElementById("aiStateCard");
+      card.style.display = "block";
+      document.getElementById("processingCard").style.display = "none";
+      const lvl = ai.level || "Intermediate";
+      const pct = ai.readiness ?? ai.percentage ?? 0;
+      document.getElementById("statReadiness").textContent = pct + "%";
+      document.getElementById("statLevel").textContent = lvl;
+      document.getElementById("aiProgressFill").style.width = pct + "%";
+      const levelClass = lvl.toLowerCase() === "beginner" ? "level-beginner" : lvl.toLowerCase() === "intermediate" ? "level-intermediate" : lvl.toLowerCase() === "advanced" ? "level-advanced" : "level-expert";
+      document.getElementById("aiLevelBadge").innerHTML = `<span class="level-badge ${levelClass}">${lvl} • ${pct}%</span>`;
+      document.getElementById("aiRoleLine").textContent = `Target: ${ai.role || onboardingRole || '-'} • ${ai.gap ? ai.gap.total_skills + ' skills required' : ''}`;
+      document.getElementById("aiSummary").textContent = ai.summary || ai.level_description || "";
+      document.getElementById("aiValidationNote").textContent = ai.validation_note || "";
+      const have = ai.what_you_have || ai.strengths || [];
+      const lack = ai.what_you_lack || ai.gaps || [];
+      document.getElementById("aiHave").innerHTML = have.length ? have.map(s=> `<span class="tag strong">${s.replace(/_/g,' ')}</span>`).join("") : '<span style="color:#6F7377; font-size:12px;">None yet</span>';
+      document.getElementById("aiLack").innerHTML = lack.length ? lack.map(s=> `<span class="tag muted">${s.replace(/_/g,' ')}</span>`).join("") : '<span style="color:#6F7377; font-size:12px;">No gaps!</span>';
+      document.getElementById("aiStrengths").innerHTML = (ai.strengths || []).slice(0,4).map(s=> `• ${s.replace(/_/g,' ')}`).join("<br>") || "—";
+      document.getElementById("aiGaps").innerHTML = (ai.gaps || []).slice(0,4).map(s=> `• ${s.replace(/_/g,' ')}`).join("<br>") || "—";
+      document.getElementById("aiRecommendation").textContent = ai.recommendation || "";
+      document.getElementById("aiNextSteps").innerHTML = (ai.next_steps || []).map((step,i)=> `<div style="display:flex; gap:10px; align-items:flex-start; background:#111214; border:1px solid #1A1C1E; border-radius:10px; padding:10px 12px;"><span style="background:#C7D6CF; color:#0A0A0A; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0;">${i+1}</span><span style="font-size:12px; color:#F5F5F5; line-height:1.5;">${escapeHtml(step)}</span></div>`).join("");
+      document.getElementById("welcomeMsg").textContent = `Your AI assessment for ${ai.role || onboardingRole} is ready.`;
+      switchView('dashboard');
+    }
+
+    function escapeHtml(str) { return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+    // History helpers - Proper DB, not localStorage
+    function getHistoryLocal() {
+      try {
+        const raw = localStorage.getItem("skilly_history");
+        if (!raw) return [];
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : [];
+      } catch { return []; }
+    }
+    async function pushHistory(entry) {
+      // Try proper DB first (Supabase Postgres via Python backend)
+      const token = localStorage.getItem("skilly_token");
+      if (token && token !== "demo-token") {
+        try {
+          const res = await window.fetchApi("/api/history", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+            body: JSON.stringify({
+              target_role: entry.role,
+              claimed_skills: entry.skills || [],
+              score: entry.score,
+              total: entry.total,
+              percentage: entry.percentage,
+              level: entry.level,
+              mcq_score: entry.mcq_score || 0,
+              mcq_total: entry.mcq_total || 12,
+              text_points: entry.text_points || 0,
+              text_max: entry.text_max || 6,
+              per_skill: entry.per_skill || {},
+              strengths: entry.strengths || [],
+              weaknesses: entry.weaknesses || [],
+              ai_summary: entry.ai || null
+            })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            entry.id = data.id;
+            entry.date = data.created_at;
+            console.log("[history] saved to DB", data.id);
+          }
+        } catch (e) {
+          console.warn("[history] DB save failed, fallback to local:", e.message);
+        }
+      }
+      // Always also keep local cache for demo/offline
+      const hist = getHistoryLocal();
+      hist.unshift(entry);
+      localStorage.setItem("skilly_history", JSON.stringify(hist.slice(0,20)));
+    }
+    async function fetchHistoryFromDB() {
+      const token = localStorage.getItem("skilly_token");
+      if (!token || token === "demo-token") return null;
+      try {
+        const r = await window.fetchApi("/api/history", { headers: { Authorization: "Bearer " + token } });
+        if (!r.ok) return null;
+        const data = await r.json();
+        if (!data.history) return null;
+        // Transform DB rows to frontend format
+        return data.history.map(row => ({
+          id: row.id,
+          date: row.created_at,
+          role: row.target_role,
+          skills: row.claimed_skills || [],
+          score: row.score,
+          total: row.total,
+          percentage: row.percentage,
+          level: row.level,
+          mcq_score: row.mcq_score,
+          mcq_total: row.mcq_total,
+          text_points: row.text_points,
+          text_max: row.text_max,
+          per_skill: row.per_skill || {},
+          strengths: row.strengths || [],
+          weaknesses: row.weaknesses || [],
+          ai: row.ai_summary,
+          recommendation: row.ai_summary?.recommendation || ""
+        }));
+      } catch (e) {
+        console.warn("[history] fetch DB failed:", e.message);
+        return null;
+      }
+    }
+    function getHistory() { return getHistoryLocal(); } // sync fallback for existing callers
+    async function renderHistory() {
+      const list = document.getElementById("historyList");
+      const empty = document.getElementById("historyEmpty");
+      list.innerHTML = '<p style="text-align:center; color:#6F7377; padding:16px;">Loading from database...</p>';
+      empty.style.display = "none";
+      // Try DB first
+      let hist = await fetchHistoryFromDB();
+      if (!hist) hist = getHistoryLocal();
+      if (!hist.length) {
+        list.innerHTML = "";
+        empty.style.display = "block";
+        return;
+      }
+      empty.style.display = "none";
+      list.innerHTML = hist.map(h=> `
+        <div class="history-item">
+          <div style="flex:1;">
+            <div style="font-size:12px; color:#F5F5F5; font-weight:500;">${escapeHtml(h.role||'-')} • <span style="color:${h.level==='Beginner'?'#E8A0A0':h.level==='Intermediate'?'#D8C9A8':h.level==='Advanced'?'#C7D6CF':'#8FCCA0'}">${escapeHtml(h.level||'-')}</span></div>
+            <div style="font-size:11px; color:#6F7377; margin-top:2px;">${h.date ? new Date(h.date).toLocaleString() : ''} • ${h.skills ? h.skills.length+' skills' : ''} • ${h.score}/${h.total} (${h.percentage}%) • MCQ ${h.mcq_score}/${h.mcq_total} • Written ${h.text_points}/${h.text_max}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12px; font-weight:600; color:#C7D6CF;">${h.percentage}%</div>
+            <button onclick="loadHistoryEntry('${h.id}')" style="font-size:11px; color:#8FA69A; background:transparent; border:1px solid #242629; padding:4px 8px; border-radius:999px; cursor:pointer; margin-top:4px;">View →</button>
+          </div>
+        </div>
+      `).join("");
+    }
+    window.loadHistoryEntry = async function(id) {
+      // Try DB first
+      let hist = await fetchHistoryFromDB();
+      if (!hist) hist = getHistoryLocal();
+      const e = hist.find(x=> String(x.id)===String(id));
+      if (!e) return;
+      if (e.ai) {
+        localStorage.setItem("skilly_ai_state", JSON.stringify(e.ai));
+        renderAiState(e.ai);
+        switchView('dashboard');
+      } else {
+        alert(`Test: ${e.role} - ${e.level} ${e.percentage}% (${e.score}/${e.total})\n${e.recommendation||''}`);
+      }
+    }
+    async function renderAccount() {
+      const user = JSON.parse(localStorage.getItem("skilly_user")||"null");
+      const role = localStorage.getItem("skilly_target_role")||"-";
+      document.getElementById("accEmail").textContent = user?.email || "-";
+      document.getElementById("accRole").textContent = role;
+      let hist = await fetchHistoryFromDB();
+      if (!hist) hist = getHistoryLocal();
+      document.getElementById("accTests").textContent = hist.length;
+      if (hist.length) {
+        const avg = Math.round(hist.reduce((a,b)=> a+(b.percentage||0),0)/hist.length);
+        document.getElementById("accAvg").textContent = avg+"%";
+        document.getElementById("accLevel").textContent = hist[0].level || "-";
+      } else {
+        document.getElementById("accAvg").textContent = "-";
+        document.getElementById("accLevel").textContent = "-";
+      }
+      const accList = document.getElementById("accHistoryList");
+      if (!hist.length) {
+        accList.innerHTML = '<p style="font-size:12px; color:#6F7377; text-align:center; padding:12px;">No tests yet. History is stored in Supabase Postgres via Python backend.</p>';
+      } else {
+        accList.innerHTML = hist.slice(0,5).map(h=> `
+          <div class="history-item" style="padding:10px 12px;">
+            <div>
+              <div style="font-size:12px; color:#F5F5F5;">${escapeHtml(h.role)} • ${escapeHtml(h.level)}</div>
+              <div style="font-size:11px; color:#6F7377;">${new Date(h.date).toLocaleDateString()} • ${h.percentage}%</div>
+            </div>
+            <div style="font-size:12px; color:#C7D6CF; font-weight:600;">${h.score}/${h.total}</div>
+          </div>
+        `).join("") + (hist.length>5 ? `<p style="font-size:11px; color:#8FA69A; text-align:center; margin-top:8px; cursor:pointer;" onclick="switchView('history')">View all ${hist.length} in History →</p>` : "");
+      }
+    }
+
+    // ---------- Onboarding ----------
+    async function initOnboarding() {
+      const savedAi = localStorage.getItem("skilly_ai_state");
+      if (savedAi) {
+        try { renderAiState(JSON.parse(savedAi)); return; } catch {}
+      }
+      if (!shouldShowOnboarding()) return;
+      if (!allRolesData.length) {
+        await new Promise(r=> setTimeout(r, 500));
+        if (!allRolesData.length) await loadRoles();
+      }
+      document.getElementById("onboardingPrompt").style.display = "block";
+    }
+
+    function showRoleDialog() {
+      const dialog = document.getElementById("roleDialog");
+      const grid = document.getElementById("roleGridOnboard");
+      const search = document.getElementById("roleSearchOnboard");
+      const nextBtn = document.getElementById("roleNextBtn");
+      dialog.classList.add("active");
+      if (!allRolesData.length) {
+        allRolesData = [{role:"Software Engineer", aliases:["Software Developer"], skills:{python:4, javascript:4, sql:4, git:5}}];
+      }
+      function renderRoles(filter="") {
+        const q = filter.toLowerCase().trim();
+        let list = allRolesData;
+        if (q) list = allRolesData.filter(r => r.role.toLowerCase().includes(q) || r.aliases?.some(a=>a.toLowerCase().includes(q)));
+        const toShow = list.slice(0, 12);
+        if (!toShow.length) {
+          grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#6F7377; font-size:12px;">No roles found.</p>';
+          return;
+        }
+        grid.innerHTML = toShow.map(r => `
+          <label class="choice-card" data-role="${r.role}">
+            <input type="radio" name="onboardRole" value="${r.role}" />
+            <div class="choice-title">${r.role}</div>
+            <div class="choice-sub">${Object.keys(r.skills||{}).length} skills • ${r.aliases?.[0] || 'popular'}</div>
+          </label>
+        `).join("");
+        grid.querySelectorAll(".choice-card").forEach(card => {
+          card.addEventListener("click", () => {
+            grid.querySelectorAll(".choice-card").forEach(c=>c.classList.remove("selected"));
+            card.classList.add("selected");
+            card.querySelector("input").checked = true;
+            onboardingRole = card.dataset.role;
+            nextBtn.disabled = false;
+            nextBtn.style.opacity = "1";
+          });
+        });
+      }
+      renderRoles("");
+      search.oninput = () => renderRoles(search.value);
+      search.value = "";
+      nextBtn.disabled = true; nextBtn.style.opacity="0.5";
+      nextBtn.onclick = () => {
+        if (!onboardingRole) return;
+        localStorage.setItem("skilly_target_role", onboardingRole);
+        dialog.classList.remove("active");
+        showSkillsDialog();
+      };
+    }
+
+    async function showSkillsDialog() {
+      const dialog = document.getElementById("skillsDialog");
+      const grid = document.getElementById("skillsGridOnboard");
+      const search = document.getElementById("skillsSearchOnboard");
+      const countEl = document.getElementById("skillsCount");
+      const btn = document.getElementById("findLevelBtn");
+      const customInput = document.getElementById("customSkillsInput");
+      dialog.classList.add("active");
+      let roleSkills = [];
+      const roleObj = allRolesData.find(r => r.role === onboardingRole);
+      if (roleObj && roleObj.skills) roleSkills = Object.keys(roleObj.skills);
+      let allDatasetSkills = [];
+      try {
+        const r = await window.fetchApi("/api/skills");
+        if (r.ok) {
+          const data = await r.json();
+          if (data.skills) allDatasetSkills = Object.keys(data.skills);
+        }
+      } catch {}
+      if (!allDatasetSkills.length) {
+        const paths = ["../Dataset/data.json", "./Dataset/data.json", "/Dataset/data.json", "Dataset/data.json"];
+        for (const p of paths) {
+          try {
+            const res = await fetch(p);
+            if (res.ok) {
+              const data = await res.json();
+              allDatasetSkills = Object.keys(data.skills || {});
+              if (allDatasetSkills.length) break;
+            }
+          } catch {}
+        }
+      }
+      if (!allDatasetSkills.length) allDatasetSkills = roleSkills.length ? roleSkills : ["python","javascript","sql","react","nodejs","aws","docker","git"];
+      let allSkills = [...roleSkills];
+      for (const s of allDatasetSkills) if (!allSkills.includes(s)) allSkills.push(s);
+      const savedCustom = localStorage.getItem("skilly_custom_skills");
+      if (savedCustom) customInput.value = savedCustom;
+
+      function getAllSelected() {
+        const custom = customInput.value.split(",").map(s=>s.trim()).filter(Boolean);
+        const all = new Set([...onboardingSkills, ...custom]);
+        return Array.from(all);
+      }
+
+      function renderSkills(filter="") {
+        let list = allSkills;
+        const q = filter.toLowerCase().trim();
+        if (q) list = allSkills.filter(s => s.toLowerCase().replace(/_/g," ").includes(q) || s.toLowerCase().includes(q));
+        const toShow = list.slice(0, 32);
+        if (!toShow.length) {
+          grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#6F7377; font-size:12px;">No skills found for "'+escapeHtml(filter)+'".</p>';
+          return;
+        }
+        grid.innerHTML = toShow.map(s => {
+          const label = s.replace(/_/g, " ");
+          const isSelected = onboardingSkills.has(s);
+          const isRoleSkill = roleSkills.includes(s);
+          return `
+            <label class="choice-card ${isSelected?'selected':''}" data-skill="${s}">
+              <input type="checkbox" value="${s}" ${isSelected?'checked':''} />
+              <div class="choice-title">${label} ${isRoleSkill ? '<span style="font-size:9px; color:#8FA69A; border:1px solid rgba(199,214,207,0.18); padding:1px 5px; border-radius:999px; margin-left:6px;">role</span>' : ''}</div>
+              <div class="choice-sub">${isSelected?'selected':'tap to select'}</div>
+            </label>
+          `;
+        }).join("");
+        grid.style.maxHeight="32vh"; grid.style.overflowY="auto"; grid.style.paddingRight="4px";
+        grid.querySelectorAll(".choice-card").forEach(card => {
+          card.addEventListener("click", (e) => {
+            e.preventDefault();
+            const skill = card.dataset.skill;
+            const input = card.querySelector("input");
+            if (onboardingSkills.has(skill)) { onboardingSkills.delete(skill); card.classList.remove("selected"); input.checked=false; }
+            else { onboardingSkills.add(skill); card.classList.add("selected"); input.checked=true; }
+            const totalSel = getAllSelected();
+            countEl.textContent = totalSel.length + " selected • " + allSkills.length + " available";
+            if (totalSel.length>0) { btn.disabled=false; btn.style.opacity="1"; } else { btn.disabled=true; btn.style.opacity="0.5"; }
+          });
+        });
+      }
+      renderSkills("");
+      const initialSel = getAllSelected();
+      countEl.textContent = initialSel.length + " selected • " + allSkills.length + " available";
+      if (initialSel.length>0) { btn.disabled=false; btn.style.opacity="1"; }
+      search.oninput = () => renderSkills(search.value);
+      search.value = "";
+      customInput.oninput = () => {
+        localStorage.setItem("skilly_custom_skills", customInput.value);
+        const totalSel = getAllSelected();
+        countEl.textContent = totalSel.length + " selected • " + allSkills.length + " available";
+        if (totalSel.length>0) { btn.disabled=false; btn.style.opacity="1"; } else { btn.disabled=true; btn.style.opacity="0.5"; }
+      };
+      btn.onclick = async () => {
+        const totalSel = getAllSelected();
+        if (totalSel.length===0) return;
+        onboardingSkills = new Set(totalSel);
+        localStorage.setItem("skilly_user_skills", JSON.stringify(Array.from(onboardingSkills)));
+        dialog.classList.remove("active");
+        await startTest();
+      };
+    }
+
+    async function startTest() {
+      const dialog = document.getElementById("testDialog");
+      const qContainer = document.getElementById("testQuestions");
+      const progressEl = document.getElementById("testProgress");
+      dialog.classList.add("active");
+      qContainer.innerHTML = '<p style="text-align:center; color:#6F7377; padding:24px;">Generating 15 questions (12 MCQ + 3 short written) via Gemini for: ' + Array.from(onboardingSkills).join(", ") + '...</p>';
+      progressEl.textContent = "Generating via Gemini...";
+      try {
+        const res = await window.fetchApi("/api/skill-test/generate", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ skills: Array.from(onboardingSkills), target_role: onboardingRole })
+        });
+        const data = await res.json();
+        testQuestions = data.questions || [];
+        if (!testQuestions.length) throw new Error("No questions");
+        testAnswers = new Array(testQuestions.length).fill(null);
+        testQuestions.forEach((q,i)=>{
+          if (q.type==="mcq") testAnswers[i] = -1;
+          else testAnswers[i] = "";
+        });
+        renderTestQuestions();
+        startTimer();
+      } catch (e) {
+        qContainer.innerHTML = '<p style="color:#E8A0A0;">Failed to generate test, using fallback. ' + escapeHtml(e.message) + '</p>';
+        testQuestions = Array.from({length:15}, (_,i)=>({
+          id: i+1,
+          skill: Array.from(onboardingSkills)[i % onboardingSkills.size],
+          difficulty: i<4?'easy':i<12?'medium':'hard',
+          type: i<12?'mcq':'text',
+          question: i<12? `Mock MCQ ${i+1} for ${Array.from(onboardingSkills)[i % onboardingSkills.size]}` : `In 2-3 sentences, explain how you would handle a ${Array.from(onboardingSkills)[i % onboardingSkills.size]} scenario where performance degrades?`,
+          options: ["Option A", "Option B", "Option C", "Option D"],
+          correct_index: i%4,
+          placeholder: "Explain your reasoning in 2-3 sentences...",
+          guidance: "Mention steps and trade-offs.",
+          explanation: "Mock"
+        }));
+        testAnswers = testQuestions.map(q=> q.type==='mcq'? -1 : "");
+        renderTestQuestions();
+        startTimer();
+      }
+    }
+
+    function renderTestQuestions() {
+      const qContainer = document.getElementById("testQuestions");
+      const progressEl = document.getElementById("testProgress");
+      progressEl.innerHTML = `15 questions • <b style="color:#C7D6CF;">12 multiple-choice</b> + <b style="color:#8FA69A;">3 written reasoning</b> • 5:00`;
+      // Separate into two sections visually
+      const mcq = testQuestions.map((q,i)=> ({q,i})).filter(x=> x.q.type==='mcq');
+      const textQs = testQuestions.map((q,i)=> ({q,i})).filter(x=> x.q.type==='text');
+      qContainer.innerHTML = `
+        <div style="margin-bottom:16px;">
+          <div class="section-label">SECTION 1 — Multiple Choice • Pick one (12)</div>
+          ${mcq.map(({q, i})=> `
+            <div class="q-card" data-q="${i}">
+              <h4>${i+1}. <span style="color:#8FA69A; font-size:11px; border:1px solid rgba(199,214,207,0.18); padding:2px 6px; border-radius:999px; margin-right:6px;">${escapeHtml(q.skill)} • ${escapeHtml(q.difficulty)}</span> ${escapeHtml(q.question)}</h4>
+              <div class="q-opts">
+                ${q.options.map((opt, oi) => `
+                  <label class="q-opt" data-qi="${i}" data-oi="${oi}">
+                    <input type="radio" name="q${i}" value="${oi}" />
+                    <span>${String.fromCharCode(65+oi)}. ${escapeHtml(opt)}</span>
+                  </label>
+                `).join("")}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+        <div style="margin-bottom:8px;">
+          <div class="section-label" style="background:rgba(216,201,168,0.08); border-color:rgba(216,201,168,0.18); color:#D8C9A8;">SECTION 2 — Written Reasoning • Write 2-3 sentences (3) ✍️</div>
+          <p style="font-size:11px; color:#6F7377; margin-bottom:12px;">These test your reasoning depth. AI scores 0 (blank) to 2 (strong reasoning with trade-offs). Be specific.</p>
+          ${textQs.map(({q,i})=> `
+            <div class="q-card" data-q="${i}" style="border-color: rgba(216,201,168,0.14);">
+              <h4>${i+1}. <span style="color:#D8C9A8; font-size:11px; border:1px solid rgba(216,201,168,0.18); padding:2px 6px; border-radius:999px; margin-right:6px;">${escapeHtml(q.skill)} • ${escapeHtml(q.difficulty)} • written</span> ${escapeHtml(q.question)}</h4>
+              <textarea class="q-text-input" data-qi="${i}" placeholder="${escapeHtml(q.placeholder||'Write 2-3 sentences explaining your approach...')}" maxlength="600"></textarea>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+                <span style="font-size:11px; color:#6F7377;">${escapeHtml(q.guidance||'Be specific, mention steps and why.') }</span>
+                <span style="font-size:10px; color:#6F7377;" class="charInfo" data-qi="${i}">0 / 80 words</span>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+
+      qContainer.querySelectorAll(".q-opt").forEach(el=>{
+        el.addEventListener("click", ()=>{
+          const qi = parseInt(el.dataset.qi);
+          const oi = parseInt(el.dataset.oi);
+          testAnswers[qi] = oi;
+          el.closest(".q-card").querySelectorAll(".q-opt").forEach(o=>o.classList.remove("selected"));
+          el.classList.add("selected");
+          el.querySelector("input").checked = true;
+          updateTestProgress();
+        });
+      });
+      qContainer.querySelectorAll(".q-text-input").forEach(el=>{
+        el.addEventListener("input", ()=>{
+          const qi = parseInt(el.dataset.qi);
+          testAnswers[qi] = el.value;
+          if (el.value.trim().length>10) el.classList.add("filled"); else el.classList.remove("filled");
+          const words = el.value.trim() ? el.value.trim().split(/\s+/).length : 0;
+          const info = qContainer.querySelector(`.charInfo[data-qi="${qi}"]`);
+          if (info) info.textContent = words + " / 80 words" + (words<8 ? " • too short" : words>80 ? " • too long" : " • good");
+          info.style.color = words>=12 && words<=80 ? "#8FA69A" : "#6F7377";
+          updateTestProgress();
+        });
+      });
+      updateTestProgress();
+    }
+    function updateTestProgress(){
+      const progressEl = document.getElementById("testProgress");
+      const answered = testAnswers.filter((a,i)=> {
+        const qt = testQuestions[i].type;
+        if (qt==='mcq') return a!==-1;
+        return a && String(a).trim().length>12;
+      }).length;
+      const timer = document.getElementById("testTimer").textContent;
+      progressEl.innerHTML = `${answered}/${testQuestions.length} answered • ${timer} remaining • <b style="color:#C7D6CF;">12 MCQ</b> + <b style="color:#D8C9A8;">3 written</b>`;
+    }
+
+    function startTimer() {
+      timeLeft = 300;
+      const timerEl = document.getElementById("testTimer");
+      clearInterval(timerInterval);
+      timerInterval = setInterval(()=>{
+        timeLeft--;
+        const m = String(Math.floor(timeLeft/60)).padStart(2,'0');
+        const s = String(timeLeft%60).padStart(2,'0');
+        timerEl.textContent = `${m}:${s}`;
+        updateTestProgress();
+        if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); }
+      }, 1000);
+    }
+
+    async function submitTest() {
+      clearInterval(timerInterval);
+      const answered = testAnswers.filter((a,i)=>{
+        const t = testQuestions[i].type;
+        if (t==='mcq') return a!==-1;
+        return a && String(a).trim().length>0;
+      }).length;
+      if (answered < 8) {
+        if (!confirm(`You answered only ${answered}/15. Submit anyway?`)) { startTimer(); return; }
+      }
+      document.getElementById("testQuestions").innerHTML = '<p style="text-align:center; color:#8FA69A; padding:24px;">Evaluating your answers with AI (scoring MCQ + reasoning)...</p>';
+      document.getElementById("testProgress").textContent = "Scoring...";
+      try {
+        const res = await window.fetchApi("/api/skill-test/evaluate", {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({ questions: testQuestions, answers: testAnswers, skills: Array.from(onboardingSkills), target_role: onboardingRole })
+        });
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.detail || "Evaluate failed");
+        lastTestResult = result;
+        localStorage.setItem("skilly_skill_level", JSON.stringify(result));
+        localStorage.setItem("skilly_user_skills", JSON.stringify(Array.from(onboardingSkills)));
+        localStorage.setItem("skilly_target_role", onboardingRole);
+        const answersDetail = testQuestions.map((q,i)=> ({ id:q.id, skill:q.skill, difficulty:q.difficulty, type:q.type||'mcq', question:q.question, answer: testAnswers[i], correct_index: q.correct_index, options: q.options }));
+        showResult(result, answersDetail);
+      } catch (e) {
+        document.getElementById("testQuestions").innerHTML = '<p style="color:#E8A0A0; text-align:center; padding:16px;">Evaluation failed: ' + escapeHtml(e.message) + '<br><button class="btn-secondary" onclick="location.reload()" style="margin-top:10px;">Reload</button></p>';
+      }
+    }
+
+    function showResult(result, answersDetail) {
+      document.getElementById("testDialog").classList.remove("active");
+      const dialog = document.getElementById("resultDialog");
+      dialog.classList.add("active");
+      const level = result.level || "Intermediate";
+      const pct = result.percentage ?? Math.round(result.score/result.total*100);
+      const levelClass = level.toLowerCase() === "beginner" ? "level-beginner" : level.toLowerCase() === "intermediate" ? "level-intermediate" : level.toLowerCase() === "advanced" ? "level-advanced" : "level-expert";
+      const emoji = level==="Beginner" ? "🌱" : level==="Intermediate" ? "🚀" : level==="Advanced" ? "⭐" : "🏆";
+      document.getElementById("resultEmoji").textContent = emoji;
+      document.getElementById("resultLevel").innerHTML = `<span class="level-badge ${levelClass}">${level}</span>`;
+      document.getElementById("resultScoreLine").innerHTML = `<b style="font-size:18px; font-weight:300; color:#F5F5F5;">${result.score} / ${result.total}</b> <span style="color:#6F7377;">•</span> <b style="color:${level==='Beginner'?'#E8A0A0':level==='Intermediate'?'#D8C9A8':level==='Advanced'?'#C7D6CF':'#8FCCA0'}">${pct}%</b> <span style="color:#6F7377; font-size:12px;">— ${level}</span>`;
+      document.getElementById("resultBreakdown").innerHTML = `Total out of 18 points &nbsp;•&nbsp; <b>Beginner</b> 0-40% &nbsp; <b>Intermediate</b> 41-70% &nbsp; <b>Advanced</b> 71-85% &nbsp; <b>Expert</b> 86-100%`;
+      document.getElementById("resultBar").style.width = pct + "%";
+      document.getElementById("resultMcq").textContent = `${result.mcq_score ?? 0} / ${result.mcq_total ?? 12}`;
+      document.getElementById("resultText").textContent = `${result.text_points ?? 0} / ${result.text_max ?? 6}`;
+      // Add color for text score
+      const tp = result.text_points ?? 0;
+      const tm = result.text_max ?? 6;
+      document.getElementById("resultText").style.color = tp===0 ? "#E8A0A0" : tp < tm/2 ? "#D8C9A8" : "#8FCCA0";
+      document.getElementById("resultDesc").textContent = result.level_description || `You scored ${pct}% — ${level} level. ${level==='Beginner'?'Focus on fundamentals and hands-on practice':level==='Intermediate'?'Good foundation — now strengthen weak areas with projects':level==='Advanced'?'Strong performance — polish the last gaps':'Outstanding — you are job-ready'}!`;
+      const per = result.per_skill || {};
+      document.getElementById("resultPerSkill").innerHTML = Object.entries(per).map(([skill, v])=> {
+        const lvl = v.level || "Beginner";
+        const lvlColor = lvl==="Beginner"? "#E8A0A0" : lvl==="Intermediate"? "#D8C9A8" : lvl==="Advanced"? "#C7D6CF" : "#8FCCA0";
+        const total = v.total || 2;
+        const correct = v.correct || 0;
+        const textAvg = v.text_avg ?? 0;
+        // Human friendly: show as progress
+        const pctSkill = Math.round((correct + textAvg/2)/total*100);
+        return `
+          <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:12px; padding:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:12px; font-weight:600; color:#F5F5F5; text-transform:capitalize;">${skill.replace(/_/g,' ')}</span>
+              <span style="font-size:11px; padding:3px 7px; border-radius:999px; background:rgba(0,0,0,0.4); border:1px solid #242629; color:${lvlColor};">${lvl}</span>
+            </div>
+            <div style="font-size:11px; color:#6F7377; margin-bottom:6px;">${correct} of ${total} correct • Written avg ${textAvg}/2</div>
+            <div style="height:6px; background:#111214; border-radius:999px; overflow:hidden; border:1px solid #1A1C1E;"><div style="height:100%; width:${pctSkill}%; background:${lvlColor};"></div></div>
+            <div style="font-size:11px; color:${lvlColor}; margin-top:4px;">${pctSkill}% mastery</div>
+          </div>
+        `;
+      }).join("");
+      // Text feedback
+      const fb = result.text_feedback || [];
+      if (fb.length) {
+        document.getElementById("resultTextFeedback").innerHTML = `
+          <div style="font-size:11px; letter-spacing:0.08em; color:#8FA69A; margin-bottom:8px;">WRITTEN REASONING FEEDBACK</div>
+          ${fb.map(f=> `
+            <div style="background:#0A0A0A; border:1px solid #1A1C1E; border-radius:12px; padding:12px; margin-bottom:8px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:12px; color:#F5F5F5; text-transform:capitalize;">${escapeHtml(f.skill||'general')} • Q${f.id}</span>
+                <span style="font-size:11px; padding:3px 8px; border-radius:999px; border:1px solid #242629; background:${f.score===2?'rgba(143,204,160,0.12)':f.score===1?'rgba(216,201,168,0.12)':'rgba(220,80,80,0.08)'}; color:${f.score===2?'#8FCCA0':f.score===1?'#D8C9A8':'#E8A0A0'};">${f.score}/2</span>
+              </div>
+              <div style="font-size:12px; color:#A8AAAD; margin-top:6px; line-height:1.5;">${escapeHtml(f.feedback||'')}</div>
+            </div>
+          `).join("")}
+        `;
+      } else {
+        document.getElementById("resultTextFeedback").innerHTML = "";
+      }
+      document.getElementById("resultReco").textContent = result.recommendation || "Keep practicing your weakest skills with small projects.";
+      dialog.dataset.answersDetail = JSON.stringify(answersDetail||[]);
+      document.getElementById("resultContinueBtn").onclick = async () => {
+        dialog.classList.remove("active");
+        localStorage.setItem("skilly_onboarding_done", "true");
+        // Defer history save until AI summary is ready (so DB entry includes AI)
+        await generateAiSummary(result, answersDetail);
+      };
+    }
+
+    async function generateAiSummary(testResult, answersDetail) {
+      const card = document.getElementById("aiStateCard");
+      const proc = document.getElementById("processingCard");
+      proc.style.display = "block";
+      document.getElementById("onboardingPrompt").style.display = "none";
+      card.style.display = "none";
+      let ai = null;
+      try {
+        const res = await window.fetchApi("/api/skill-test/ai-summary", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            target_role: onboardingRole,
+            claimed_skills: Array.from(onboardingSkills),
+            test_result: testResult,
+            answers_detail: answersDetail
+          })
+        });
+        ai = await res.json();
+        if (!res.ok) throw new Error(ai.detail || "AI summary failed");
+        localStorage.setItem("skilly_ai_state", JSON.stringify(ai));
+      } catch (e) {
+        console.log("AI summary failed, using fallback", e);
+        const gapFallback = { readiness: testResult.percentage || 60, strong:[], missing:[], total_skills:12 };
+        ai = {
+          role: onboardingRole,
+          readiness: testResult.percentage || 60,
+          level: testResult.level || "Intermediate",
+          level_description: testResult.level_description || "",
+          summary: `Based on your test (${testResult.score}/${testResult.total} • ${testResult.level}), you have solid grounding in ${Array.from(onboardingSkills).slice(0,3).join(", ")}. Your written answers show ${testResult.text_points}/${testResult.text_max} reasoning points. Focus on missing role skills next.`,
+          what_you_have: Array.from(onboardingSkills).slice(0,3),
+          what_you_lack: (testResult.weaknesses||[]).slice(0,3),
+          strengths: testResult.strengths||[],
+          gaps: testResult.weaknesses||[],
+          recommendation: testResult.recommendation || "Prioritize your weakest skills with projects.",
+          next_steps: (testResult.weaknesses||["practice"]).slice(0,3).map(s=> `Practice ${s} with a hands-on project (1-2 weeks)`),
+          validation_note: `Claimed ${onboardingSkills.size} skills; test validates ${testResult.strengths?.length||0} as strong.`,
+          gap: gapFallback
+        };
+        localStorage.setItem("skilly_ai_state", JSON.stringify(ai));
+      }
+      // Save to proper DB (Postgres via Python) - not just localStorage
+      const entry = {
+        id: Date.now().toString(),
+        date: new Date().toISOString(),
+        role: onboardingRole,
+        skills: Array.from(onboardingSkills),
+        score: testResult.score,
+        total: testResult.total,
+        percentage: testResult.percentage,
+        level: testResult.level,
+        mcq_score: testResult.mcq_score,
+        mcq_total: testResult.mcq_total,
+        text_points: testResult.text_points,
+        text_max: testResult.text_max,
+        strengths: testResult.strengths,
+        weaknesses: testResult.weaknesses,
+        recommendation: testResult.recommendation,
+        level_description: testResult.level_description,
+        text_feedback: testResult.text_feedback,
+        per_skill: testResult.per_skill,
+        ai: ai
+      };
+      try { await pushHistory(entry); } catch (err) { console.warn("pushHistory failed", err); }
+      renderAiState(ai);
+      proc.style.display = "none";
+    }
+
+    document.getElementById("testSubmitBtn").addEventListener("click", submitTest);
+
+    document.getElementById("startSetupBtn").addEventListener("click", () => { onboardingRole=null; showRoleDialog(); });
+    document.getElementById("changeRoleBtn2").addEventListener("click", ()=> showRoleDialog());
+    document.getElementById("retakeTestBtn2").addEventListener("click", async ()=>{
+      if (onboardingSkills.size===0) {
+        const raw = JSON.parse(localStorage.getItem("skilly_user_skills")||"[]");
+        if (!raw.length) return alert("Select skills first");
+        onboardingSkills = new Set(raw);
+        if (!onboardingRole) onboardingRole = localStorage.getItem("skilly_target_role");
+      }
+      await startTest();
+    });
+    document.getElementById("resetBtn2").addEventListener("click", ()=>{
+      if (confirm("Reset all progress?")) {
+        localStorage.removeItem("skilly_onboarding_done");
+        localStorage.removeItem("skilly_target_role");
+        localStorage.removeItem("skilly_user_skills");
+        localStorage.removeItem("skilly_skill_level");
+        localStorage.removeItem("skilly_ai_state");
+        localStorage.removeItem("skilly_custom_skills");
+        // keep history? optionally clear
+        onboardingRole=null; onboardingSkills.clear();
+        document.getElementById("aiStateCard").style.display="none";
+        document.getElementById("onboardingPrompt").style.display="block";
+        document.getElementById("statReadiness").textContent="-";
+        document.getElementById("statLevel").textContent="-";
+        switchView('dashboard');
+      }
+    });
+    document.getElementById("accResetBtn").addEventListener("click", ()=>{
+      if (confirm("Clear all local data including history?")) {
+        localStorage.clear();
+        location.reload();
+      }
+    });
+
+    ["roleDialog","skillsDialog","testDialog","resultDialog"].forEach(id=>{
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener("click", (e)=>{ if (e.target===el) { if (id==="testDialog" && testQuestions.length) return; el.classList.remove("active"); }});
+    });
+    document.addEventListener("keydown", (e)=>{
+      if (e.key==="Escape") {
+        document.querySelectorAll(".onboard-overlay.active").forEach(el=>{
+          if (el.id!=="testDialog" || confirm("Close test? Progress lost.")) el.classList.remove("active");
+        });
+      }
+    });
+
+    (async ()=>{
+      await checkAuth();
+      await loadRoles();
+      const savedAi = localStorage.getItem("skilly_ai_state");
+      if (savedAi) {
+        try { renderAiState(JSON.parse(savedAi)); document.getElementById("onboardingPrompt").style.display="none"; }
+        catch { initOnboarding(); }
+      } else {
+        const savedSkills = localStorage.getItem("skilly_user_skills");
+        if (savedSkills) {
+          try {
+            const arr = JSON.parse(savedSkills);
+            if (Array.isArray(arr) && arr.length) {
+              onboardingSkills = new Set(arr);
+              const savedRole = localStorage.getItem("skilly_target_role");
+              if (savedRole) onboardingRole = savedRole;
+            }
+          } catch {}
+        }
+        const savedLevel = localStorage.getItem("skilly_skill_level");
+        if (savedLevel && onboardingRole && onboardingSkills.size) {
+          document.getElementById("onboardingPrompt").innerHTML = '<h3 style="justify-content:center;">Continue where you left off</h3><p style="text-align:center;">We have your role and skills. Take the test to get your AI current state.</p><button id="continueTestBtn" class="btn-primary">Continue to test <span class="arrow">→</span></button>';
+          document.getElementById("onboardingPrompt").style.display="block";
+          setTimeout(()=>{
+            const btn = document.getElementById("continueTestBtn");
+            if (btn) btn.onclick = ()=> startTest();
+          }, 300);
+        } else {
+          initOnboarding();
+        }
+        if (!savedAi) {
+          document.getElementById("statReadiness").textContent = "-";
+          document.getElementById("statLevel").textContent = "-";
+        }
+      }
+    })();
+    async function initOnboarding(){
+      const savedAi = localStorage.getItem("skilly_ai_state");
+      if (savedAi) return;
+      if (!shouldShowOnboarding()) return;
+      document.getElementById("onboardingPrompt").style.display = "block";
+    }
+  </script>
+</body>
+</html>

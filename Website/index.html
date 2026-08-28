@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>skilly - are you industry ready</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Background layers -->
+  <div class="bg">
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+    <div class="bg-grain"></div>
+    <div class="bg-lines"></div>
+    <div class="bg-particles"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <span class="nav-mark"></span>
+        <span class="nav-logo-text">skilly</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="how-it-works.html" class="nav-link">How It Works</a>
+        <a href="roles.html" class="nav-link">Roles</a>
+        <a href="features.html" class="nav-link">Features</a>
+      </div>
+      <div class="nav-actions">
+        <a href="signin.html" class="nav-signin">Sign In</a>
+        <a href="get-started.html" class="btn-primary btn-small">Get Started <span class="arrow">↗</span></a>
+      </div>
+      <button class="nav-toggle" aria-label="Menu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1 class="hero-title">
+        Close the gap between<br />
+        where you are and <span class="highlight">where you want to be.</span>
+      </h1>
+      <p class="hero-sub">
+        Analyze your skills against your target role and discover exactly<br />
+        what you need to learn next.
+      </p>
+      <div class="hero-actions">
+        <a href="get-started.html" class="btn-primary">Analyze My Skills <span class="arrow">↗</span></a>
+        <a href="roles.html" class="btn-secondary">Explore Roles</a>
+      </div>
+
+      <!-- Subtle skill network visualization -->
+      <div class="hero-visual">
+        <svg class="network" viewBox="0 0 900 320" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <!-- thin lines -->
+          <path d="M120 160 C 220 80, 320 240, 450 160 C 560 80, 680 220, 780 160" stroke="#242629" stroke-width="1" opacity="0.9"/>
+          <path d="M150 110 L 260 150 L 380 120 L 500 180 L 620 140 L 740 190" stroke="#242629" stroke-width="1" opacity="0.5"/>
+          <path d="M130 200 L 270 190 L 430 210 L 590 170 L 760 130" stroke="#242629" stroke-width="1" opacity="0.35"/>
+          <!-- nodes -->
+          <circle cx="120" cy="160" r="3" fill="#1A1C1E" stroke="#2A2E30" stroke-width="1"/>
+          <circle cx="260" cy="150" r="2.5" fill="#1A1C1E" stroke="#2A2E30" stroke-width="1"/>
+          <circle cx="380" cy="120" r="3" fill="#DCEBE1" opacity="0.9"/>
+          <circle cx="450" cy="160" r="4" fill="#1A1C1E" stroke="#C7D6CF" stroke-width="1" opacity="0.9"/>
+          <circle cx="500" cy="180" r="2.5" fill="#1A1C1E" stroke="#2A2E30" stroke-width="1"/>
+          <circle cx="620" cy="140" r="3" fill="#1A1C1E" stroke="#2A2E30" stroke-width="1"/>
+          <circle cx="740" cy="190" r="2.5" fill="#1A1C1E" stroke="#2A2E30" stroke-width="1"/>
+          <circle cx="780" cy="160" r="3" fill="#1A1C1E" stroke="#2A2E30" stroke-width="1"/>
+          <!-- faint glow around center node -->
+          <circle cx="450" cy="160" r="18" fill="#C7D6CF" opacity="0.06"/>
+          <circle cx="380" cy="120" r="12" fill="#DCEBE1" opacity="0.05"/>
+        </svg>
+
+        <!-- floating labels -->
+        <div class="float-label" style="left: 8%; top: 18%;">React</div>
+        <div class="float-label" style="left: 24%; top: 62%;">Python</div>
+        <div class="float-label" style="left: 42%; top: 12%;">TypeScript</div>
+        <div class="float-label" style="left: 58%; top: 68%;">SQL</div>
+        <div class="float-label" style="left: 78%; top: 22%;">AWS</div>
+        <div class="float-label muted" style="left: 68%; top: 48%;">Node.js</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust -->
+  <section class="trust">
+    <p class="trust-line">Built for students, developers and career switchers</p>
+    <div class="trust-tags">
+      <span>Frontend</span>
+      <span class="dot"></span>
+      <span>Backend</span>
+      <span class="dot"></span>
+      <span>Data Science</span>
+      <span class="dot"></span>
+      <span>DevOps</span>
+      <span class="dot"></span>
+      <span>AI/ML</span>
+      <span class="dot"></span>
+      <span>Product</span>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section id="how" class="how">
+    <div class="section-inner">
+      <div class="how-cards">
+        <div class="how-card">
+          <div class="how-num">01</div>
+          <h3>Choose Your Role</h3>
+          <p>Select the career you want to target.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-num">02</div>
+          <h3>Analyze Your Skills</h3>
+          <p>Tell us what you already know or upload your resume.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-num">03</div>
+          <h3>Discover Your Gaps</h3>
+          <p>See the skills you need to focus on next.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Preview -->
+  <section id="features" class="preview">
+    <div class="section-inner">
+      <div class="preview-panel">
+        <div class="preview-header">
+          <div>
+            <div class="preview-role">FULL STACK DEVELOPER</div>
+            <div class="preview-sub">Target role analysis</div>
+          </div>
+          <div class="preview-score">
+            <span class="score-num">72%</span>
+            <span class="score-label">READY</span>
+          </div>
+        </div>
+
+        <div class="preview-grid">
+          <div class="preview-col">
+            <div class="col-title"><span class="dot-green"></span> Strong Skills</div>
+            <div class="tags">
+              <span class="tag strong">React</span>
+              <span class="tag strong">JavaScript</span>
+              <span class="tag strong">Git</span>
+            </div>
+          </div>
+          <div class="preview-col">
+            <div class="col-title"><span class="dot-amber"></span> Partial</div>
+            <div class="tags">
+              <span class="tag partial">Node.js</span>
+              <span class="tag partial">SQL</span>
+            </div>
+          </div>
+          <div class="preview-col">
+            <div class="col-title"><span class="dot-muted"></span> Skill Gaps</div>
+            <div class="tags">
+              <span class="tag gap">Docker</span>
+              <span class="tag gap">AWS</span>
+              <span class="tag gap">Testing</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-divider"></div>
+
+        <div class="preview-next">
+          <div class="next-label">Your next priority</div>
+          <div class="next-path">
+            <span>Node.js</span>
+            <span class="path-arrow">→</span>
+            <span>SQL</span>
+            <span class="path-arrow">→</span>
+            <span>Docker</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Roles teaser (minimal) -->
+  <section id="roles" class="roles-teaser">
+    <div class="section-inner">
+      <div class="roles-line"></div>
+      <p class="roles-text">Explore 100 roles and 200 skills with intelligent alias matching.</p>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="cta">
+    <div class="section-inner">
+      <h2 class="cta-title">Know what to learn next.</h2>
+      <p class="cta-sub">Turn your current skills into a clear path toward your target role.</p>
+      <a href="get-started.html" class="btn-primary">Start Analysis <span class="arrow">↗</span></a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="nav-mark small"></span>
+          skilly
+        </div>
+        <p class="footer-desc">Skill gap analysis for every role.</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-heading">Product</div>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="roles.html">Roles</a>
+        <a href="github.html">GitHub</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-heading">Resources</div>
+        <a href="documentation.html">Documentation</a>
+        <a href="dataset.html">Skill Dataset</a>
+        <a href="privacy.html">Privacy</a>
+      </div>
+    </div>
+        <div class="footer-huge">
+      <div class="footer-huge-inner">
+        <div class="footer-huge-text">skilly</div>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 skilly</span><span>are you industry ready</span></div>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

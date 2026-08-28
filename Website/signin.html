@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In - skilly</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+</head>
+<body>
+  <div class="bg"><div class="bg-glow bg-glow-1"></div><div class="bg-grain"></div><div class="bg-lines"></div><div class="bg-particles"></div></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="nav-mark"></span><span>skilly</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="how-it-works.html" class="nav-link">How It Works</a>
+        <a href="roles.html" class="nav-link">Roles</a>
+        <a href="features.html" class="nav-link">Features</a>
+      </div>
+      <div class="nav-actions">
+        <a href="signin.html" class="nav-signin" style="color:#F5F5F5;">Sign In</a>
+        <a href="get-started.html" class="btn-primary btn-small">Get Started <span class="arrow">↗</span></a>
+      </div>
+      <button class="nav-toggle" aria-label="Menu"><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <section class="page-hero" style="padding: 88px 24px 0;">
+    <div class="page-hero-inner">
+      <div class="page-eyebrow">SIGN IN</div>
+      <h1 class="page-title">Welcome back.</h1>
+      <p class="page-sub">Sign in with email, password and OTP — Supabase Auth + Python backend. <span style="color:#8FA69A;">are you industry ready</span></p>
+    </div>
+  </section>
+
+  <section class="page-content" style="padding-top: 28px;">
+    <div class="form-wrap" style="padding: 32px; max-width: 420px;">
+      <div id="authError" style="display:none; background: rgba(220,80,80,0.08); border: 1px solid rgba(220,80,80,0.18); color: #E8A0A0; font-size: 12.5px; padding: 10px 12px; border-radius: 10px; margin-bottom: 18px;"></div>
+      <div id="authSuccess" style="display:none; background: rgba(120,180,140,0.08); border: 1px solid rgba(120,180,140,0.18); color: #C7D6CF; font-size: 12.5px; padding: 10px 12px; border-radius: 10px; margin-bottom: 18px;"></div>
+
+      <form id="signinForm" style="display:flex; flex-direction:column; gap:0;">
+        <div style="display:flex; flex-direction:column; gap:6px; margin-bottom: 18px;">
+          <label for="email" style="margin:0;">Email</label>
+          <input id="email" type="email" placeholder="you@example.com" required autocomplete="email" />
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:6px; margin-bottom: 8px;">
+          <label for="password" style="margin:0;">Password</label>
+          <input id="password" type="password" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 22px; margin-top: 2px;">
+          <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#6F7377; margin:0; cursor:pointer;">
+            <input type="checkbox" id="remember" style="width:14px; height:14px; accent-color:#C7D6CF;" /> Remember me
+          </label>
+          <a href="#" id="forgotLink" style="font-size:12px; color:#8FA69A; text-decoration:underline; text-underline-offset:3px;">OTP login without password?</a>
+        </div>
+
+        <button type="submit" id="signinBtn" class="btn-primary" style="width:100%; justify-content:center; padding: 12px 18px; font-size: 14px;">
+          <span id="btnText">Sign In</span> <span class="arrow">↗</span>
+        </button>
+
+        <div style="display:flex; align-items:center; gap:12px; margin: 18px 0;">
+          <div style="flex:1; height:1px; background:#1A1C1E;"></div>
+          <span style="font-size:11px; color:#6F7377; letter-spacing:0.06em;">OR</span>
+          <div style="flex:1; height:1px; background:#1A1C1E;"></div>
+        </div>
+
+        <button type="button" id="demoBtn" class="btn-secondary" style="width:100%; justify-content:center;">Continue as demo</button>
+      </form>
+
+      <!-- OTP Section -->
+      <div id="otpSection" style="display:none; margin-top:22px; border-top:1px solid #1A1C1E; padding-top:22px;">
+        <h3 style="font-size:14px; color:#F5F5F5; margin-bottom:6px;">Enter OTP</h3>
+        <p id="otpHint" style="font-size:12px; color:#6F7377; margin-bottom:12px;">OTP sent via Supabase + Python backend. Check email and dev box.</p>
+        <div id="debugOtpBox" style="display:none; background: rgba(199,214,207,0.08); border:1px dashed rgba(199,214,207,0.18); padding:10px; border-radius:10px; margin-bottom:12px; font-size:12px; color:#C7D6CF;"></div>
+        <div id="supabaseOtpInfo" style="display:none; background: rgba(120,180,140,0.06); border:1px solid rgba(120,180,140,0.12); padding:10px; border-radius:10px; margin-bottom:12px; font-size:12px; color:#A8AAAD;"></div>
+        <div style="display:flex; gap:10px;">
+          <input id="otpInput" type="text" inputmode="numeric" maxlength="6" placeholder="123456" style="flex:1; text-align:center; letter-spacing:0.3em; font-size:18px; font-weight:600;" autocomplete="one-time-code" />
+          <button id="verifyOtpBtn" class="btn-primary" style="padding: 10px 18px;">Verify</button>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+          <span id="otpTimer" style="font-size:11px; color:#6F7377;">Expires in 10:00</span>
+          <button id="resendOtpBtn" class="btn-secondary" style="padding:6px 12px; font-size:12px;">Resend OTP</button>
+        </div>
+        <div id="otpError" style="display:none; margin-top:10px; font-size:12px; color:#E8A0A0;"></div>
+      </div>
+
+      <p style="margin-top:20px; font-size:12px; color:#6F7377; text-align:center; line-height:1.5;">No account? <a href="get-started.html" style="color:#C7D6CF; text-decoration:underline; text-underline-offset:3px;">Get Started</a> — are you industry ready</p>
+    </div>
+
+    <p style="text-align:center; margin-top:16px; font-size:11px; color:#3A3E41;">Supabase Auth with OTP verification. Python backend syncs to Postgres.</p>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><div class="footer-logo"><span class="nav-mark small"></span> skilly</div><p class="footer-desc">Sign in to your account.</p></div>
+      <div class="footer-col"><div class="footer-heading">Product</div><a href="how-it-works.html">How It Works</a><a href="roles.html">Roles</a><a href="github.html">GitHub</a><a href="contact.html">Contact</a></div>
+      <div class="footer-col"><div class="footer-heading">Resources</div><a href="documentation.html">Documentation</a><a href="dataset.html">Skill Dataset</a><a href="privacy.html">Privacy</a></div>
+    </div>
+    <div class="footer-huge"><div class="footer-huge-inner"><div class="footer-huge-text">skilly</div></div></div>
+    <div class="footer-bottom"><span>© 2026 skilly</span><span>are you industry ready</span></div>
+  </footer>
+
+  <script src="js/supabase.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    const form = document.getElementById('signinForm');
+    const emailEl = document.getElementById('email');
+    const passEl = document.getElementById('password');
+    const errorEl = document.getElementById('authError');
+    const successEl = document.getElementById('authSuccess');
+    const btnText = document.getElementById('btnText');
+    const demoBtn = document.getElementById('demoBtn');
+    const otpSection = document.getElementById('otpSection');
+    const otpInput = document.getElementById('otpInput');
+    const debugOtpBox = document.getElementById('debugOtpBox');
+    const supabaseOtpInfo = document.getElementById('supabaseOtpInfo');
+    const otpError = document.getElementById('otpError');
+    const otpTimer = document.getElementById('otpTimer');
+    const otpHint = document.getElementById('otpHint');
+
+    let pendingEmail = null;
+    let pendingPassword = null;
+    let otpExpires = null;
+    let timerInt = null;
+    let otpModePasswordless = false;
+    let supabaseUserId = null;
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.style.display = 'block';
+      successEl.style.display = 'none';
+    }
+    function showSuccess(msg) {
+      successEl.textContent = msg;
+      successEl.style.display = 'block';
+      errorEl.style.display = 'none';
+    }
+    function hideError() { errorEl.style.display = 'none'; successEl.style.display = 'none'; }
+    function showOtpError(msg) { otpError.textContent = msg; otpError.style.display = msg ? 'block' : 'none'; }
+    function startTimer() {
+      otpExpires = Date.now() + 10*60*1000;
+      clearInterval(timerInt);
+      timerInt = setInterval(()=> {
+        const left = Math.max(0, otpExpires - Date.now());
+        const m = String(Math.floor(left/60000)).padStart(2,'0');
+        const s = String(Math.floor((left%60000)/1000)).padStart(2,'0');
+        otpTimer.textContent = `Expires in ${m}:${s}`;
+        if (left<=0) { clearInterval(timerInt); otpTimer.textContent = "Expired - request new OTP"; }
+      }, 1000);
+    }
+
+    // If already logged in, go dashboard
+    (async () => {
+      const sb = await getSupabase();
+      if (sb) {
+        const { data: { session } } = await sb.auth.getSession();
+        if (session) window.location.href = 'dashboard.html';
+      }
+      const token = localStorage.getItem("skilly_token");
+      if (token && token !== "demo-token") {
+        try {
+          const r = await window.fetchApi('/api/auth/me', { headers: { Authorization: "Bearer " + token } });
+          if (r.ok) window.location.href = 'dashboard.html';
+        } catch {}
+      }
+    })();
+
+    function showOtp(email, debugOtp, supabaseMsg) {
+      pendingEmail = email;
+      otpSection.style.display = 'block';
+      otpHint.textContent = `We sent a 6-digit OTP to ${email} via Supabase + Python backend.`;
+      if (debugOtp) {
+        debugOtpBox.style.display = 'block';
+        debugOtpBox.innerHTML = `Python DEV OTP: <b style="letter-spacing:0.2em; font-size:16px;">${debugOtp}</b> <span style="color:#6F7377; font-size:11px;">(demo)</span>`;
+      }
+      if (supabaseMsg) {
+        supabaseOtpInfo.style.display = 'block';
+        supabaseOtpInfo.textContent = supabaseMsg;
+      }
+      startTimer();
+      form.style.opacity = '0.6';
+      form.style.pointerEvents = 'none';
+      otpInput.focus();
+      showSuccess('OTP sent! Check email and dev box below.');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+      const email = emailEl.value.trim();
+      const password = passEl.value;
+      pendingPassword = password;
+      if (!email) return showError('Please enter email.');
+      if (otpModePasswordless) {
+        if (!email) return showError('Enter email for OTP login');
+        btnText.textContent = 'Sending OTP...';
+        let debugOtp = null;
+        let supabaseMsg = null;
+        try {
+          const sb = await getSupabase();
+          if (sb) {
+            const { error } = await sb.auth.signInWithOtp({ email });
+            if (error) supabaseMsg = "Supabase: " + error.message;
+            else supabaseMsg = "Supabase OTP email sent (type email).";
+          }
+        } catch (e) { supabaseMsg = "Supabase OTP failed: " + e.message; }
+        try {
+          const res = await window.fetchApi('/api/auth/request-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+          });
+          const data = await res.json();
+          if (res.ok) debugOtp = data.debug_otp;
+        } catch {}
+        showOtp(email, debugOtp, supabaseMsg);
+        btnText.textContent = 'OTP Sent';
+        return;
+      }
+      if (!password) return showError('Please enter password.');
+      btnText.textContent = 'Signing in...';
+      let supabaseOk = false;
+      let debugOtp = null;
+      let supabaseMsg = null;
+      // Try Supabase signInWithPassword first
+      try {
+        const sb = await getSupabase();
+        if (sb) {
+          const { data, error } = await sb.auth.signInWithPassword({ email, password });
+          if (error) {
+            // if error is invalid credentials, show but continue to backend fallback
+            if (error.message.toLowerCase().includes("invalid login")) {
+              throw new Error("Invalid email or password");
+            }
+            supabaseMsg = "Supabase: " + error.message + " (trying Python backend)";
+          } else if (data.session) {
+            supabaseOk = true;
+            supabaseUserId = data.user.id;
+            // For demo, also send OTP via Supabase and Python
+            try { await sb.auth.signInWithOtp({ email }); supabaseMsg = "Supabase password OK. OTP email sent."; } catch {}
+          } else if (data.user) {
+            supabaseOk = true;
+            supabaseMsg = "Supabase password OK.";
+          }
+        }
+      } catch (sbErr) {
+        if (sbErr.message.includes("Invalid email")) { showError(sbErr.message); btnText.textContent = 'Sign In'; return; }
+        console.warn("Supabase signIn fallback:", sbErr.message);
+        supabaseMsg = (supabaseMsg || "") + " " + sbErr.message;
+      }
+      // Now try Python backend signin to get OTP
+      try {
+        const res = await window.fetchApi('/api/auth/signin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          if (supabaseOk) {
+            // Supabase succeeded, still show OTP via Supabase
+            showOtp(email, null, supabaseMsg);
+            btnText.textContent = 'OTP Sent';
+            return;
+          }
+          throw new Error(data.detail || 'Sign in failed');
+        }
+        if (data.requires_otp) {
+          debugOtp = data.debug_otp;
+          showOtp(email, debugOtp, supabaseMsg);
+          btnText.textContent = 'OTP Sent';
+          return;
+        }
+        if (data.access_token) {
+          localStorage.setItem('skilly_token', data.access_token);
+          localStorage.setItem('skilly_user', JSON.stringify(data.user));
+          window.location.href = 'dashboard.html';
+        }
+      } catch (err) {
+        if (supabaseOk) {
+          showOtp(email, null, supabaseMsg);
+          btnText.textContent = 'OTP Sent';
+          return;
+        }
+        showError(err.message || 'Sign in failed. Try demo or create an account.');
+        btnText.textContent = 'Sign In';
+      }
+    });
+
+    document.getElementById('forgotLink').addEventListener('click', (e)=>{
+      e.preventDefault();
+      otpModePasswordless = !otpModePasswordless;
+      if (otpModePasswordless) {
+        passEl.parentElement.style.display = 'none';
+        passEl.required = false;
+        btnText.textContent = 'Send OTP (passwordless)';
+        e.target.textContent = 'Use password instead?';
+        showSuccess('Passwordless OTP mode: Supabase + Python will send OTP.');
+      } else {
+        passEl.parentElement.style.display = 'flex';
+        passEl.required = true;
+        btnText.textContent = 'Sign In';
+        e.target.textContent = 'OTP login without password?';
+        hideError();
+      }
+    });
+
+    async function verifyOtp() {
+      const code = otpInput.value.trim();
+      if (!/^\d{6}$/.test(code)) return showOtpError('Enter 6-digit OTP');
+      showOtpError('');
+      const btn = document.getElementById('verifyOtpBtn');
+      btn.textContent = 'Verifying...';
+      let verified = false;
+      let lastError = null;
+      const email = pendingEmail;
+      // Try Supabase verifyOtp (types: email, magiclink)
+      try {
+        const sb = await getSupabase();
+        if (sb) {
+          for (const t of ['email', 'magiclink', 'signup']) {
+            const { data, error } = await sb.auth.verifyOtp({ email, token: code, type: t });
+            if (!error && data.session) {
+              verified = true;
+              // sync to backend
+              try {
+                const syncRes = await window.fetchApi('/api/auth/supabase-sync', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ email, supabase_user_id: data.user.id })
+                });
+                const syncData = await syncRes.json();
+                if (syncRes.ok && syncData.access_token) {
+                  localStorage.setItem('skilly_token', syncData.access_token);
+                  localStorage.setItem('skilly_user', JSON.stringify(syncData.user));
+                } else {
+                  localStorage.setItem('skilly_user', JSON.stringify({ email, id: data.user.id }));
+                  if (data.session.access_token) localStorage.setItem('skilly_token', data.session.access_token);
+                }
+              } catch {
+                localStorage.setItem('skilly_user', JSON.stringify({ email, id: data.user.id }));
+                if (data.session.access_token) localStorage.setItem('skilly_token', data.session.access_token);
+              }
+              break;
+            } else if (error) {
+              lastError = error.message;
+            }
+          }
+        }
+      } catch (e) {
+        lastError = e.message;
+        console.warn("Supabase verify failed:", e.message);
+      }
+      if (!verified) {
+        try {
+          const res = await window.fetchApi('/api/auth/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, code })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || 'OTP verification failed');
+          localStorage.setItem('skilly_token', data.access_token);
+          localStorage.setItem('skilly_user', JSON.stringify(data.user));
+          verified = true;
+        } catch (be) {
+          lastError = be.message;
+        }
+      }
+      if (verified) {
+        showSuccess('Verified! Redirecting...');
+        clearInterval(timerInt);
+        setTimeout(()=> window.location.href = 'dashboard.html', 600);
+      } else {
+        showOtpError(lastError || 'OTP verification failed. Try dev OTP or resend.');
+        btn.textContent = 'Verify';
+      }
+    }
+    document.getElementById('verifyOtpBtn').addEventListener('click', verifyOtp);
+    otpInput.addEventListener('keydown', e=> { if(e.key==='Enter') verifyOtp(); });
+    otpInput.addEventListener('input', ()=> otpInput.value = otpInput.value.replace(/\D/g,'').slice(0,6));
+    document.getElementById('resendOtpBtn').addEventListener('click', async ()=>{
+      if (!pendingEmail) return;
+      showOtpError('');
+      let msg = "";
+      try {
+        const sb = await getSupabase();
+        if (sb) await sb.auth.signInWithOtp({ email: pendingEmail });
+        msg += "Supabase OTP resent. ";
+      } catch {}
+      try {
+        const res = await window.fetchApi('/api/auth/request-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: pendingEmail })
+        });
+        const data = await res.json();
+        if (data.debug_otp) {
+          debugOtpBox.style.display = 'block';
+          debugOtpBox.innerHTML = `Python DEV OTP: <b style="letter-spacing:0.2em; font-size:16px;">${data.debug_otp}</b>`;
+        }
+        msg += "Python OTP resent.";
+        showSuccess(msg);
+        startTimer();
+        supabaseOtpInfo.style.display = 'block';
+        supabaseOtpInfo.textContent = msg;
+      } catch (err) { showOtpError(err.message); }
+    });
+
+    demoBtn.addEventListener('click', async () => {
+      localStorage.setItem('skilly_user', JSON.stringify({ email: 'demo@skilly.local', id: 'demo', demo: true }));
+      localStorage.setItem('skilly_token', 'demo-token');
+      window.location.href = 'dashboard.html';
+    });
+  </script>
+</body>
+</html>

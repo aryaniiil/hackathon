@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roles - skilly</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="bg"><div class="bg-glow bg-glow-1"></div><div class="bg-glow bg-glow-2"></div><div class="bg-grain"></div><div class="bg-lines"></div><div class="bg-particles"></div></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="nav-mark"></span><span>skilly</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="how-it-works.html" class="nav-link">How It Works</a>
+        <a href="roles.html" class="nav-link active">Roles</a>
+        <a href="features.html" class="nav-link">Features</a>
+      </div>
+      <div class="nav-actions">
+        <a href="signin.html" class="nav-signin">Sign In</a>
+        <a href="get-started.html" class="btn-primary btn-small">Get Started <span class="arrow">↗</span></a>
+      </div>
+      <button class="nav-toggle" aria-label="Menu"><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <div class="page-eyebrow">ROLES</div>
+      <h1 class="page-title">100 roles. 200 skills.<br />One clear gap map.</h1>
+      <p class="page-sub">Every role is mapped to 15-20 mainstream skills like Artificial Intelligence, Python, Cloud Computing and Leadership. Search and explore.</p>
+    </div>
+  </section>
+
+  <section class="page-content">
+    <div class="role-search"><input id="roleSearch" type="text" placeholder="Search roles - try Frontend, Data, DevOps, Nurse..." /></div>
+    <div id="rolesGrid" class="roles-grid"></div>
+    <p id="rolesCount" style="text-align:center; margin-top:18px; font-size:12px; color:#6F7377;"></p>
+
+    <div id="blurWrap" class="blur-wrap" style="display:none;">
+      <div class="blur-label">More roles are locked</div>
+      <div class="blur-grid-wrap">
+        <div id="blurGrid" class="roles-grid blurred"></div>
+        <div class="blur-overlay">
+          <div class="blur-overlay-inner">
+            <h3>Sign up to compare using our tool</h3>
+            <p>Unlock all 100 roles, full skill maps and gap analysis. Compare any role instantly with alias-aware matching.</p>
+            <a href="get-started.html" class="btn-primary">Sign Up to Compare <span class="arrow">↗</span></a>
+            <a href="signin.html" class="blur-signin">Already have an account? Sign in</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><div class="footer-logo"><span class="nav-mark small"></span> skilly</div><p class="footer-desc">Browse 100 roles.</p></div>
+      <div class="footer-col"><div class="footer-heading">Product</div><a href="how-it-works.html">How It Works</a><a href="roles.html">Roles</a><a href="github.html">GitHub</a><a href="contact.html">Contact</a></div>
+      <div class="footer-col"><div class="footer-heading">Resources</div><a href="documentation.html">Documentation</a><a href="dataset.html">Skill Dataset</a><a href="privacy.html">Privacy</a></div>
+    </div>
+        <div class="footer-huge">
+      <div class="footer-huge-inner">
+        <div class="footer-huge-text">skilly</div>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 skilly</span><span>are you industry ready</span></div>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script>
+    const grid = document.getElementById('rolesGrid');
+    const blurGrid = document.getElementById('blurGrid');
+    const blurWrap = document.getElementById('blurWrap');
+    const count = document.getElementById('rolesCount');
+    const search = document.getElementById('roleSearch');
+    let allRoles = [];
+
+    const fallbackRoles = ["Business Analyst","Cyber Security Analyst","Data Engineer","Data Scientist","DevOps Engineer","Machine Learning Engineer","Mobile App Developer","Network Engineer","Quality Assurance Engineer","Software Engineer","Frontend Developer","Backend Developer","Full Stack Developer","UI/UX Designer","Cloud Engineer","Data Analyst","AI Engineer","Blockchain Developer","Game Developer","Embedded Systems Engineer","Site Reliability Engineer","Product Manager","Scrum Master","Technical Writer","IT Support Specialist"];
+
+    function skillsToList(skills) {
+      if (!skills) return [];
+      if (Array.isArray(skills)) return skills;
+      // skills is object like {python: 5, java: 4}
+      return Object.keys(skills).map(k => k.replace(/_/g, ' '));
+    }
+
+    async function loadRoles() {
+      try {
+        const res = await fetch('../Dataset/data.json');
+        if (!res.ok) throw new Error('no dataset');
+        const data = await res.json();
+        const roles = data.roles || data;
+        allRoles = roles.map(r => ({ role: r.role, skills: skillsToList(r.skills) }));
+        if (!allRoles.length) throw new Error('empty');
+      } catch (e) {
+        try {
+          const res2 = await fetch('../dataset/role_skills_dataset.json');
+          const data2 = await res2.json();
+          allRoles = data2.map(r => ({ role: r.role, skills: r.skills }));
+        } catch (e2) {
+          allRoles = fallbackRoles.map(r => ({ role: r, skills: [] }));
+        }
+      }
+      render(allRoles);
+    }
+
+    function render(list) {
+      const q = search.value.toLowerCase().trim();
+      if (q) {
+        // when searching, show filtered without blur
+        grid.innerHTML = list.map(r => `
+          <div class="role-card">
+            <h3>${r.role}</h3>
+            <p>${r.skills && r.skills.length ? r.skills.slice(0,6).join(' • ') : 'Mainstream skills like Artificial Intelligence, Python, Cloud Computing'}</p>
+          </div>
+        `).join('');
+        count.textContent = list.length + ' roles found';
+        blurWrap.style.display = 'none';
+        return;
+      }
+
+      // default: show only 9, blur rest
+      const visible = list.slice(0, 9);
+      const blurred = list.slice(9, 21);
+
+      grid.innerHTML = visible.map(r => `
+        <div class="role-card">
+          <h3>${r.role}</h3>
+          <p>${r.skills && r.skills.length ? r.skills.slice(0,6).join(' • ') : 'Mainstream skills like Artificial Intelligence, Python, Cloud Computing'}</p>
+        </div>
+      `).join('');
+
+      blurGrid.innerHTML = blurred.map(r => `
+        <div class="role-card">
+          <h3>${r.role}</h3>
+          <p>${r.skills && r.skills.length ? r.skills.slice(0,6).join(' • ') : 'Mainstream skills like Artificial Intelligence, Python, Cloud Computing'}</p>
+        </div>
+      `).join('');
+
+      count.textContent = 'Showing 9 of ' + list.length + ' roles';
+      blurWrap.style.display = 'block';
+    }
+
+    search.addEventListener('input', () => {
+      const q = search.value.toLowerCase().trim();
+      if (!q) return render(allRoles);
+      const filtered = allRoles.filter(r => r.role.toLowerCase().includes(q));
+      render(filtered);
+    });
+
+    loadRoles();
+  </script>
+</body>
+</html>

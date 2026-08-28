@@ -1,0 +1,1662 @@
+{
+  "version": "1.0",
+  "matching": {
+    "exact_match": true,
+    "fuzzy_thresholds": {
+      "auto_match": 95,
+      "probable_match": 85,
+      "suggestion": 70
+    }
+  },
+  "skills": {
+    "python": ["python", "py", "python3"],
+    "javascript": ["javascript", "js", "ecmascript", "java script"],
+    "typescript": ["typescript", "ts", "type script"],
+    "java": ["java", "core java", "java programming"],
+    "c": ["c", "c programming", "c language"],
+    "cpp": ["c++", "cpp", "cplusplus", "c plus plus"],
+    "csharp": ["c#", "csharp", "c sharp", ".net c#"],
+    "go": ["go", "golang", "go programming"],
+    "rust": ["rust", "rustlang"],
+    "php": ["php", "php programming"],
+    "ruby": ["ruby", "ruby programming"],
+    "kotlin": ["kotlin", "kotlin programming"],
+    "swift": ["swift", "swift programming"],
+    "dart": ["dart", "dart programming"],
+    "html": ["html", "html5", "hypertext markup language"],
+    "css": ["css", "css3", "cascading style sheets"],
+    "react": ["react", "reactjs", "react.js", "react js"],
+    "nextjs": ["next.js", "nextjs", "next js"],
+    "angular": ["angular", "angularjs", "angular.js"],
+    "vue": ["vue", "vuejs", "vue.js"],
+    "svelte": ["svelte", "sveltejs"],
+    "nodejs": ["node.js", "nodejs", "node js", "node"],
+    "express": ["express", "express.js", "expressjs"],
+    "nestjs": ["nestjs", "nest.js", "nest js"],
+    "django": ["django", "django framework"],
+    "flask": ["flask", "flask python"],
+    "fastapi": ["fastapi", "fast api"],
+    "spring": ["spring", "spring framework", "spring boot"],
+    "dotnet": [".net", "dotnet", "asp.net", "asp net", ".net core"],
+    "laravel": ["laravel", "laravel php"],
+    "graphql": ["graphql", "graph ql"],
+    "rest_api": ["rest api", "restful api", "rest services", "restful services"],
+    "grpc": ["grpc", "g rpc"],
+    "websockets": ["websocket", "websockets", "socket.io"],
+    "sql": ["sql", "structured query language"],
+    "mysql": ["mysql", "my sql"],
+    "postgresql": ["postgresql", "postgres", "postgres db", "postgres database"],
+    "mongodb": ["mongodb", "mongo", "mongo db"],
+    "redis": ["redis", "redis cache"],
+    "sqlite": ["sqlite", "sqlite3"],
+    "oracle": ["oracle", "oracle database", "oracle db"],
+    "cassandra": ["cassandra", "apache cassandra"],
+    "dynamodb": ["dynamodb", "dynamo db", "aws dynamodb"],
+    "elasticsearch": ["elasticsearch", "elastic search", "elk elasticsearch"],
+    "database_design": ["database design", "db design", "database architecture"],
+    "data_structures": ["data structures", "data structure", "ds"],
+    "algorithms": ["algorithms", "algorithm design", "dsa"],
+    "oop": ["oop", "object oriented programming", "object-oriented programming"],
+    "system_design": ["system design", "software architecture", "system architecture"],
+    "microservices": ["microservices", "micro services", "microservice architecture"],
+    "design_patterns": ["design patterns", "software design patterns"],
+    "git": ["git", "git version control"],
+    "github": ["github", "git hub"],
+    "gitlab": ["gitlab", "git lab"],
+    "linux": ["linux", "linux administration", "linux os"],
+    "bash": ["bash", "shell scripting", "bash scripting"],
+    "docker": ["docker", "docker containers", "containerization"],
+    "kubernetes": ["kubernetes", "k8s"],
+    "terraform": ["terraform", "hashicorp terraform"],
+    "ansible": ["ansible", "ansible automation"],
+    "jenkins": ["jenkins", "jenkins ci"],
+    "github_actions": ["github actions", "github actions ci", "gh actions"],
+    "cicd": ["ci/cd", "cicd", "continuous integration", "continuous deployment"],
+    "nginx": ["nginx", "nginx web server"],
+    "aws": ["aws", "amazon web services", "amazon aws"],
+    "azure": ["azure", "microsoft azure"],
+    "gcp": ["gcp", "google cloud", "google cloud platform"],
+    "aws_ec2": ["ec2", "aws ec2", "amazon ec2"],
+    "aws_s3": ["s3", "aws s3", "amazon s3"],
+    "aws_lambda": ["lambda", "aws lambda", "amazon lambda"],
+    "aws_iam": ["iam", "aws iam", "identity and access management"],
+    "aws_rds": ["rds", "aws rds", "amazon rds"],
+    "azure_functions": ["azure functions", "azure function"],
+    "cloud_architecture": ["cloud architecture", "cloud infrastructure"],
+    "cloud_security": ["cloud security", "cloud infrastructure security"],
+    "networking": ["networking", "computer networking", "network administration"],
+    "tcp_ip": ["tcp/ip", "tcp ip", "internet protocols"],
+    "dns": ["dns", "domain name system"],
+    "load_balancing": ["load balancing", "load balancer"],
+    "machine_learning": ["machine learning", "ml", "machine-learning"],
+    "deep_learning": ["deep learning", "dl", "deep neural networks"],
+    "artificial_intelligence": ["artificial intelligence", "ai", "artificial intelligence engineering"],
+    "generative_ai": ["generative ai", "genai", "gen ai"],
+    "llm": ["llm", "large language models", "large language model"],
+    "rag": ["rag", "retrieval augmented generation", "retrieval-augmented generation"],
+    "prompt_engineering": ["prompt engineering", "prompt design", "prompting"],
+    "ai_agents": ["ai agents", "agentic ai", "agentic systems", "ai agent development"],
+    "langchain": ["langchain", "lang chain"],
+    "langgraph": ["langgraph", "lang graph"],
+    "huggingface": ["hugging face", "huggingface", "hf"],
+    "pytorch": ["pytorch", "torch"],
+    "tensorflow": ["tensorflow", "tf"],
+    "keras": ["keras"],
+    "scikit_learn": ["scikit-learn", "sklearn", "scikit learn"],
+    "opencv": ["opencv", "open cv"],
+    "computer_vision": ["computer vision", "cv", "image processing"],
+    "nlp": ["nlp", "natural language processing"],
+    "transformers": ["transformers", "transformer models", "huggingface transformers"],
+    "vector_databases": ["vector database", "vector databases", "vector db"],
+    "mlops": ["mlops", "ml ops", "machine learning operations"],
+    "model_deployment": ["model deployment", "ml model deployment"],
+    "feature_engineering": ["feature engineering", "feature engineering ml"],
+    "statistics": ["statistics", "statistical analysis"],
+    "pandas": ["pandas", "python pandas"],
+    "numpy": ["numpy", "python numpy"],
+    "matplotlib": ["matplotlib"],
+    "seaborn": ["seaborn"],
+    "jupyter": ["jupyter", "jupyter notebook", "jupyter notebooks"],
+    "sql_analytics": ["sql analytics", "analytical sql"],
+    "data_analysis": ["data analysis", "data analytics"],
+    "data_visualization": ["data visualization", "data viz"],
+    "excel": ["excel", "microsoft excel", "ms excel"],
+    "powerbi": ["power bi", "powerbi", "microsoft power bi"],
+    "tableau": ["tableau"],
+    "looker": ["looker", "google looker"],
+    "spark": ["spark", "apache spark", "pyspark"],
+    "hadoop": ["hadoop", "apache hadoop"],
+    "kafka": ["kafka", "apache kafka"],
+    "airflow": ["airflow", "apache airflow"],
+    "dbt": ["dbt", "data build tool"],
+    "databricks": ["databricks"],
+    "etl": ["etl", "extract transform load"],
+    "data_warehousing": ["data warehousing", "data warehouse"],
+    "snowflake": ["snowflake", "snowflake data warehouse"],
+    "bigquery": ["bigquery", "google bigquery"],
+    "redshift": ["redshift", "amazon redshift"],
+    "data_modeling": ["data modeling", "data modelling"],
+    "data_engineering": ["data engineering"],
+    "data_governance": ["data governance"],
+    "data_quality": ["data quality"],
+    "cybersecurity": ["cybersecurity", "cyber security", "information security", "infosec"],
+    "network_security": ["network security"],
+    "application_security": ["application security", "appsec", "app security"],
+    "cloud_security": ["cloud security"],
+    "penetration_testing": ["penetration testing", "pentesting", "pen testing"],
+    "ethical_hacking": ["ethical hacking", "ethical hacker"],
+    "burp_suite": ["burp suite", "burpsuite"],
+    "metasploit": ["metasploit", "metasploit framework"],
+    "wireshark": ["wireshark"],
+    "siem": ["siem", "security information and event management"],
+    "splunk": ["splunk"],
+    "incident_response": ["incident response", "security incident response"],
+    "vulnerability_management": ["vulnerability management", "vulnerability assessment"],
+    "iam": ["iam", "identity access management", "identity and access management"],
+    "oauth": ["oauth", "oauth2", "oauth 2.0"],
+    "jwt": ["jwt", "json web token", "json web tokens"],
+    "ssl_tls": ["ssl", "tls", "ssl/tls", "https security"],
+    "zero_trust": ["zero trust", "zero trust security"],
+    "devsecops": ["devsecops", "dev sec ops"],
+    "mobile_android": ["android", "android development"],
+    "kotlin_android": ["kotlin android", "android kotlin"],
+    "android_studio": ["android studio"],
+    "ios": ["ios", "ios development"],
+    "swiftui": ["swiftui", "swift ui"],
+    "flutter": ["flutter", "flutter development"],
+    "react_native": ["react native", "reactnative"],
+    "firebase": ["firebase", "google firebase"],
+    "embedded_systems": ["embedded systems", "embedded development"],
+    "arduino": ["arduino"],
+    "raspberry_pi": ["raspberry pi", "raspberrypi"],
+    "iot": ["iot", "internet of things"],
+    "cypress": ["cypress", "cypress testing"],
+    "selenium": ["selenium", "selenium webdriver"],
+    "playwright": ["playwright", "playwright testing"],
+    "pytest": ["pytest", "python pytest"],
+    "junit": ["junit", "junit testing"],
+    "jest": ["jest", "jest javascript"],
+    "testing": ["software testing", "testing", "quality assurance"],
+    "test_automation": ["test automation", "automated testing"],
+    "performance_testing": ["performance testing", "load testing"],
+    "postman": ["postman", "postman api"],
+    "jira": ["jira", "atlassian jira"],
+    "agile": ["agile", "agile methodology"],
+    "scrum": ["scrum", "scrum methodology"],
+    "product_management": ["product management", "product management skills"],
+    "product_strategy": ["product strategy"],
+    "roadmapping": ["product roadmap", "roadmapping", "product roadmaps"],
+    "market_research": ["market research"],
+    "user_research": ["user research", "ux research"],
+    "figma": ["figma"],
+    "ui_design": ["ui design", "user interface design"],
+    "ux_design": ["ux design", "user experience design"],
+    "wireframing": ["wireframing", "wireframes"],
+    "prototyping": ["prototyping", "prototype design"],
+    "design_systems": ["design systems", "design system"],
+    "business_analysis": ["business analysis", "business analyst skills"],
+    "requirements_analysis": ["requirements analysis", "requirements gathering"],
+    "stakeholder_management": ["stakeholder management"],
+    "communication": ["communication", "communication skills"],
+    "problem_solving": ["problem solving", "problem-solving"],
+    "technical_writing": ["technical writing"],
+    "system_administration": ["system administration", "sysadmin", "systems administration"],
+    "powershell": ["powershell", "power shell"],
+    "virtualization": ["virtualization", "vmware", "virtual machines"],
+    "salesforce": ["salesforce", "salesforce crm"],
+    "sap": ["sap", "sap erp"],
+    "blockchain": ["blockchain", "block chain"],
+    "solidity": ["solidity", "solidity programming"],
+    "web3": ["web3", "web 3", "web3 development"],
+    "smart_contracts": ["smart contracts", "smart contract development"],
+    "unity": ["unity", "unity3d", "unity 3d"],
+    "unreal_engine": ["unreal engine", "ue5", "unreal"],
+    "game_development": ["game development", "game dev"],
+    "technical_project_management": ["technical project management", "technical pm"],
+    "project_management": ["project management", "project manager"],
+    "risk_management": ["risk management"],
+    "compliance": ["compliance", "regulatory compliance"],
+    "governance": ["governance", "it governance"],
+    "solutions_architecture": ["solutions architecture", "solution architecture", "solutions architect"],
+    "enterprise_architecture": ["enterprise architecture", "enterprise architect"],
+    "api_design": ["api design", "api architecture"],
+    "technical_consulting": ["technical consulting", "technology consulting"],
+    "erp": ["erp", "enterprise resource planning"],
+    "robotic_process_automation": ["rpa", "robotic process automation"],
+    "uipath": ["uipath", "ui path"],
+    "automation": ["automation", "process automation"],
+    "crm": ["crm", "customer relationship management"]
+  },
+  "roles": [
+    {
+      "role": "Software Engineer",
+      "aliases": ["Software Developer", "Software Engineer", "Application Developer", "Software Programmer"],
+      "skills": {
+        "python": 4, "java": 4, "javascript": 4, "data_structures": 5, "algorithms": 5,
+        "oop": 5, "sql": 4, "git": 5, "linux": 3, "rest_api": 4, "system_design": 3,
+        "testing": 3, "docker": 2, "aws": 2, "communication": 3
+      }
+    },
+    {
+      "role": "Full Stack Developer",
+      "aliases": ["Full Stack Engineer", "Fullstack Developer", "Full-Stack Developer", "Full Stack Software Engineer"],
+      "skills": {
+        "javascript": 5, "typescript": 4, "html": 5, "css": 5, "react": 5, "nodejs": 5,
+        "rest_api": 5, "sql": 4, "mongodb": 3, "git": 5, "docker": 3, "aws": 3,
+        "testing": 3, "nextjs": 3, "system_design": 3
+      }
+    },
+    {
+      "role": "Frontend Developer",
+      "aliases": ["Frontend Engineer", "Front End Developer", "UI Developer", "Web Frontend Developer"],
+      "skills": {
+        "html": 5, "css": 5, "javascript": 5, "typescript": 4, "react": 5, "git": 4,
+        "nextjs": 3, "angular": 3, "vue": 3, "testing": 3, "rest_api": 3,
+        "figma": 2, "websockets": 2
+      }
+    },
+    {
+      "role": "Backend Developer",
+      "aliases": ["Backend Engineer", "Back End Developer", "Server Side Developer", "Backend Software Engineer"],
+      "skills": {
+        "python": 4, "java": 4, "go": 3, "nodejs": 4, "sql": 5, "postgresql": 4,
+        "rest_api": 5, "microservices": 4, "docker": 4, "git": 5, "linux": 4,
+        "redis": 3, "system_design": 4, "testing": 3, "aws": 3
+      }
+    },
+    {
+      "role": "Web Developer",
+      "aliases": ["Web Engineer", "Website Developer", "Web Application Developer"],
+      "skills": {
+        "html": 5, "css": 5, "javascript": 5, "react": 3, "nodejs": 3, "php": 3,
+        "sql": 3, "git": 4, "rest_api": 3, "responsive_design": 4, "testing": 2
+      }
+    },
+    {
+      "role": "React Developer",
+      "aliases": ["React Engineer", "ReactJS Developer", "React.js Developer"],
+      "skills": {
+        "javascript": 5, "typescript": 4, "react": 5, "html": 5, "css": 5,
+        "nextjs": 3, "git": 5, "rest_api": 4, "jest": 3, "cypress": 2, "redux": 3
+      }
+    },
+    {
+      "role": "Angular Developer",
+      "aliases": ["Angular Engineer", "AngularJS Developer", "Angular Frontend Developer"],
+      "skills": {
+        "javascript": 5, "typescript": 5, "angular": 5, "html": 5, "css": 4,
+        "rxjs": 4, "rest_api": 4, "git": 5, "jest": 3, "cypress": 2
+      }
+    },
+    {
+      "role": "Vue.js Developer",
+      "aliases": ["Vue Developer", "VueJS Developer", "Vue Frontend Engineer"],
+      "skills": {
+        "javascript": 5, "typescript": 4, "vue": 5, "html": 5, "css": 5,
+        "rest_api": 4, "git": 5, "jest": 3, "cypress": 2
+      }
+    },
+    {
+      "role": "Node.js Developer",
+      "aliases": ["Node Developer", "NodeJS Developer", "Node.js Backend Developer"],
+      "skills": {
+        "javascript": 5, "typescript": 4, "nodejs": 5, "express": 4, "rest_api": 5,
+        "sql": 4, "mongodb": 4, "redis": 3, "docker": 4, "git": 5, "testing": 3
+      }
+    },
+    {
+      "role": "Python Developer",
+      "aliases": ["Python Software Developer", "Python Engineer", "Python Programmer"],
+      "skills": {
+        "python": 5, "oop": 4, "data_structures": 4, "sql": 4, "git": 5,
+        "django": 4, "flask": 4, "fastapi": 4, "rest_api": 4, "docker": 3, "pytest": 3
+      }
+    },
+    {
+      "role": "Java Developer",
+      "aliases": ["Java Software Developer", "Java Engineer", "Java Programmer"],
+      "skills": {
+        "java": 5, "oop": 5, "spring": 5, "sql": 4, "rest_api": 5, "microservices": 4,
+        "git": 5, "docker": 3, "kubernetes": 2, "junit": 4, "maven": 4, "system_design": 3
+      }
+    },
+    {
+      "role": "C++ Developer",
+      "aliases": ["C++ Engineer", "Cpp Developer", "C Plus Plus Developer"],
+      "skills": {
+        "cpp": 5, "data_structures": 5, "algorithms": 5, "oop": 5, "git": 4,
+        "linux": 4, "cmake": 3, "multithreading": 4, "debugging": 4, "system_design": 3
+      }
+    },
+    {
+      "role": "C# Developer",
+      "aliases": ["C Sharp Developer", "C# Software Engineer"],
+      "skills": {
+        "csharp": 5, "dotnet": 5, "oop": 5, "sql": 4, "rest_api": 4,
+        "git": 5, "azure": 3, "testing": 3, "entity_framework": 4
+      }
+    },
+    {
+      "role": "Go Developer",
+      "aliases": ["Golang Developer", "Go Engineer", "Golang Engineer"],
+      "skills": {
+        "go": 5, "data_structures": 4, "algorithms": 4, "rest_api": 5,
+        "microservices": 5, "sql": 4, "docker": 5, "kubernetes": 4, "git": 5,
+        "linux": 4, "grpc": 3
+      }
+    },
+    {
+      "role": "PHP Developer",
+      "aliases": ["PHP Engineer", "PHP Web Developer", "PHP Software Developer"],
+      "skills": {
+        "php": 5, "laravel": 5, "html": 4, "css": 4, "javascript": 4,
+        "sql": 5, "mysql": 5, "git": 5, "rest_api": 4, "docker": 3
+      }
+    },
+    {
+      "role": "API Developer",
+      "aliases": ["API Engineer", "API Software Engineer", "Backend API Developer"],
+      "skills": {
+        "rest_api": 5, "api_design": 5, "python": 4, "nodejs": 4, "java": 4,
+        "sql": 4, "graphql": 3, "grpc": 3, "oauth": 4, "jwt": 4, "docker": 4,
+        "testing": 4, "git": 5
+      }
+    },
+    {
+      "role": "Microservices Developer",
+      "aliases": ["Microservices Engineer", "Microservice Developer", "Distributed Systems Developer"],
+      "skills": {
+        "microservices": 5, "java": 4, "spring": 4, "nodejs": 3, "go": 3,
+        "rest_api": 5, "grpc": 3, "docker": 5, "kubernetes": 5, "kafka": 4,
+        "redis": 3, "system_design": 5, "aws": 4, "git": 5
+      }
+    },
+    {
+      "role": "AI Engineer",
+      "aliases": ["Artificial Intelligence Engineer", "AI Developer", "AI Software Engineer"],
+      "skills": {
+        "python": 5, "artificial_intelligence": 5, "machine_learning": 5,
+        "deep_learning": 4, "pytorch": 4, "tensorflow": 3, "llm": 4,
+        "generative_ai": 4, "rest_api": 4, "docker": 4, "git": 5, "aws": 3
+      }
+    },
+    {
+      "role": "Machine Learning Engineer",
+      "aliases": ["ML Engineer", "Machine Learning Developer", "ML Software Engineer"],
+      "skills": {
+        "python": 5, "machine_learning": 5, "deep_learning": 4, "pytorch": 5,
+        "tensorflow": 4, "scikit_learn": 5, "pandas": 4, "numpy": 4,
+        "sql": 4, "mlops": 4, "docker": 4, "git": 5, "aws": 3
+      }
+    },
+    {
+      "role": "Deep Learning Engineer",
+      "aliases": ["Deep Learning Developer", "Deep Learning Scientist", "Neural Network Engineer"],
+      "skills": {
+        "python": 5, "deep_learning": 5, "pytorch": 5, "tensorflow": 4,
+        "numpy": 5, "machine_learning": 5, "transformers": 4, "computer_vision": 3,
+        "nlp": 3, "git": 5, "docker": 3
+      }
+    },
+    {
+      "role": "Generative AI Engineer",
+      "aliases": ["GenAI Engineer", "Generative AI Developer", "Gen AI Engineer"],
+      "skills": {
+        "python": 5, "generative_ai": 5, "llm": 5, "rag": 5, "prompt_engineering": 4,
+        "langchain": 4, "langgraph": 4, "vector_databases": 5, "pytorch": 3,
+        "rest_api": 4, "docker": 4, "git": 5, "cloud_architecture": 3
+      }
+    },
+    {
+      "role": "LLM Engineer",
+      "aliases": ["Large Language Model Engineer", "LLM Developer", "Language Model Engineer"],
+      "skills": {
+        "python": 5, "llm": 5, "transformers": 5, "pytorch": 5, "rag": 5,
+        "vector_databases": 4, "langchain": 4, "prompt_engineering": 4,
+        "fine_tuning": 4, "docker": 4, "git": 5, "aws": 3
+      }
+    },
+    {
+      "role": "NLP Engineer",
+      "aliases": ["Natural Language Processing Engineer", "NLP Developer", "Language AI Engineer"],
+      "skills": {
+        "python": 5, "nlp": 5, "machine_learning": 5, "deep_learning": 4,
+        "transformers": 5, "pytorch": 4, "tensorflow": 3, "llm": 4,
+        "huggingface": 5, "pandas": 3, "git": 5
+      }
+    },
+    {
+      "role": "Computer Vision Engineer",
+      "aliases": ["Computer Vision Developer", "CV Engineer", "Vision AI Engineer"],
+      "skills": {
+        "python": 5, "computer_vision": 5, "opencv": 5, "pytorch": 4,
+        "tensorflow": 3, "deep_learning": 5, "machine_learning": 4,
+        "numpy": 5, "pandas": 3, "git": 5, "docker": 3
+      }
+    },
+    {
+      "role": "MLOps Engineer",
+      "aliases": ["ML Ops Engineer", "Machine Learning Operations Engineer", "ML Platform Engineer"],
+      "skills": {
+        "python": 5, "machine_learning": 4, "mlops": 5, "docker": 5,
+        "kubernetes": 5, "cicd": 5, "terraform": 4, "aws": 4, "git": 5,
+        "model_deployment": 5, "monitoring": 4, "linux": 4
+      }
+    },
+    {
+      "role": "AI Research Engineer",
+      "aliases": ["AI Researcher", "Artificial Intelligence Research Engineer", "Research Engineer AI"],
+      "skills": {
+        "python": 5, "artificial_intelligence": 5, "machine_learning": 5,
+        "deep_learning": 5, "pytorch": 5, "numpy": 5, "statistics": 5,
+        "linear_algebra": 5, "transformers": 4, "research": 5, "git": 4
+      }
+    },
+    {
+      "role": "AI Solutions Engineer",
+      "aliases": ["AI Solutions Architect", "AI Solutions Developer", "AI Implementation Engineer"],
+      "skills": {
+        "python": 4, "artificial_intelligence": 5, "generative_ai": 5,
+        "llm": 4, "rag": 4, "rest_api": 5, "cloud_architecture": 4,
+        "aws": 4, "docker": 4, "system_design": 4, "communication": 5
+      }
+    },
+    {
+      "role": "AI Agent Engineer",
+      "aliases": ["Agentic AI Engineer", "AI Agent Developer", "Agent Engineer"],
+      "skills": {
+        "python": 5, "ai_agents": 5, "llm": 5, "generative_ai": 5,
+        "langchain": 4, "langgraph": 5, "rag": 4, "vector_databases": 4,
+        "rest_api": 5, "docker": 4, "git": 5, "system_design": 4
+      }
+    },
+    {
+      "role": "RAG Engineer",
+      "aliases": ["Retrieval Augmented Generation Engineer", "RAG Developer", "Retrieval Engineer"],
+      "skills": {
+        "python": 5, "rag": 5, "llm": 5, "vector_databases": 5,
+        "langchain": 4, "embeddings": 5, "postgresql": 3, "mongodb": 3,
+        "rest_api": 4, "docker": 4, "git": 5
+      }
+    },
+    {
+      "role": "Data Scientist",
+      "aliases": ["Data Science Engineer", "Data Science Specialist", "Data Scientist"],
+      "skills": {
+        "python": 5, "machine_learning": 5, "statistics": 5, "sql": 5,
+        "pandas": 5, "numpy": 5, "scikit_learn": 5, "data_visualization": 4,
+        "matplotlib": 4, "powerbi": 3, "tensorflow": 2, "pytorch": 2
+      }
+    },
+    {
+      "role": "Data Analyst",
+      "aliases": ["Data Analytics Analyst", "Business Data Analyst", "Data Analysis Specialist"],
+      "skills": {
+        "sql": 5, "excel": 5, "python": 4, "pandas": 4, "statistics": 4,
+        "data_analysis": 5, "data_visualization": 5, "powerbi": 5,
+        "tableau": 4, "communication": 4
+      }
+    },
+    {
+      "role": "Data Engineer",
+      "aliases": ["Data Engineering Specialist", "Data Platform Engineer", "Big Data Engineer"],
+      "skills": {
+        "python": 5, "sql": 5, "data_engineering": 5, "etl": 5, "spark": 5,
+        "airflow": 4, "kafka": 4, "aws": 4, "docker": 4, "databricks": 4,
+        "data_warehousing": 5, "git": 5
+      }
+    },
+    {
+      "role": "Analytics Engineer",
+      "aliases": ["Data Analytics Engineer", "Analytics Developer"],
+      "skills": {
+        "sql": 5, "dbt": 5, "data_modeling": 5, "data_warehousing": 5,
+        "python": 4, "snowflake": 4, "bigquery": 4, "git": 5,
+        "data_visualization": 3, "tableau": 3
+      }
+    },
+    {
+      "role": "Business Intelligence Analyst",
+      "aliases": ["BI Analyst", "Business Intelligence Analyst", "BI Data Analyst"],
+      "skills": {
+        "sql": 5, "excel": 5, "powerbi": 5, "tableau": 4, "data_analysis": 5,
+        "data_visualization": 5, "statistics": 3, "communication": 5,
+        "business_analysis": 4
+      }
+    },
+    {
+      "role": "Business Intelligence Developer",
+      "aliases": ["BI Developer", "Business Intelligence Engineer", "BI Engineer"],
+      "skills": {
+        "sql": 5, "powerbi": 5, "tableau": 4, "etl": 4, "data_warehousing": 5,
+        "data_modeling": 5, "python": 3, "azure": 3, "git": 4
+      }
+    },
+    {
+      "role": "Data Architect",
+      "aliases": ["Data Architecture Engineer", "Enterprise Data Architect"],
+      "skills": {
+        "data_architecture": 5, "data_modeling": 5, "sql": 5, "data_warehousing": 5,
+        "aws": 4, "azure": 4, "gcp": 3, "spark": 3, "kafka": 3,
+        "data_governance": 4, "system_design": 5
+      }
+    },
+    {
+      "role": "Database Administrator",
+      "aliases": ["DBA", "Database Admin", "Database Administrator"],
+      "skills": {
+        "sql": 5, "postgresql": 5, "mysql": 4, "oracle": 5, "database_design": 5,
+        "linux": 4, "backup_recovery": 5, "performance_tuning": 5,
+        "security": 4, "cloud": 3
+      }
+    },
+    {
+      "role": "Database Developer",
+      "aliases": ["SQL Developer", "Database Engineer", "SQL Database Developer"],
+      "skills": {
+        "sql": 5, "postgresql": 4, "mysql": 5, "oracle": 4, "database_design": 5,
+        "data_modeling": 5, "etl": 4, "python": 3, "git": 4
+      }
+    },
+    {
+      "role": "Big Data Engineer",
+      "aliases": ["Big Data Developer", "Big Data Specialist", "Big Data Software Engineer"],
+      "skills": {
+        "python": 5, "sql": 5, "spark": 5, "hadoop": 4, "kafka": 5,
+        "airflow": 4, "databricks": 4, "data_warehousing": 4, "aws": 4,
+        "docker": 3, "git": 5
+      }
+    },
+    {
+      "role": "ETL Developer",
+      "aliases": ["ETL Engineer", "ETL Developer", "Data Integration Developer"],
+      "skills": {
+        "etl": 5, "sql": 5, "python": 4, "data_warehousing": 5,
+        "data_modeling": 4, "spark": 3, "airflow": 4, "aws": 3, "git": 4
+      }
+    },
+    {
+      "role": "Quantitative Analyst",
+      "aliases": ["Quant Analyst", "Quantitative Research Analyst", "Quant"],
+      "skills": {
+        "python": 5, "sql": 4, "statistics": 5, "data_analysis": 5,
+        "machine_learning": 4, "numpy": 5, "pandas": 5, "mathematics": 5,
+        "algorithms": 4, "communication": 3
+      }
+    },
+    {
+      "role": "Cloud Engineer",
+      "aliases": ["Cloud Infrastructure Engineer", "Cloud Operations Engineer", "Cloud Developer"],
+      "skills": {
+        "aws": 5, "azure": 4, "gcp": 3, "linux": 5, "networking": 5,
+        "docker": 5, "kubernetes": 4, "terraform": 5, "cicd": 4,
+        "iam": 5, "monitoring": 4, "git": 4
+      }
+    },
+    {
+      "role": "Cloud Architect",
+      "aliases": ["Cloud Solutions Architect", "Cloud Infrastructure Architect", "Cloud Architect"],
+      "skills": {
+        "aws": 5, "azure": 4, "gcp": 4, "cloud_architecture": 5, "networking": 5,
+        "security": 5, "iam": 5, "terraform": 4, "kubernetes": 4,
+        "system_design": 5, "cost_optimization": 4
+      }
+    },
+    {
+      "role": "AWS Cloud Engineer",
+      "aliases": ["AWS Engineer", "AWS Cloud Developer", "Amazon Web Services Engineer"],
+      "skills": {
+        "aws": 5, "aws_ec2": 5, "aws_s3": 5, "aws_lambda": 4, "aws_iam": 5,
+        "aws_rds": 4, "terraform": 4, "docker": 4, "kubernetes": 3,
+        "linux": 5, "networking": 4, "cicd": 4
+      }
+    },
+    {
+      "role": "Azure Cloud Engineer",
+      "aliases": ["Azure Engineer", "Microsoft Azure Engineer", "Azure Cloud Developer"],
+      "skills": {
+        "azure": 5, "azure_functions": 4, "iam": 5, "terraform": 4,
+        "docker": 4, "kubernetes": 3, "linux": 4, "networking": 5,
+        "cicd": 4, "powershell": 4
+      }
+    },
+    {
+      "role": "Google Cloud Engineer",
+      "aliases": ["GCP Engineer", "Google Cloud Engineer", "GCP Cloud Developer"],
+      "skills": {
+        "gcp": 5, "bigquery": 4, "cloud_architecture": 4, "iam": 5,
+        "terraform": 4, "docker": 4, "kubernetes": 4, "linux": 4,
+        "networking": 4, "cicd": 4
+      }
+    },
+    {
+      "role": "DevOps Engineer",
+      "aliases": ["DevOps Developer", "DevOps Specialist", "DevOps Software Engineer"],
+      "skills": {
+        "linux": 5, "docker": 5, "kubernetes": 5, "cicd": 5, "jenkins": 4,
+        "github_actions": 4, "terraform": 5, "ansible": 4, "aws": 5,
+        "git": 5, "bash": 4, "monitoring": 4
+      }
+    },
+    {
+      "role": "DevSecOps Engineer",
+      "aliases": ["DevSecOps Developer", "Security DevOps Engineer", "DevSecOps Specialist"],
+      "skills": {
+        "devsecops": 5, "docker": 5, "kubernetes": 5, "cicd": 5,
+        "cybersecurity": 5, "application_security": 5, "cloud_security": 5,
+        "terraform": 4, "aws": 4, "git": 5, "linux": 5
+      }
+    },
+    {
+      "role": "Site Reliability Engineer",
+      "aliases": ["SRE", "Site Reliability Engineering", "Reliability Engineer"],
+      "skills": {
+        "linux": 5, "kubernetes": 5, "docker": 4, "cicd": 5, "terraform": 4,
+        "aws": 4, "python": 4, "go": 4, "monitoring": 5, "networking": 4,
+        "system_design": 5, "git": 5
+      }
+    },
+    {
+      "role": "Platform Engineer",
+      "aliases": ["Platform Developer", "Internal Platform Engineer", "Developer Platform Engineer"],
+      "skills": {
+        "kubernetes": 5, "docker": 5, "terraform": 5, "cicd": 5, "aws": 4,
+        "linux": 5, "go": 4, "python": 4, "git": 5, "system_design": 5,
+        "cloud_architecture": 4
+      }
+    },
+    {
+      "role": "Infrastructure Engineer",
+      "aliases": ["Infrastructure Developer", "IT Infrastructure Engineer", "Infrastructure Specialist"],
+      "skills": {
+        "linux": 5, "networking": 5, "aws": 4, "azure": 3, "docker": 4,
+        "kubernetes": 3, "terraform": 4, "ansible": 4, "bash": 5,
+        "monitoring": 4, "security": 4
+      }
+    },
+    {
+      "role": "Kubernetes Engineer",
+      "aliases": ["K8s Engineer", "Kubernetes Administrator", "Kubernetes Specialist"],
+      "skills": {
+        "kubernetes": 5, "docker": 5, "linux": 5, "terraform": 5,
+        "helm": 5, "cicd": 5, "aws": 4, "networking": 5, "security": 4,
+        "monitoring": 4, "git": 5
+      }
+    },
+    {
+      "role": "Cloud Security Engineer",
+      "aliases": ["Cloud Security Specialist", "Cloud Security Architect", "Cloud Security Engineer"],
+      "skills": {
+        "cloud_security": 5, "aws": 5, "azure": 4, "gcp": 3, "iam": 5,
+        "network_security": 5, "cybersecurity": 5, "terraform": 4,
+        "kubernetes": 3, "siem": 3, "zero_trust": 4
+      }
+    },
+    {
+      "role": "Cybersecurity Analyst",
+      "aliases": ["Cyber Security Analyst", "Information Security Analyst", "Security Analyst"],
+      "skills": {
+        "cybersecurity": 5, "network_security": 5, "siem": 5, "splunk": 4,
+        "incident_response": 5, "vulnerability_management": 4, "linux": 4,
+        "networking": 5, "python": 3, "wireshark": 4
+      }
+    },
+    {
+      "role": "Cybersecurity Engineer",
+      "aliases": ["Cyber Security Engineer", "Information Security Engineer", "Security Engineer"],
+      "skills": {
+        "cybersecurity": 5, "network_security": 5, "application_security": 4,
+        "cloud_security": 5, "iam": 5, "siem": 4, "linux": 5, "python": 4,
+        "docker": 3, "kubernetes": 3, "incident_response": 4
+      }
+    },
+    {
+      "role": "Security Engineer",
+      "aliases": ["Information Security Engineer", "IT Security Engineer", "Security Software Engineer"],
+      "skills": {
+        "cybersecurity": 5, "network_security": 5, "application_security": 5,
+        "cloud_security": 4, "iam": 5, "linux": 5, "python": 4,
+        "penetration_testing": 3, "siem": 4, "incident_response": 4
+      }
+    },
+    {
+      "role": "SOC Analyst",
+      "aliases": ["Security Operations Center Analyst", "SOC Security Analyst", "Security Operations Analyst"],
+      "skills": {
+        "cybersecurity": 5, "siem": 5, "splunk": 5, "incident_response": 5,
+        "network_security": 5, "wireshark": 4, "linux": 4,
+        "vulnerability_management": 3, "python": 3
+      }
+    },
+    {
+      "role": "Penetration Tester",
+      "aliases": ["Pentester", "Penetration Testing Engineer", "Offensive Security Tester"],
+      "skills": {
+        "penetration_testing": 5, "ethical_hacking": 5, "cybersecurity": 5,
+        "burp_suite": 5, "metasploit": 5, "linux": 5, "networking": 5,
+        "python": 4, "web_security": 5, "owasp": 5
+      }
+    },
+    {
+      "role": "Ethical Hacker",
+      "aliases": ["Ethical Hacking Specialist", "White Hat Hacker", "Offensive Security Engineer"],
+      "skills": {
+        "ethical_hacking": 5, "penetration_testing": 5, "cybersecurity": 5,
+        "burp_suite": 5, "metasploit": 4, "linux": 5, "networking": 5,
+        "python": 4, "web_security": 5
+      }
+    },
+    {
+      "role": "Application Security Engineer",
+      "aliases": ["AppSec Engineer", "Application Security Developer", "Software Security Engineer"],
+      "skills": {
+        "application_security": 5, "cybersecurity": 5, "web_security": 5,
+        "penetration_testing": 4, "burp_suite": 4, "oauth": 4, "jwt": 4,
+        "docker": 3, "cicd": 4, "python": 3, "owasp": 5
+      }
+    },
+    {
+      "role": "Network Security Engineer",
+      "aliases": ["Network Security Specialist", "Network Security Administrator"],
+      "skills": {
+        "network_security": 5, "networking": 5, "tcp_ip": 5, "firewalls": 5,
+        "vpn": 5, "cybersecurity": 5, "wireshark": 4, "linux": 4,
+        "siem": 3, "incident_response": 3
+      }
+    },
+    {
+      "role": "Security Architect",
+      "aliases": ["Cybersecurity Architect", "Information Security Architect", "Enterprise Security Architect"],
+      "skills": {
+        "cybersecurity": 5, "security_architecture": 5, "cloud_security": 5,
+        "network_security": 5, "iam": 5, "zero_trust": 5, "risk_management": 5,
+        "system_design": 5, "compliance": 4, "incident_response": 3
+      }
+    },
+    {
+      "role": "GRC Analyst",
+      "aliases": ["Governance Risk Compliance Analyst", "GRC Specialist", "IT Risk Analyst"],
+      "skills": {
+        "governance": 5, "risk_management": 5, "compliance": 5,
+        "cybersecurity": 4, "audit": 4, "documentation": 5,
+        "communication": 5, "stakeholder_management": 4
+      }
+    },
+    {
+      "role": "Incident Response Analyst",
+      "aliases": ["Incident Response Specialist", "Cyber Incident Analyst", "Incident Responder"],
+      "skills": {
+        "incident_response": 5, "cybersecurity": 5, "siem": 5, "splunk": 4,
+        "network_security": 5, "linux": 5, "wireshark": 4,
+        "vulnerability_management": 3, "python": 3
+      }
+    },
+    {
+      "role": "Cloud Security Analyst",
+      "aliases": ["Cloud Cybersecurity Analyst", "Cloud Security Specialist"],
+      "skills": {
+        "cloud_security": 5, "cybersecurity": 5, "aws": 4, "azure": 4,
+        "iam": 5, "network_security": 5, "siem": 4, "terraform": 3,
+        "kubernetes": 3, "zero_trust": 4
+      }
+    },
+    {
+      "role": "Android Developer",
+      "aliases": ["Android Engineer", "Android App Developer", "Android Software Developer"],
+      "skills": {
+        "kotlin": 5, "java": 4, "mobile_android": 5, "android_studio": 5,
+        "android_architecture": 4, "rest_api": 4, "firebase": 4,
+        "git": 5, "testing": 3, "sqlite": 3
+      }
+    },
+    {
+      "role": "iOS Developer",
+      "aliases": ["iOS Engineer", "iOS App Developer", "Apple Mobile Developer"],
+      "skills": {
+        "swift": 5, "ios": 5, "swiftui": 5, "xcode": 5, "rest_api": 4,
+        "firebase": 3, "git": 5, "testing": 4, "mobile_architecture": 4
+      }
+    },
+    {
+      "role": "Flutter Developer",
+      "aliases": ["Flutter Engineer", "Flutter App Developer", "Dart Flutter Developer"],
+      "skills": {
+        "flutter": 5, "dart": 5, "mobile_architecture": 4, "rest_api": 4,
+        "firebase": 4, "git": 5, "testing": 3, "ui_design": 3
+      }
+    },
+    {
+      "role": "React Native Developer",
+      "aliases": ["React Native Engineer", "ReactNative Developer", "RN Developer"],
+      "skills": {
+        "react_native": 5, "javascript": 5, "typescript": 4, "react": 5,
+        "mobile_architecture": 4, "rest_api": 4, "firebase": 3, "git": 5,
+        "testing": 3
+      }
+    },
+    {
+      "role": "Mobile App Developer",
+      "aliases": ["Mobile Developer", "Mobile Application Developer", "Mobile Engineer"],
+      "skills": {
+        "kotlin": 4, "swift": 4, "flutter": 3, "react_native": 3,
+        "mobile_architecture": 5, "rest_api": 4, "firebase": 4, "git": 5,
+        "testing": 4, "ui_design": 3
+      }
+    },
+    {
+      "role": "Embedded Systems Engineer",
+      "aliases": ["Embedded Engineer", "Embedded Software Engineer", "Embedded Developer"],
+      "skills": {
+        "c": 5, "cpp": 5, "embedded_systems": 5, "microcontrollers": 5,
+        "linux": 4, "git": 4, "debugging": 5, "iot": 3, "python": 3,
+        "algorithms": 4
+      }
+    },
+    {
+      "role": "Firmware Engineer",
+      "aliases": ["Firmware Developer", "Firmware Software Engineer", "Embedded Firmware Engineer"],
+      "skills": {
+        "c": 5, "cpp": 5, "embedded_systems": 5, "microcontrollers": 5,
+        "linux": 4, "debugging": 5, "git": 4, "hardware": 4, "rtos": 4
+      }
+    },
+    {
+      "role": "IoT Engineer",
+      "aliases": ["Internet of Things Engineer", "IoT Developer", "IoT Software Engineer"],
+      "skills": {
+        "iot": 5, "python": 4, "c": 4, "embedded_systems": 4,
+        "mqtt": 5, "linux": 4, "cloud_architecture": 4, "aws": 4,
+        "docker": 3, "networking": 4
+      }
+    },
+    {
+      "role": "QA Engineer",
+      "aliases": ["Quality Assurance Engineer", "QA Software Engineer", "Quality Engineer"],
+      "skills": {
+        "testing": 5, "test_automation": 5, "selenium": 4, "playwright": 4,
+        "postman": 4, "sql": 3, "git": 4, "jira": 4, "python": 3,
+        "javascript": 3
+      }
+    },
+    {
+      "role": "Software Test Engineer",
+      "aliases": ["Test Engineer", "Software Tester", "QA Test Engineer"],
+      "skills": {
+        "testing": 5, "test_automation": 5, "selenium": 5, "postman": 4,
+        "sql": 3, "jira": 4, "git": 4, "python": 3, "java": 3
+      }
+    },
+    {
+      "role": "Automation Test Engineer",
+      "aliases": ["Test Automation Engineer", "QA Automation Engineer", "Automation QA Engineer"],
+      "skills": {
+        "test_automation": 5, "selenium": 5, "playwright": 5, "cypress": 4,
+        "python": 4, "javascript": 4, "java": 3, "api_testing": 5,
+        "git": 5, "cicd": 4
+      }
+    },
+    {
+      "role": "SDET",
+      "aliases": ["Software Development Engineer in Test", "Software Engineer in Test", "SDET Engineer"],
+      "skills": {
+        "test_automation": 5, "testing": 5, "java": 4, "python": 4,
+        "javascript": 4, "selenium": 5, "playwright": 4, "api_testing": 5,
+        "git": 5, "cicd": 4, "docker": 3, "system_design": 3
+      }
+    },
+    {
+      "role": "Performance Test Engineer",
+      "aliases": ["Performance Engineer", "Performance Testing Engineer", "Load Test Engineer"],
+      "skills": {
+        "performance_testing": 5, "load_testing": 5, "testing": 5, "jmeter": 5,
+        "sql": 4, "linux": 4, "python": 3, "java": 3, "monitoring": 4,
+        "cicd": 3
+      }
+    },
+    {
+      "role": "Product Manager",
+      "aliases": ["Product Management Specialist", "Digital Product Manager", "Product Lead"],
+      "skills": {
+        "product_management": 5, "product_strategy": 5, "roadmapping": 5,
+        "market_research": 4, "user_research": 4, "data_analysis": 4,
+        "communication": 5, "stakeholder_management": 5, "agile": 4,
+        "sql": 2
+      }
+    },
+    {
+      "role": "Technical Product Manager",
+      "aliases": ["Technical PM", "Technical Product Manager", "TPM Product"],
+      "skills": {
+        "product_management": 5, "product_strategy": 4, "roadmapping": 5,
+        "software_architecture": 4, "api_design": 4, "sql": 3,
+        "agile": 5, "communication": 5, "stakeholder_management": 5,
+        "system_design": 4
+      }
+    },
+    {
+      "role": "Product Owner",
+      "aliases": ["Agile Product Owner", "Technical Product Owner", "Product Owner"],
+      "skills": {
+        "product_management": 5, "roadmapping": 4, "agile": 5, "scrum": 5,
+        "requirements_analysis": 5, "user_research": 3,
+        "stakeholder_management": 5, "communication": 5, "jira": 4
+      }
+    },
+    {
+      "role": "Business Analyst",
+      "aliases": ["Business Systems Analyst", "Business Analysis Specialist", "IT Business Analyst"],
+      "skills": {
+        "business_analysis": 5, "requirements_analysis": 5, "sql": 4,
+        "excel": 4, "data_analysis": 4, "stakeholder_management": 5,
+        "communication": 5, "jira": 4, "agile": 4, "documentation": 5
+      }
+    },
+    {
+      "role": "Technical Business Analyst",
+      "aliases": ["IT Business Analyst", "Technical BA", "Technology Business Analyst"],
+      "skills": {
+        "business_analysis": 5, "requirements_analysis": 5, "sql": 4,
+        "api_design": 3, "system_design": 3, "agile": 4, "jira": 4,
+        "communication": 5, "stakeholder_management": 5
+      }
+    },
+    {
+      "role": "UX Designer",
+      "aliases": ["User Experience Designer", "UX/UI Designer", "UX Specialist"],
+      "skills": {
+        "ux_design": 5, "figma": 5, "user_research": 5, "wireframing": 5,
+        "prototyping": 5, "design_systems": 4, "usability_testing": 5,
+        "communication": 4
+      }
+    },
+    {
+      "role": "UI Designer",
+      "aliases": ["User Interface Designer", "UI/UX Designer", "Visual Designer"],
+      "skills": {
+        "ui_design": 5, "figma": 5, "prototyping": 4, "design_systems": 5,
+        "wireframing": 4, "ux_design": 4, "typography": 5,
+        "visual_design": 5
+      }
+    },
+    {
+      "role": "Product Designer",
+      "aliases": ["Digital Product Designer", "Product UX Designer", "Product UI Designer"],
+      "skills": {
+        "ui_design": 5, "ux_design": 5, "figma": 5, "user_research": 4,
+        "wireframing": 5, "prototyping": 5, "design_systems": 5,
+        "product_management": 3, "communication": 4
+      }
+    },
+    {
+      "role": "UX Researcher",
+      "aliases": ["User Experience Researcher", "UX Research Specialist", "User Researcher"],
+      "skills": {
+        "user_research": 5, "ux_design": 4, "usability_testing": 5,
+        "qualitative_research": 5, "quantitative_research": 4,
+        "data_analysis": 4, "communication": 5, "figma": 3
+      }
+    },
+    {
+      "role": "Technical Project Manager",
+      "aliases": ["Technical PM", "IT Project Manager", "Technology Project Manager"],
+      "skills": {
+        "technical_project_management": 5, "project_management": 5,
+        "agile": 5, "scrum": 4, "stakeholder_management": 5,
+        "communication": 5, "risk_management": 4, "jira": 5,
+        "software_development": 3
+      }
+    },
+    {
+      "role": "Scrum Master",
+      "aliases": ["Agile Scrum Master", "Scrum Master", "Agile Coach"],
+      "skills": {
+        "scrum": 5, "agile": 5, "project_management": 4,
+        "stakeholder_management": 5, "communication": 5, "jira": 4,
+        "conflict_resolution": 4, "team_management": 4
+      }
+    },
+    {
+      "role": "Solutions Architect",
+      "aliases": ["Solution Architect", "Solutions Architecture Engineer", "Technical Solutions Architect"],
+      "skills": {
+        "solutions_architecture": 5, "system_design": 5, "cloud_architecture": 5,
+        "aws": 4, "azure": 4, "gcp": 3, "microservices": 5, "api_design": 5,
+        "security": 4, "database_design": 4, "communication": 5
+      }
+    },
+    {
+      "role": "Solutions Engineer",
+      "aliases": ["Sales Engineer", "Technical Solutions Engineer", "Solutions Consultant"],
+      "skills": {
+        "solutions_architecture": 4, "api_design": 4, "cloud_architecture": 4,
+        "rest_api": 4, "sql": 3, "communication": 5,
+        "stakeholder_management": 5, "technical_consulting": 5,
+        "product_management": 2
+      }
+    },
+    {
+      "role": "Technical Consultant",
+      "aliases": ["Technology Consultant", "IT Consultant", "Technical Solutions Consultant"],
+      "skills": {
+        "technical_consulting": 5, "solutions_architecture": 4,
+        "system_design": 4, "cloud_architecture": 4, "business_analysis": 4,
+        "communication": 5, "stakeholder_management": 5, "project_management": 4
+      }
+    },
+    {
+      "role": "Systems Administrator",
+      "aliases": ["System Administrator", "Sysadmin", "IT Systems Administrator"],
+      "skills": {
+        "system_administration": 5, "linux": 5, "networking": 5, "bash": 4,
+        "powershell": 4, "virtualization": 4, "cybersecurity": 4,
+        "backup_recovery": 4, "monitoring": 4, "cloud_architecture": 3
+      }
+    },
+    {
+      "role": "Network Engineer",
+      "aliases": ["Network Administrator", "Network Infrastructure Engineer", "Networking Engineer"],
+      "skills": {
+        "networking": 5, "tcp_ip": 5, "dns": 5, "network_security": 5,
+        "routing": 5, "switching": 5, "vpn": 4, "linux": 3,
+        "firewalls": 5, "wireshark": 4
+      }
+    },
+    {
+      "role": "Blockchain Developer",
+      "aliases": ["Blockchain Engineer", "Web3 Developer", "Blockchain Software Engineer"],
+      "skills": {
+        "blockchain": 5, "solidity": 5, "web3": 5, "smart_contracts": 5,
+        "javascript": 4, "typescript": 4, "ethereum": 5, "git": 5,
+        "cryptography": 4, "rest_api": 3
+      }
+    },
+    {
+      "role": "Web3 Developer",
+      "aliases": ["Web3 Engineer", "Web 3 Developer", "Decentralized Application Developer"],
+      "skills": {
+        "web3": 5, "blockchain": 5, "solidity": 5, "smart_contracts": 5,
+        "javascript": 5, "typescript": 4, "react": 4, "ethereum": 5,
+        "git": 5, "cryptography": 4
+      }
+    },
+    {
+      "role": "Smart Contract Developer",
+      "aliases": ["Smart Contract Engineer", "Solidity Developer", "Blockchain Smart Contract Engineer"],
+      "skills": {
+        "smart_contracts": 5, "solidity": 5, "blockchain": 5, "web3": 5,
+        "ethereum": 5, "cryptography": 5, "javascript": 4, "typescript": 3,
+        "testing": 4, "git": 5
+      }
+    },
+    {
+      "role": "Game Developer",
+      "aliases": ["Game Programmer", "Game Software Developer", "Game Engineer"],
+      "skills": {
+        "game_development": 5, "unity": 5, "cpp": 4, "csharp": 5,
+        "unreal_engine": 3, "algorithms": 4, "oop": 5, "git": 5,
+        "mathematics": 4, "3d_graphics": 4
+      }
+    },
+    {
+      "role": "Unity Developer",
+      "aliases": ["Unity Game Developer", "Unity Engineer", "Unity3D Developer"],
+      "skills": {
+        "unity": 5, "csharp": 5, "game_development": 5, "oop": 4,
+        "git": 5, "3d_graphics": 4, "shaders": 3, "physics": 4
+      }
+    },
+    {
+      "role": "Unreal Engine Developer",
+      "aliases": ["Unreal Developer", "UE5 Developer", "Unreal Engine Programmer"],
+      "skills": {
+        "unreal_engine": 5, "cpp": 5, "game_development": 5, "blueprints": 4,
+        "3d_graphics": 5, "git": 4, "shaders": 4, "physics": 4
+      }
+    },
+    {
+      "role": "ERP Consultant",
+      "aliases": ["ERP Specialist", "Enterprise Resource Planning Consultant", "ERP Implementation Consultant"],
+      "skills": {
+        "erp": 5, "business_analysis": 5, "requirements_analysis": 5,
+        "project_management": 4, "sql": 4, "data_analysis": 3,
+        "stakeholder_management": 5, "communication": 5
+      }
+    },
+    {
+      "role": "SAP Consultant",
+      "aliases": ["SAP Specialist", "SAP Technical Consultant", "SAP Implementation Consultant"],
+      "skills": {
+        "sap": 5, "erp": 5, "business_analysis": 4, "sql": 3,
+        "project_management": 4, "requirements_analysis": 5,
+        "communication": 5, "stakeholder_management": 5
+      }
+    },
+    {
+      "role": "Salesforce Developer",
+      "aliases": ["Salesforce Engineer", "Salesforce Software Developer", "Salesforce CRM Developer"],
+      "skills": {
+        "salesforce": 5, "crm": 5, "apex": 5, "javascript": 4,
+        "sql": 3, "rest_api": 4, "git": 4, "cloud_architecture": 3,
+        "testing": 3
+      }
+    },
+    {
+      "role": "Salesforce Administrator",
+      "aliases": ["Salesforce Admin", "Salesforce CRM Administrator", "Salesforce Administrator"],
+      "skills": {
+        "salesforce": 5, "crm": 5, "automation": 4, "data_analysis": 3,
+        "security": 4, "user_management": 5, "communication": 5,
+        "business_analysis": 4
+      }
+    },
+    {
+      "role": "RPA Developer",
+      "aliases": ["Robotic Process Automation Developer", "RPA Engineer", "Automation Developer"],
+      "skills": {
+        "robotic_process_automation": 5, "uipath": 5, "automation": 5,
+        "python": 3, "sql": 3, "excel": 4, "api_design": 3,
+        "business_analysis": 3, "git": 3
+      }
+    },
+    {
+      "role": "Automation Engineer",
+      "aliases": ["Automation Software Engineer", "Process Automation Engineer", "Automation Developer"],
+      "skills": {
+        "automation": 5, "python": 4, "javascript": 4, "cicd": 4,
+        "docker": 3, "testing": 4, "api_design": 4, "sql": 3,
+        "git": 5
+      }
+    },
+    {
+      "role": "Data Governance Analyst",
+      "aliases": ["Data Governance Specialist", "Data Governance Consultant"],
+      "skills": {
+        "data_governance": 5, "data_quality": 5, "data_management": 5,
+        "sql": 3, "compliance": 5, "risk_management": 4,
+        "communication": 5, "documentation": 5
+      }
+    },
+    {
+      "role": "Data Quality Analyst",
+      "aliases": ["Data Quality Specialist", "Data Quality Engineer", "Data QA Analyst"],
+      "skills": {
+        "data_quality": 5, "sql": 5, "python": 3, "data_analysis": 4,
+        "etl": 4, "data_governance": 4, "excel": 4, "communication": 4
+      }
+    },
+    {
+      "role": "Data Visualization Specialist",
+      "aliases": ["Data Visualization Analyst", "Visualization Developer", "Data Viz Specialist"],
+      "skills": {
+        "data_visualization": 5, "tableau": 5, "powerbi": 5, "python": 4,
+        "pandas": 4, "sql": 5, "statistics": 4, "data_analysis": 5
+      }
+    },
+    {
+      "role": "Machine Learning Researcher",
+      "aliases": ["ML Researcher", "Machine Learning Scientist", "Research Scientist ML"],
+      "skills": {
+        "machine_learning": 5, "deep_learning": 5, "python": 5, "pytorch": 5,
+        "tensorflow": 4, "statistics": 5, "mathematics": 5, "algorithms": 5,
+        "research": 5, "numpy": 5
+      }
+    },
+    {
+      "role": "Computer Scientist",
+      "aliases": ["Computer Science Researcher", "Computing Scientist", "Research Computer Scientist"],
+      "skills": {
+        "algorithms": 5, "data_structures": 5, "python": 4, "cpp": 4,
+        "java": 4, "mathematics": 5, "statistics": 4, "system_design": 4,
+        "research": 5, "oop": 4
+      }
+    },
+    {
+      "role": "Research Scientist",
+      "aliases": ["Research Engineer", "Applied Research Scientist", "Technology Research Scientist"],
+      "skills": {
+        "python": 5, "machine_learning": 4, "statistics": 5, "mathematics": 5,
+        "data_analysis": 4, "research": 5, "algorithms": 4,
+        "technical_writing": 4, "communication": 4
+      }
+    },
+    {
+      "role": "Cloud Solutions Architect",
+      "aliases": ["Cloud Solution Architect", "Cloud Architect", "Cloud Solutions Engineer"],
+      "skills": {
+        "cloud_architecture": 5, "aws": 5, "azure": 4, "gcp": 4,
+        "system_design": 5, "networking": 5, "iam": 5, "security": 5,
+        "terraform": 4, "kubernetes": 4, "communication": 5
+      }
+    },
+    {
+      "role": "Enterprise Architect",
+      "aliases": ["Enterprise Solutions Architect", "IT Enterprise Architect", "Technology Architect"],
+      "skills": {
+        "enterprise_architecture": 5, "solutions_architecture": 5, "system_design": 5,
+        "cloud_architecture": 5, "microservices": 4, "security": 5,
+        "data_architecture": 4, "api_design": 4, "governance": 4,
+        "stakeholder_management": 5
+      }
+    },
+    {
+      "role": "IT Project Manager",
+      "aliases": ["IT PM", "Technology Project Manager", "Information Technology Project Manager"],
+      "skills": {
+        "project_management": 5, "technical_project_management": 5,
+        "agile": 5, "scrum": 4, "jira": 5, "risk_management": 5,
+        "stakeholder_management": 5, "communication": 5, "budgeting": 4
+      }
+    },
+    {
+      "role": "Technical Program Manager",
+      "aliases": ["TPM", "Technical Program Management", "Technology Program Manager"],
+      "skills": {
+        "technical_project_management": 5, "project_management": 5,
+        "system_design": 4, "agile": 5, "risk_management": 5,
+        "stakeholder_management": 5, "communication": 5, "roadmapping": 4
+      }
+    },
+    {
+      "role": "IT Consultant",
+      "aliases": ["Information Technology Consultant", "Technology Consultant", "IT Advisory Consultant"],
+      "skills": {
+        "technical_consulting": 5, "business_analysis": 5, "requirements_analysis": 4,
+        "cloud_architecture": 4, "system_design": 4, "project_management": 4,
+        "communication": 5, "stakeholder_management": 5
+      }
+    },
+    {
+      "role": "Technical Writer",
+      "aliases": ["Technical Documentation Writer", "Documentation Engineer", "Technical Content Writer"],
+      "skills": {
+        "technical_writing": 5, "documentation": 5, "communication": 5,
+        "git": 3, "markdown": 5, "api_design": 3, "software_development": 3,
+        "research": 4
+      }
+    },
+    {
+      "role": "Systems Engineer",
+      "aliases": ["Systems Software Engineer", "Systems Engineering Specialist", "System Engineer"],
+      "skills": {
+        "system_design": 5, "linux": 5, "networking": 4, "python": 4,
+        "cpp": 4, "bash": 4, "docker": 4, "cloud_architecture": 4,
+        "git": 5, "debugging": 5
+      }
+    },
+    {
+      "role": "Software Architect",
+      "aliases": ["Application Architect", "Software Systems Architect", "Software Architecture Engineer"],
+      "skills": {
+        "system_design": 5, "software_architecture": 5, "design_patterns": 5,
+        "microservices": 5, "api_design": 5, "database_design": 4,
+        "cloud_architecture": 5, "security": 4, "docker": 4, "kubernetes": 3
+      }
+    },
+    {
+      "role": "Frontend Architect",
+      "aliases": ["Front End Architect", "Frontend Software Architect", "UI Architect"],
+      "skills": {
+        "javascript": 5, "typescript": 5, "react": 5, "nextjs": 4,
+        "html": 5, "css": 5, "design_systems": 5, "web_performance": 5,
+        "system_design": 4, "testing": 4, "git": 5
+      }
+    },
+    {
+      "role": "Backend Architect",
+      "aliases": ["Backend Software Architect", "Server Architect", "Backend Systems Architect"],
+      "skills": {
+        "system_design": 5, "microservices": 5, "api_design": 5,
+        "java": 4, "go": 4, "python": 4, "sql": 5, "database_design": 5,
+        "docker": 5, "kubernetes": 4, "aws": 4, "security": 4
+      }
+    },
+    {
+      "role": "API Architect",
+      "aliases": ["API Architecture Engineer", "API Solutions Architect", "Integration Architect"],
+      "skills": {
+        "api_design": 5, "rest_api": 5, "graphql": 4, "grpc": 4,
+        "microservices": 5, "oauth": 5, "jwt": 4, "system_design": 5,
+        "docker": 4, "kubernetes": 3, "aws": 4
+      }
+    },
+    {
+      "role": "Integration Engineer",
+      "aliases": ["Systems Integration Engineer", "Integration Developer", "Integration Specialist"],
+      "skills": {
+        "api_design": 5, "rest_api": 5, "graphql": 3, "sql": 4,
+        "etl": 4, "microservices": 4, "aws": 3, "docker": 3,
+        "python": 4, "java": 4, "git": 5
+      }
+    },
+    {
+      "role": "DevOps Architect",
+      "aliases": ["DevOps Solutions Architect", "DevOps Infrastructure Architect", "DevOps Architect"],
+      "skills": {
+        "devops": 5, "cloud_architecture": 5, "kubernetes": 5, "docker": 5,
+        "terraform": 5, "cicd": 5, "aws": 5, "linux": 5,
+        "system_design": 5, "security": 4, "monitoring": 4
+      }
+    },
+    {
+      "role": "Platform Security Engineer",
+      "aliases": ["Platform Security Specialist", "Infrastructure Security Engineer"],
+      "skills": {
+        "cybersecurity": 5, "cloud_security": 5, "kubernetes": 5,
+        "docker": 5, "iam": 5, "network_security": 5, "linux": 5,
+        "terraform": 4, "cicd": 5, "devsecops": 5
+      }
+    },
+    {
+      "role": "Identity and Access Management Engineer",
+      "aliases": ["IAM Engineer", "Identity Engineer", "Access Management Engineer"],
+      "skills": {
+        "iam": 5, "cybersecurity": 5, "oauth": 5, "jwt": 5,
+        "zero_trust": 4, "cloud_security": 5, "aws": 4, "azure": 4,
+        "python": 3, "network_security": 4
+      }
+    },
+    {
+      "role": "Application Support Engineer",
+      "aliases": ["Application Support Specialist", "Production Support Engineer", "Software Support Engineer"],
+      "skills": {
+        "linux": 4, "sql": 5, "python": 3, "java": 3, "troubleshooting": 5,
+        "networking": 4, "git": 3, "cloud_architecture": 3,
+        "monitoring": 5, "communication": 5
+      }
+    },
+    {
+      "role": "Site Reliability Developer",
+      "aliases": ["Reliability Software Engineer", "Production Engineer", "SRE Developer"],
+      "skills": {
+        "python": 4, "go": 4, "linux": 5, "kubernetes": 5, "docker": 5,
+        "cicd": 5, "terraform": 4, "monitoring": 5, "system_design": 5,
+        "aws": 4, "git": 5
+      }
+    },
+    {
+      "role": "DevOps Developer",
+      "aliases": ["DevOps Software Developer", "DevOps Programmer", "Automation DevOps Developer"],
+      "skills": {
+        "python": 4, "bash": 5, "docker": 5, "kubernetes": 5, "cicd": 5,
+        "terraform": 4, "aws": 4, "linux": 5, "git": 5, "ansible": 4
+      }
+    },
+    {
+      "role": "Data Platform Engineer",
+      "aliases": ["Data Platform Developer", "Data Infrastructure Engineer", "Data Platform Specialist"],
+      "skills": {
+        "python": 5, "sql": 5, "data_engineering": 5, "spark": 4,
+        "kafka": 4, "airflow": 5, "docker": 4, "kubernetes": 3,
+        "aws": 4, "terraform": 3, "data_warehousing": 5
+      }
+    },
+    {
+      "role": "ML Platform Engineer",
+      "aliases": ["Machine Learning Platform Engineer", "ML Infrastructure Engineer", "AI Platform Engineer"],
+      "skills": {
+        "python": 5, "mlops": 5, "machine_learning": 4, "docker": 5,
+        "kubernetes": 5, "terraform": 4, "cicd": 5, "aws": 4,
+        "model_deployment": 5, "monitoring": 5, "git": 5
+      }
+    },
+    {
+      "role": "AI Product Manager",
+      "aliases": ["AI PM", "Artificial Intelligence Product Manager", "GenAI Product Manager"],
+      "skills": {
+        "product_management": 5, "artificial_intelligence": 5, "generative_ai": 5,
+        "llm": 4, "product_strategy": 5, "roadmapping": 5,
+        "user_research": 4, "data_analysis": 4, "communication": 5,
+        "stakeholder_management": 5
+      }
+    },
+    {
+      "role": "AI Consultant",
+      "aliases": ["Artificial Intelligence Consultant", "AI Strategy Consultant", "AI Technology Consultant"],
+      "skills": {
+        "artificial_intelligence": 5, "generative_ai": 5, "llm": 4,
+        "machine_learning": 4, "technical_consulting": 5,
+        "business_analysis": 5, "cloud_architecture": 4,
+        "communication": 5, "stakeholder_management": 5
+      }
+    },
+    {
+      "role": "Data Consultant",
+      "aliases": ["Data Analytics Consultant", "Data Strategy Consultant", "Data Technology Consultant"],
+      "skills": {
+        "data_analysis": 5, "sql": 5, "python": 4, "data_visualization": 4,
+        "data_warehousing": 4, "business_analysis": 5,
+        "technical_consulting": 5, "communication": 5,
+        "stakeholder_management": 5
+      }
+    },
+    {
+      "role": "Digital Transformation Consultant",
+      "aliases": ["Digital Transformation Specialist", "Technology Transformation Consultant"],
+      "skills": {
+        "digital_transformation": 5, "business_analysis": 5,
+        "technical_consulting": 5, "cloud_architecture": 4,
+        "artificial_intelligence": 4, "project_management": 5,
+        "stakeholder_management": 5, "communication": 5
+      }
+    },
+    {
+      "role": "Automation Consultant",
+      "aliases": ["Process Automation Consultant", "Automation Strategy Consultant", "RPA Consultant"],
+      "skills": {
+        "automation": 5, "robotic_process_automation": 5, "uipath": 4,
+        "business_analysis": 5, "requirements_analysis": 5,
+        "technical_consulting": 5, "project_management": 4,
+        "communication": 5
+      }
+    },
+    {
+      "role": "Cybersecurity Consultant",
+      "aliases": ["Cyber Security Consultant", "Information Security Consultant", "Security Consultant"],
+      "skills": {
+        "cybersecurity": 5, "risk_management": 5, "network_security": 5,
+        "application_security": 4, "cloud_security": 4, "compliance": 5,
+        "penetration_testing": 3, "technical_consulting": 5,
+        "communication": 5
+      }
+    },
+    {
+      "role": "Security Operations Engineer",
+      "aliases": ["SOC Engineer", "Security Operations Engineer", "SecOps Engineer"],
+      "skills": {
+        "cybersecurity": 5, "siem": 5, "splunk": 5, "incident_response": 5,
+        "network_security": 5, "linux": 5, "python": 4,
+        "vulnerability_management": 4, "cloud_security": 4
+      }
+    },
+    {
+      "role": "Cloud DevOps Engineer",
+      "aliases": ["Cloud DevOps Specialist", "Cloud DevOps Developer", "Cloud Infrastructure DevOps Engineer"],
+      "skills": {
+        "aws": 5, "azure": 3, "docker": 5, "kubernetes": 5,
+        "terraform": 5, "cicd": 5, "linux": 5, "git": 5,
+        "ansible": 4, "monitoring": 4, "networking": 4
+      }
+    },
+    {
+      "role": "Software Performance Engineer",
+      "aliases": ["Performance Engineer", "Software Performance Specialist", "Application Performance Engineer"],
+      "skills": {
+        "performance_testing": 5, "system_design": 5, "sql": 4,
+        "linux": 5, "python": 4, "java": 4, "monitoring": 5,
+        "load_testing": 5, "docker": 3, "kubernetes": 3
+      }
+    },
+    {
+      "role": "Release Engineer",
+      "aliases": ["Release Management Engineer", "Build and Release Engineer", "Release Automation Engineer"],
+      "skills": {
+        "cicd": 5, "jenkins": 5, "github_actions": 4, "git": 5,
+        "docker": 5, "kubernetes": 4, "linux": 5, "bash": 4,
+        "terraform": 3, "automation": 5
+      }
+    },
+    {
+      "role": "Build Engineer",
+      "aliases": ["Build Systems Engineer", "Build and Automation Engineer"],
+      "skills": {
+        "cicd": 5, "git": 5, "jenkins": 4, "github_actions": 4,
+        "linux": 5, "bash": 4, "docker": 4, "cpp": 3, "java": 3,
+        "automation": 5
+      }
+    },
+    {
+      "role": "Linux Engineer",
+      "aliases": ["Linux Systems Engineer", "Linux Administrator", "Linux Infrastructure Engineer"],
+      "skills": {
+        "linux": 5, "bash": 5, "networking": 5, "system_administration": 5,
+        "python": 3, "docker": 4, "kubernetes": 3, "security": 4,
+        "monitoring": 4, "ansible": 4
+      }
+    },
+    {
+      "role": "Network Engineer",
+      "aliases": ["Network Administrator", "Network Infrastructure Engineer", "Networking Engineer"],
+      "skills": {
+        "networking": 5, "tcp_ip": 5, "dns": 5, "network_security": 5,
+        "routing": 5, "switching": 5, "vpn": 5, "firewalls": 5,
+        "wireshark": 4, "linux": 3
+      }
+    },
+    {
+      "role": "Cloud Network Engineer",
+      "aliases": ["Cloud Networking Engineer", "Cloud Network Specialist", "Network Cloud Engineer"],
+      "skills": {
+        "networking": 5, "tcp_ip": 5, "aws": 5, "azure": 4,
+        "cloud_architecture": 5, "network_security": 5, "vpn": 5,
+        "dns": 5, "load_balancing": 5, "terraform": 4
+      }
+    },
+    {
+      "role": "DevOps Security Engineer",
+      "aliases": ["DevSecOps Engineer", "Security DevOps Engineer", "DevOps Security Specialist"],
+      "skills": {
+        "devsecops": 5, "cybersecurity": 5, "cicd": 5, "docker": 5,
+        "kubernetes": 5, "cloud_security": 5, "application_security": 5,
+        "terraform": 4, "aws": 4, "linux": 5, "git": 5
+      }
+    },
+    {
+      "role": "Database Engineer",
+      "aliases": ["Database Systems Engineer", "Database Infrastructure Engineer", "DB Engineer"],
+      "skills": {
+        "sql": 5, "postgresql": 5, "mysql": 5, "database_design": 5,
+        "data_modeling": 5, "redis": 3, "mongodb": 3, "linux": 4,
+        "performance_tuning": 5, "backup_recovery": 4, "cloud_architecture": 3
+      }
+    },
+    {
+      "role": "Data Warehouse Engineer",
+      "aliases": ["Data Warehouse Developer", "Data Warehouse Specialist", "DWH Engineer"],
+      "skills": {
+        "sql": 5, "data_warehousing": 5, "data_modeling": 5, "etl": 5,
+        "snowflake": 5, "bigquery": 4, "redshift": 4, "dbt": 4,
+        "python": 3, "airflow": 4
+      }
+    },
+    {
+      "role": "Analytics Developer",
+      "aliases": ["Analytics Engineer", "Business Analytics Developer", "Data Analytics Developer"],
+      "skills": {
+        "sql": 5, "python": 4, "data_analysis": 5, "data_visualization": 5,
+        "powerbi": 4, "tableau": 4, "dbt": 4, "data_modeling": 4,
+        "statistics": 4, "excel": 4
+      }
+    },
+    {
+      "role": "Product Analyst",
+      "aliases": ["Product Data Analyst", "Product Analytics Analyst", "Product Analytics Specialist"],
+      "skills": {
+        "sql": 5, "data_analysis": 5, "statistics": 5, "python": 3,
+        "excel": 4, "data_visualization": 4, "product_management": 4,
+        "user_research": 3, "communication": 5
+      }
+    },
+    {
+      "role": "Marketing Data Analyst",
+      "aliases": ["Marketing Analyst", "Digital Marketing Analyst", "Marketing Analytics Analyst"],
+      "skills": {
+        "sql": 4, "excel": 5, "data_analysis": 5, "statistics": 4,
+        "data_visualization": 4, "powerbi": 3, "python": 3,
+        "market_research": 5, "communication": 5
+      }
+    },
+    {
+      "role": "Technical Support Engineer",
+      "aliases": ["Technical Support Specialist", "IT Support Engineer", "Support Engineer"],
+      "skills": {
+        "troubleshooting": 5, "linux": 4, "networking": 4, "sql": 3,
+        "cloud_architecture": 3, "python": 2, "communication": 5,
+        "technical_writing": 4, "customer_support": 5
+      }
+    },
+    {
+      "role": "IT Support Specialist",
+      "aliases": ["IT Support Technician", "Help Desk Specialist", "Technical Support Specialist"],
+      "skills": {
+        "system_administration": 4, "networking": 4, "windows": 5,
+        "linux": 3, "troubleshooting": 5, "cybersecurity": 3,
+        "communication": 5, "customer_support": 5
+      }
+    },
+    {
+      "role": "Solutions Analyst",
+      "aliases": ["Business Solutions Analyst", "Technology Solutions Analyst", "IT Solutions Analyst"],
+      "skills": {
+        "business_analysis": 5, "requirements_analysis": 5, "sql": 4,
+        "data_analysis": 4, "system_design": 3, "api_design": 3,
+        "stakeholder_management": 5, "communication": 5, "jira": 4
+      }
+    },
+    {
+      "role": "Technical Account Manager",
+      "aliases": ["TAM", "Technical Customer Success Manager", "Technical Account Specialist"],
+      "skills": {
+        "technical_consulting": 4, "cloud_architecture": 3, "rest_api": 3,
+        "sql": 2, "communication": 5, "stakeholder_management": 5,
+        "project_management": 4, "customer_support": 5
+      }
+    },
+    {
+      "role": "Customer Success Engineer",
+      "aliases": ["Technical Customer Success Engineer", "Customer Success Technical Engineer"],
+      "skills": {
+        "technical_consulting": 4, "rest_api": 4, "sql": 3,
+        "cloud_architecture": 3, "troubleshooting": 5,
+        "communication": 5, "stakeholder_management": 5,
+        "customer_support": 5
+      }
+    },
+    {
+      "role": "Technical Program Manager",
+      "aliases": ["TPM", "Technical Program Manager", "Technology Program Manager"],
+      "skills": {
+        "technical_project_management": 5, "project_management": 5,
+        "agile": 5, "risk_management": 5, "stakeholder_management": 5,
+        "communication": 5, "system_design": 3, "roadmapping": 4,
+        "jira": 4
+      }
+    },
+    {
+      "role": "IT Governance Analyst",
+      "aliases": ["IT Governance Specialist", "Technology Governance Analyst"],
+      "skills": {
+        "governance": 5, "compliance": 5, "risk_management": 5,
+        "cybersecurity": 4, "audit": 4, "documentation": 5,
+        "communication": 5, "stakeholder_management": 4
+      }
+    },
+    {
+      "role": "Risk Analyst",
+      "aliases": ["Technology Risk Analyst", "IT Risk Analyst", "Risk Management Analyst"],
+      "skills": {
+        "risk_management": 5, "data_analysis": 4, "excel": 4,
+        "sql": 3, "compliance": 5, "cybersecurity": 4,
+        "communication": 5, "documentation": 5
+      }
+    }]
+}
