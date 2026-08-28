@@ -32,7 +32,7 @@
     <div class="page-hero-inner">
       <div class="page-eyebrow">SIGN IN</div>
       <h1 class="page-title">Welcome back.</h1>
-      <p class="page-sub">Sign in with email, password and OTP — real OTP to your email via SMTP. <span style="color:#8FA69A;">are you industry ready</span></p>
+      <p class="page-sub">Sign in with email, password and OTP — Supabase Auth via SMTP. <span style="color:#8FA69A;">are you industry ready</span></p>
     </div>
   </section>
 
@@ -62,20 +62,12 @@
         <button type="submit" id="signinBtn" class="btn-primary" style="width:100%; justify-content:center; padding: 12px 18px; font-size: 14px;">
           <span id="btnText">Sign In</span> <span class="arrow">↗</span>
         </button>
-
-        <div style="display:flex; align-items:center; gap:12px; margin: 18px 0;">
-          <div style="flex:1; height:1px; background:#1A1C1E;"></div>
-          <span style="font-size:11px; color:#6F7377; letter-spacing:0.06em;">OR</span>
-          <div style="flex:1; height:1px; background:#1A1C1E;"></div>
-        </div>
-
-        <button type="button" id="demoBtn" class="btn-secondary" style="width:100%; justify-content:center;">Continue as demo</button>
       </form>
 
-      <!-- OTP Section - Real flow only -->
+      <!-- OTP Section - Supabase only, real email -->
       <div id="otpSection" style="display:none; margin-top:22px; border-top:1px solid #1A1C1E; padding-top:22px;">
         <h3 style="font-size:14px; color:#F5F5F5; margin-bottom:6px;">Check your email</h3>
-        <p id="otpHint" style="font-size:12px; color:#6F7377; margin-bottom:12px;">We sent a 6-digit OTP to your email. Please check your inbox and spam folder. Expires in 10 minutes.</p>
+        <p id="otpHint" style="font-size:12px; color:#6F7377; margin-bottom:12px;">We sent a 6-digit OTP to your email via Supabase SMTP. Please check inbox and spam. Expires in 10 minutes.</p>
         <div style="display:flex; gap:10px;">
           <input id="otpInput" type="text" inputmode="numeric" maxlength="6" placeholder="123456" style="flex:1; text-align:center; letter-spacing:0.3em; font-size:18px; font-weight:600;" autocomplete="one-time-code" />
           <button id="verifyOtpBtn" class="btn-primary" style="padding: 10px 18px;">Verify</button>
@@ -90,7 +82,7 @@
       <p style="margin-top:20px; font-size:12px; color:#6F7377; text-align:center; line-height:1.5;">No account? <a href="get-started.html" style="color:#C7D6CF; text-decoration:underline; text-underline-offset:3px;">Get Started</a> — are you industry ready</p>
     </div>
 
-    <p style="text-align:center; margin-top:16px; font-size:11px; color:#3A3E41;">Real OTP via SMTP — check your email.</p>
+    <p style="text-align:center; margin-top:16px; font-size:11px; color:#3A3E41;">Production OTP via Supabase SMTP only.</p>
   </section>
 
   <footer class="footer">
@@ -112,7 +104,6 @@
     const errorEl = document.getElementById('authError');
     const successEl = document.getElementById('authSuccess');
     const btnText = document.getElementById('btnText');
-    const demoBtn = document.getElementById('demoBtn');
     const otpSection = document.getElementById('otpSection');
     const otpInput = document.getElementById('otpInput');
     const otpError = document.getElementById('otpError');
@@ -148,31 +139,24 @@
       }, 1000);
     }
 
-    // If already logged in, go dashboard
+    // If already logged in via Supabase, go dashboard
     (async () => {
       const sb = await getSupabase();
       if (sb) {
         const { data: { session } } = await sb.auth.getSession();
         if (session) window.location.href = 'dashboard.html';
       }
-      const token = localStorage.getItem("skilly_token");
-      if (token && token !== "demo-token") {
-        try {
-          const r = await window.fetchApi('/api/auth/me', { headers: { Authorization: "Bearer " + token } });
-          if (r.ok) window.location.href = 'dashboard.html';
-        } catch {}
-      }
     })();
 
     function showOtp(email) {
       pendingEmail = email;
       otpSection.style.display = 'block';
-      otpHint.textContent = `We sent a 6-digit OTP to ${email}. Please check your inbox and spam folder.`;
+      otpHint.textContent = `We sent a 6-digit OTP to ${email} via Supabase SMTP. Please check inbox and spam.`;
       startTimer();
       form.style.opacity = '0.6';
       form.style.pointerEvents = 'none';
       otpInput.focus();
-      showSuccess('OTP sent to your email. Please check inbox and spam.');
+      showSuccess('OTP sent to your email via Supabase. Please check inbox.');
     }
 
     form.addEventListener('submit', async (e) => {
@@ -181,82 +165,35 @@
       const email = emailEl.value.trim();
       const password = passEl.value;
       if (!email) return showError('Please enter email.');
+      const sb = await getSupabase();
+      if (!sb) return showError('Supabase not configured');
       if (otpModePasswordless) {
         if (!email) return showError('Enter email for OTP login');
         btnText.textContent = 'Sending OTP...';
         try {
-          const sb = await getSupabase();
-          if (sb) {
-            const { error } = await sb.auth.signInWithOtp({ email });
-            if (error) throw new Error(error.message);
-          }
-          // Also trigger Python OTP for fallback (real email via SMTP)
-          await window.fetchApi('/api/auth/request-otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
-          });
+          const { error } = await sb.auth.signInWithOtp({ email });
+          if (error) throw new Error(error.message);
           showOtp(email);
           btnText.textContent = 'OTP Sent';
         } catch (err) {
-          // Fallback to Python only
-          try {
-            const res = await window.fetchApi('/api/auth/request-otp', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.detail || 'Failed to send OTP');
-            showOtp(email);
-            btnText.textContent = 'OTP Sent';
-          } catch (be) {
-            showError(err.message || be.message);
-            btnText.textContent = 'Send OTP';
-          }
+          showError(err.message);
+          btnText.textContent = 'Send OTP';
         }
         return;
       }
       if (!password) return showError('Please enter password.');
       btnText.textContent = 'Signing in...';
-      // Try Supabase first, then Python backend (real OTP via SMTP)
       try {
-        const sb = await getSupabase();
-        if (sb) {
-          const { error } = await sb.auth.signInWithPassword({ email, password });
-          if (error && error.message.toLowerCase().includes("invalid login")) {
-            throw new Error("Invalid email or password");
-          } else if (error) {
-            // Try Python backend as fallback
-            console.warn("Supabase signIn failed, trying Python:", error.message);
-          }
-        }
-      } catch (sbErr) {
-        if (sbErr.message.includes("Invalid email")) { showError(sbErr.message); btnText.textContent = 'Sign In'; return; }
-      }
-      // Python backend signin (sends real OTP via SMTP)
-      try {
-        const res = await window.fetchApi('/api/auth/signin', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Sign in failed');
-        if (data.requires_otp) {
-          // Also trigger Supabase OTP for real flow
-          try { const sb = await getSupabase(); if (sb) await sb.auth.signInWithOtp({ email }); } catch {}
-          showOtp(email);
-          btnText.textContent = 'OTP Sent';
-          return;
-        }
-        if (data.access_token) {
-          localStorage.setItem('skilly_token', data.access_token);
-          localStorage.setItem('skilly_user', JSON.stringify(data.user));
-          window.location.href = 'dashboard.html';
-        }
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) throw new Error(error.message);
+        // Password OK - Supabase may require OTP if MFA enabled, or we force OTP via signInWithOtp
+        // Send OTP for second factor via Supabase
+        const { error: otpErr } = await sb.auth.signInWithOtp({ email });
+        if (otpErr) console.warn("OTP send after password:", otpErr.message);
+        showOtp(email);
+        btnText.textContent = 'OTP Sent';
       } catch (err) {
-        showError(err.message || 'Sign in failed. Try demo or create an account.');
+        showError(err.message || 'Sign in failed.');
         btnText.textContent = 'Sign In';
       }
     });
@@ -269,7 +206,7 @@
         passEl.required = false;
         btnText.textContent = 'Send OTP (passwordless)';
         e.target.textContent = 'Use password instead?';
-        showSuccess('Passwordless OTP: we will send OTP to your email via SMTP.');
+        showSuccess('Passwordless OTP via Supabase SMTP.');
       } else {
         passEl.parentElement.style.display = 'flex';
         passEl.required = true;
@@ -285,69 +222,43 @@
       showOtpError('');
       const btn = document.getElementById('verifyOtpBtn');
       btn.textContent = 'Verifying...';
-      let verified = false;
-      let lastError = null;
       const email = pendingEmail;
-      // Try Supabase verify first (real OTP from email)
-      try {
-        const sb = await getSupabase();
-        if (sb) {
-          for (const t of ['email', 'magiclink', 'signup']) {
-            const { data, error } = await sb.auth.verifyOtp({ email, token: code, type: t });
-            if (!error && data.session) {
-              verified = true;
-              try {
-                const syncRes = await window.fetchApi('/api/auth/supabase-sync', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ email, supabase_user_id: data.user.id })
-                });
-                const syncData = await syncRes.json();
-                if (syncRes.ok && syncData.access_token) {
-                  localStorage.setItem('skilly_token', syncData.access_token);
-                  localStorage.setItem('skilly_user', JSON.stringify(syncData.user));
-                } else {
-                  localStorage.setItem('skilly_user', JSON.stringify({ email, id: data.user.id }));
-                  if (data.session.access_token) localStorage.setItem('skilly_token', data.session.access_token);
-                }
-              } catch {
-                localStorage.setItem('skilly_user', JSON.stringify({ email, id: data.user.id }));
-                if (data.session.access_token) localStorage.setItem('skilly_token', data.session.access_token);
-              }
-              break;
-            } else if (error) {
-              lastError = error.message;
+      const sb = await getSupabase();
+      if (!sb) return showOtpError('Supabase not configured');
+      // Try email type first (for signInWithOtp), then signup
+      let lastError = null;
+      for (const type of ['email', 'signup', 'magiclink']) {
+        const { data, error } = await sb.auth.verifyOtp({ email, token: code, type });
+        if (!error && data.session) {
+          // Sync to Python backend for history (get Python JWT)
+          try {
+            const syncRes = await window.fetchApi('/api/auth/supabase-sync', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, supabase_user_id: data.user.id })
+            });
+            const syncData = await syncRes.json();
+            if (syncRes.ok && syncData.access_token) {
+              localStorage.setItem('skilly_token', syncData.access_token);
+              localStorage.setItem('skilly_user', JSON.stringify(syncData.user));
+            } else {
+              localStorage.setItem('skilly_token', data.session.access_token);
+              localStorage.setItem('skilly_user', JSON.stringify({ email, id: data.user.id }));
             }
+          } catch {
+            localStorage.setItem('skilly_token', data.session.access_token);
+            localStorage.setItem('skilly_user', JSON.stringify({ email, id: data.user.id }));
           }
-        }
-      } catch (e) {
-        lastError = e.message;
-      }
-      // Fallback to Python backend OTP (real SMTP)
-      if (!verified) {
-        try {
-          const res = await window.fetchApi('/api/auth/verify-otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, code })
-          });
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.detail || 'OTP verification failed');
-          localStorage.setItem('skilly_token', data.access_token);
-          localStorage.setItem('skilly_user', JSON.stringify(data.user));
-          verified = true;
-        } catch (be) {
-          lastError = be.message;
+          showSuccess('Verified! Redirecting...');
+          clearInterval(timerInt);
+          setTimeout(()=> window.location.href = 'dashboard.html', 600);
+          return;
+        } else if (error) {
+          lastError = error.message;
         }
       }
-      if (verified) {
-        showSuccess('Verified! Redirecting...');
-        clearInterval(timerInt);
-        setTimeout(()=> window.location.href = 'dashboard.html', 600);
-      } else {
-        showOtpError(lastError || 'Invalid OTP. Please check your email or resend.');
-        btn.textContent = 'Verify';
-      }
+      showOtpError(lastError || 'Invalid OTP. Please check email or resend.');
+      btn.textContent = 'Verify';
     }
     document.getElementById('verifyOtpBtn').addEventListener('click', verifyOtp);
     otpInput.addEventListener('keydown', e=> { if(e.key==='Enter') verifyOtp(); });
@@ -359,26 +270,12 @@
       btn.textContent = 'Sending...';
       try {
         const sb = await getSupabase();
-        if (sb) await sb.auth.signInWithOtp({ email: pendingEmail });
-      } catch {}
-      try {
-        const res = await window.fetchApi('/api/auth/request-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: pendingEmail })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Resend failed');
-        showSuccess('OTP resent to your email. Please check inbox and spam.');
+        const { error } = await sb.auth.signInWithOtp({ email: pendingEmail });
+        if (error) throw new Error(error.message);
+        showSuccess('OTP resent to your email via Supabase SMTP.');
         startTimer();
       } catch (err) { showOtpError(err.message); }
       btn.textContent = 'Resend OTP';
-    });
-
-    demoBtn.addEventListener('click', async () => {
-      localStorage.setItem('skilly_user', JSON.stringify({ email: 'demo@skilly.local', id: 'demo', demo: true }));
-      localStorage.setItem('skilly_token', 'demo-token');
-      window.location.href = 'dashboard.html';
     });
   </script>
 </body>

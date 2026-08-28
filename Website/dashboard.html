@@ -251,7 +251,7 @@
         </div>
       </div>
       <div class="dash-card" style="text-align:center; margin-top:16px;">
-        <p style="margin:0; font-size:12px; color:#A8AAAD;">All plans include secure OTP login via Python backend. No hardcoded secrets. <span style="color:#8FA69A;">Hackathon demo: pretend Pro is active.</span></p>
+        <p style="margin:0; font-size:12px; color:#A8AAAD;">All plans include secure OTP login via Python backend. No hardcoded secrets. <span style="color:#8FA69A;">Production: Pro features active for verified users.</span></p>
       </div>
     </div>
 
@@ -430,9 +430,34 @@
     });
 
     async function checkAuth() {
+      // Production: Supabase Auth only, no demo
+      const sb = await getSupabase();
+      if (sb) {
+        const { data: { session } } = await sb.auth.getSession();
+        if (session && session.user) {
+          document.getElementById("userEmail").textContent = session.user.email;
+          document.getElementById("welcomeMsg").textContent = "Welcome, " + (session.user.user_metadata?.full_name || session.user.email) + " — your AI assessment is below.";
+          // Ensure Python JWT exists for DB via sync
+          let token = localStorage.getItem("skilly_token");
+          if (!token) {
+            try {
+              const syncRes = await window.fetchApi('/api/auth/supabase-sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: session.user.email, supabase_user_id: session.user.id, full_name: session.user.user_metadata?.full_name })
+              });
+              const syncData = await syncRes.json();
+              if (syncRes.ok && syncData.access_token) {
+                localStorage.setItem('skilly_token', syncData.access_token);
+                localStorage.setItem('skilly_user', JSON.stringify(syncData.user));
+              }
+            } catch {}
+          }
+          return session.user;
+        }
+      }
       const token = localStorage.getItem("skilly_token");
-      const localUser = JSON.parse(localStorage.getItem("skilly_user") || "null");
-      if (token && token !== "demo-token") {
+      if (token) {
         try {
           const r = await window.fetchApi("/api/auth/me", { headers: { Authorization: "Bearer " + token } });
           if (r.ok) {
@@ -443,26 +468,20 @@
           }
         } catch {}
       }
-      if (localUser) {
-        document.getElementById("userEmail").textContent = localUser.email;
-        document.getElementById("welcomeMsg").textContent = "Welcome, " + localUser.email + (localUser.demo ? " (demo)" : "");
-        if (localUser.demo) return localUser;
-      }
-      const hasToken = !!token || !!localUser;
-      if (!hasToken) {
-        document.getElementById("welcomeMsg").textContent = "Sign in to save your AI assessment, or continue as demo.";
-      }
-      if (localUser) return localUser;
-      return localUser;
+      // No valid session -> redirect to signin (production, no demo)
+      window.location.href = "signin.html";
+      return null;
     }
 
     document.getElementById("logoutBtn").addEventListener("click", async (e) => {
       e.preventDefault();
+      const sb = await getSupabase();
+      if (sb) try { await sb.auth.signOut(); } catch {}
       localStorage.removeItem("skilly_user");
       localStorage.removeItem("skilly_token");
       localStorage.removeItem("skilly_onboarding_done");
       localStorage.removeItem("skilly_ai_state");
-      if (window.supabaseClient) try { await supabaseClient.auth.signOut(); } catch {}
+      localStorage.removeItem("skilly_history");
       window.location.href = "signin.html";
     });
 
@@ -551,7 +570,7 @@
     async function pushHistory(entry) {
       // Try proper DB first (Supabase Postgres via Python backend)
       const token = localStorage.getItem("skilly_token");
-      if (token && token !== "demo-token") {
+      if (token) {
         try {
           const res = await window.fetchApi("/api/history", {
             method: "POST",
@@ -583,14 +602,14 @@
           console.warn("[history] DB save failed, fallback to local:", e.message);
         }
       }
-      // Always also keep local cache for demo/offline
+      // Keep local cache as offline fallback
       const hist = getHistoryLocal();
       hist.unshift(entry);
       localStorage.setItem("skilly_history", JSON.stringify(hist.slice(0,20)));
     }
     async function fetchHistoryFromDB() {
       const token = localStorage.getItem("skilly_token");
-      if (!token || token === "demo-token") return null;
+      if (!token) return null;
       try {
         const r = await window.fetchApi("/api/history", { headers: { Authorization: "Bearer " + token } });
         if (!r.ok) return null;

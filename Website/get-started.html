@@ -32,7 +32,7 @@
     <div class="page-hero-inner">
       <div class="page-eyebrow">GET STARTED</div>
       <h1 class="page-title">Create your account.</h1>
-      <p class="page-sub">Join skilly — <span style="color:#8FA69A;">are you industry ready</span> — with email, password and OTP verification via Supabase + Python backend.</p>
+      <p class="page-sub">Join skilly - <span style="color:#8FA69A;">are you industry ready</span> - with email, password and OTP verification via Supabase Auth.</p>
     </div>
   </section>
 
@@ -53,28 +53,18 @@
         <div style="display:flex; flex-direction:column; gap:6px; margin-bottom: 16px;">
           <label for="password" style="margin:0;">Password</label>
           <input id="password" type="password" placeholder="At least 6 characters" required autocomplete="new-password" />
-          <span style="font-size:11px; color:#6F7377;">Must be at least 6 characters. Supabase will handle secure storage.</span>
+          <span style="font-size:11px; color:#6F7377;">Must be at least 6 characters. Supabase handles secure storage.</span>
         </div>
 
         <button type="submit" id="signupBtn" class="btn-primary" style="width:100%; justify-content:center; padding: 12px 18px; font-size: 14px; margin-top: 4px;">
           <span id="btnText">Create Account</span> <span class="arrow">↗</span>
         </button>
-
-        <div style="display:flex; align-items:center; gap:12px; margin: 18px 0;">
-          <div style="flex:1; height:1px; background:#1A1C1E;"></div>
-          <span style="font-size:11px; color:#6F7377; letter-spacing:0.06em;">OR</span>
-          <div style="flex:1; height:1px; background:#1A1C1E;"></div>
-        </div>
-
-        <button type="button" id="demoBtn" class="btn-secondary" style="width:100%; justify-content:center;">Continue as demo</button>
       </form>
 
-      <!-- OTP Section -->
+      <!-- OTP Section - Supabase only, real email via SMTP -->
       <div id="otpSection" style="display:none; margin-top:22px; border-top:1px solid #1A1C1E; padding-top:22px;">
-        <h3 style="font-size:14px; color:#F5F5F5; margin-bottom:6px;">Verify your email (OTP)</h3>
-        <p id="otpHint" style="font-size:12px; color:#6F7377; margin-bottom:12px;">We sent a 6-digit OTP to your email via Supabase + Python backend. Enter it below. In development, Python OTP appears as DEV OTP.</p>
-        <div id="debugOtpBox" style="display:none; background: rgba(199,214,207,0.08); border:1px dashed rgba(199,214,207,0.18); padding:10px; border-radius:10px; margin-bottom:12px; font-size:12px; color:#C7D6CF;"></div>
-        <div id="supabaseOtpInfo" style="display:none; background: rgba(120,180,140,0.06); border:1px solid rgba(120,180,140,0.12); padding:10px; border-radius:10px; margin-bottom:12px; font-size:12px; color:#A8AAAD;"></div>
+        <h3 style="font-size:14px; color:#F5F5F5; margin-bottom:6px;">Check your email</h3>
+        <p id="otpHint" style="font-size:12px; color:#6F7377; margin-bottom:12px;">We sent a 6-digit OTP to your email via Supabase SMTP. Please check inbox and spam. Expires in 10 minutes.</p>
         <div style="display:flex; gap:10px;">
           <input id="otpInput" type="text" inputmode="numeric" maxlength="6" placeholder="123456" style="flex:1; text-align:center; letter-spacing:0.3em; font-size:18px; font-weight:600;" autocomplete="one-time-code" />
           <button id="verifyOtpBtn" class="btn-primary" style="padding: 10px 18px;">Verify</button>
@@ -89,7 +79,7 @@
       <p style="margin-top:20px; font-size:12px; color:#6F7377; text-align:center;">Already have an account? <a href="signin.html" style="color:#C7D6CF; text-decoration:underline; text-underline-offset:3px;">Sign In</a></p>
     </div>
 
-    <p style="text-align:center; margin-top:16px; font-size:11px; color:#3A3E41;">Supabase Auth (email/pass) + Python OTP. Data stored in Supabase Postgres via Python backend.</p>
+    <p style="text-align:center; margin-top:16px; font-size:11px; color:#3A3E41;">Supabase Auth with real SMTP. Production flow only.</p>
   </section>
 
   <footer class="footer">
@@ -112,17 +102,13 @@
     const otpSection = document.getElementById('otpSection');
     const otpInput = document.getElementById('otpInput');
     const otpHint = document.getElementById('otpHint');
-    const debugOtpBox = document.getElementById('debugOtpBox');
-    const supabaseOtpInfo = document.getElementById('supabaseOtpInfo');
     const otpError = document.getElementById('otpError');
     const otpTimer = document.getElementById('otpTimer');
 
     let pendingEmail = null;
     let pendingFullName = null;
-    let pendingPassword = null;
     let otpExpires = null;
     let timerInt = null;
-    let supabaseUserId = null;
 
     function showError(msg) {
       errorEl.textContent = msg;
@@ -154,24 +140,16 @@
         if (left<=0) { clearInterval(timerInt); otpTimer.textContent = "Expired - request new OTP"; }
       }, 1000);
     }
-    function showOtpSection(email, fullName, debugOtp, supabaseMsg) {
+    function showOtpSection(email, fullName) {
       pendingEmail = email;
       pendingFullName = fullName;
       otpSection.style.display = 'block';
-      otpHint.textContent = `We sent a 6-digit OTP to ${email} via Supabase and Python backend. Enter it below.`;
-      if (debugOtp) {
-        debugOtpBox.style.display = 'block';
-        debugOtpBox.innerHTML = `Python DEV OTP: <b style="letter-spacing:0.2em; font-size:16px;">${debugOtp}</b> <span style="color:#6F7377; font-size:11px;">(hackathon demo)</span>`;
-      }
-      if (supabaseMsg) {
-        supabaseOtpInfo.style.display = 'block';
-        supabaseOtpInfo.textContent = supabaseMsg;
-      }
+      otpHint.textContent = `We sent a 6-digit OTP to ${email} via Supabase SMTP. Please check inbox and spam.`;
       startTimer();
       otpInput.focus();
       form.style.opacity = '0.5';
       form.style.pointerEvents = 'none';
-      showSuccess('OTP sent! Check email and dev box below.');
+      showSuccess('OTP sent to your email via Supabase. Please check inbox.');
     }
 
     form.addEventListener('submit', async (e) => {
@@ -180,82 +158,22 @@
       const fullName = document.getElementById('fullName').value.trim();
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
-      pendingPassword = password;
       if (!fullName || !email || !password) return showError('Please fill all fields.');
       if (password.length < 6) return showError('Password must be at least 6 characters.');
       btnText.textContent = 'Creating...';
-      let supabaseMsg = null;
-      let debugOtp = null;
-      let supabaseOk = false;
-
-      // Try Supabase signUp first
       try {
         const sb = await getSupabase();
-        if (sb) {
-          const { data, error } = await sb.auth.signUp({
-            email, password,
-            options: { data: { full_name: fullName } }
-          });
-          if (error) {
-            if (error.message.toLowerCase().includes("already registered") || error.message.toLowerCase().includes("already exists")) {
-              throw new Error("Email already registered. Try sign in.");
-            }
-            // if supabase not configured, fall through to backend
-            console.warn("Supabase signUp error:", error.message);
-            supabaseMsg = "Supabase: " + error.message + " (fallback to Python backend)";
-          } else {
-            supabaseOk = true;
-            supabaseUserId = data.user?.id || null;
-            if (data.user && !data.session) {
-              supabaseMsg = "Supabase confirmation email sent (type 'signup'). Also Python OTP below for demo.";
-            } else if (data.session) {
-              supabaseMsg = "Supabase account created (auto-confirmed). Python OTP still required for demo verification.";
-            }
-            // also send Supabase OTP via signInWithOtp for demo
-            try {
-              await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
-              supabaseMsg += " Supabase OTP email requested.";
-            } catch (otpErr) {
-              console.warn("Supabase OTP send failed:", otpErr.message);
-            }
-          }
-        }
-      } catch (sbErr) {
-        showError(sbErr.message);
-        // don't return, try backend as fallback
-        console.warn("Supabase signup fallback:", sbErr.message);
-      }
-
-      // Always create via Python backend as well (ensures profile in our DB and Python OTP)
-      try {
-        const res = await window.fetchApi('/api/auth/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, full_name: fullName })
+        if (!sb) throw new Error("Supabase not configured");
+        const { data, error } = await sb.auth.signUp({
+          email, password,
+          options: { data: { full_name: fullName } }
         });
-        const data = await res.json();
-        if (!res.ok) {
-          // if already registered but supabase succeeded, still show OTP
-          if (data.detail && data.detail.includes("already registered") && supabaseOk) {
-            debugOtp = null;
-            supabaseMsg = (supabaseMsg || "") + " Backend: already registered, use OTP from email.";
-          } else {
-            throw new Error(data.detail || 'Backend signup failed');
-          }
-        } else {
-          debugOtp = data.debug_otp;
-        }
-        showOtpSection(email, fullName, debugOtp, supabaseMsg);
+        if (error) throw new Error(error.message);
+        // Supabase sends OTP via SMTP (already configured)
+        showOtpSection(email, fullName);
         btnText.textContent = 'OTP Sent';
-        return;
-      } catch (be) {
-        // if supabase succeeded, still show OTP even if backend failed
-        if (supabaseOk) {
-          showOtpSection(email, fullName, null, supabaseMsg);
-          btnText.textContent = 'OTP Sent';
-          return;
-        }
-        showError(be.message || 'Sign up failed.');
+      } catch (err) {
+        showError(err.message || 'Sign up failed.');
         btnText.textContent = 'Create Account';
       }
     });
@@ -266,73 +184,46 @@
       showOtpError('');
       const btn = document.getElementById('verifyOtpBtn');
       btn.textContent = 'Verifying...';
-      let verified = false;
-      let lastError = null;
-
-      // Try Supabase verifyOtp first (type signup)
       try {
         const sb = await getSupabase();
-        if (sb) {
-          const types = ['signup', 'email', 'magiclink'];
-          for (const t of types) {
-            const { data, error } = await sb.auth.verifyOtp({ email: pendingEmail, token: code, type: t });
-            if (!error && data.session) {
-              verified = true;
-              // Sync to backend to get Python JWT for DB access
-              try {
-                const syncRes = await window.fetchApi('/api/auth/supabase-sync', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ email: pendingEmail, supabase_user_id: data.user.id, full_name: pendingFullName })
-                });
-                const syncData = await syncRes.json();
-                if (syncRes.ok && syncData.access_token) {
-                  localStorage.setItem('skilly_token', syncData.access_token);
-                  localStorage.setItem('skilly_user', JSON.stringify(syncData.user));
-                } else {
-                  // fallback store supabase session
-                  localStorage.setItem('skilly_user', JSON.stringify({ email: pendingEmail, id: data.user.id }));
-                  if (data.session.access_token) localStorage.setItem('skilly_token', data.session.access_token);
-                }
-              } catch (syncErr) {
-                localStorage.setItem('skilly_user', JSON.stringify({ email: pendingEmail, id: data.user.id }));
-                if (data.session.access_token) localStorage.setItem('skilly_token', data.session.access_token);
+        if (!sb) throw new Error("Supabase not configured");
+        // Try signup type first, then email
+        let verified = false;
+        let lastError = null;
+        for (const type of ['signup', 'email']) {
+          const { data, error } = await sb.auth.verifyOtp({ email: pendingEmail, token: code, type });
+          if (!error && data.session) {
+            verified = true;
+            // Sync to Python backend for history (get Python JWT)
+            try {
+              const syncRes = await window.fetchApi('/api/auth/supabase-sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: pendingEmail, supabase_user_id: data.user.id, full_name: pendingFullName })
+              });
+              const syncData = await syncRes.json();
+              if (syncRes.ok && syncData.access_token) {
+                localStorage.setItem('skilly_token', syncData.access_token);
+                localStorage.setItem('skilly_user', JSON.stringify(syncData.user));
+              } else {
+                localStorage.setItem('skilly_token', data.session.access_token);
+                localStorage.setItem('skilly_user', JSON.stringify({ email: pendingEmail, id: data.user.id, full_name: pendingFullName }));
               }
-              break;
-            } else if (error) {
-              lastError = error.message;
+            } catch {
+              localStorage.setItem('skilly_token', data.session.access_token);
+              localStorage.setItem('skilly_user', JSON.stringify({ email: pendingEmail, id: data.user.id }));
             }
+            break;
+          } else if (error) {
+            lastError = error.message;
           }
         }
-      } catch (e) {
-        lastError = e.message;
-        console.warn("Supabase verify failed:", e.message);
-      }
-
-      // If not verified via Supabase, try Python backend
-      if (!verified) {
-        try {
-          const res = await window.fetchApi('/api/auth/verify-otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: pendingEmail, code, full_name: pendingFullName })
-          });
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.detail || 'OTP verification failed');
-          localStorage.setItem('skilly_token', data.access_token);
-          localStorage.setItem('skilly_user', JSON.stringify(data.user));
-          verified = true;
-        } catch (be) {
-          lastError = be.message;
-        }
-      }
-
-      if (verified) {
-        showSuccess('Verified! Taking you to dashboard...');
+        if (!verified) throw new Error(lastError || 'Invalid OTP');
+        showSuccess('Verified! Redirecting...');
         clearInterval(timerInt);
         setTimeout(() => window.location.href = 'dashboard.html', 600);
-      } else {
-        showOtpError(lastError || 'OTP verification failed. Try dev OTP or resend.');
+      } catch (err) {
+        showOtpError(err.message || 'OTP verification failed. Please check code or resend.');
         btn.textContent = 'Verify';
       }
     }
@@ -344,42 +235,19 @@
     document.getElementById('resendOtpBtn').addEventListener('click', async () => {
       if (!pendingEmail) return;
       showOtpError('');
-      let msg = "";
-      // Resend via Supabase
+      const btn = document.getElementById('resendOtpBtn');
+      btn.textContent = 'Sending...';
       try {
         const sb = await getSupabase();
-        if (sb) await sb.auth.signInWithOtp({ email: pendingEmail });
-        msg += "Supabase OTP resent. ";
-      } catch {}
-      // Resend via Python
-      try {
-        const res = await window.fetchApi('/api/auth/request-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: pendingEmail, full_name: pendingFullName })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Resend failed');
-        if (data.debug_otp) {
-          debugOtpBox.style.display = 'block';
-          debugOtpBox.innerHTML = `Python DEV OTP: <b style="letter-spacing:0.2em; font-size:16px;">${data.debug_otp}</b>`;
-        }
-        msg += "Python OTP resent.";
-        showSuccess(msg || 'OTP resent!');
+        if (!sb) throw new Error("Supabase not configured");
+        const { error } = await sb.auth.resend({ type: 'signup', email: pendingEmail });
+        if (error) throw new Error(error.message);
+        showSuccess('OTP resent to your email via Supabase SMTP.');
         startTimer();
       } catch (err) {
-        showOtpError(err.message);
+        showOtpError(err.message || 'Resend failed');
       }
-      if (msg) {
-        supabaseOtpInfo.style.display = 'block';
-        supabaseOtpInfo.textContent = msg;
-      }
-    });
-
-    document.getElementById('demoBtn').addEventListener('click', () => {
-      localStorage.setItem('skilly_user', JSON.stringify({ email: 'demo@skilly.local', id: 'demo', demo: true }));
-      localStorage.setItem('skilly_token', 'demo-token');
-      window.location.href = 'dashboard.html';
+      btn.textContent = 'Resend OTP';
     });
   </script>
 </body>
