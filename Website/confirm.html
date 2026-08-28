@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirm Email - skilly</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+</head>
+<body>
+  <div class="bg"><div class="bg-glow bg-glow-1"></div><div class="bg-grain"></div><div class="bg-lines"></div><div class="bg-particles"></div></div>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="nav-mark"></span><span>skilly</span></a>
+      <div class="nav-actions">
+        <a href="signin.html" class="btn-secondary" style="padding:7px 12px; font-size:12px;">Sign In</a>
+      </div>
+    </div>
+  </nav>
+  <section class="page-hero" style="padding: 88px 24px 0;">
+    <div class="page-hero-inner">
+      <div class="page-eyebrow">CONFIRM EMAIL</div>
+      <h1 class="page-title">Verifying your email...</h1>
+      <p class="page-sub" id="confirmMsg">Please wait while we verify your email link.</p>
+    </div>
+  </section>
+  <section class="page-content" style="padding-top: 28px;">
+    <div class="form-wrap" style="padding: 32px; max-width: 440px; text-align:center;">
+      <div id="confirmStatus" style="font-size:13px; color:#6F7377;">Verifying...</div>
+      <div id="confirmError" style="display:none; margin-top:12px; background: rgba(220,80,80,0.08); border:1px solid rgba(220,80,80,0.18); color:#E8A0A0; font-size:12.5px; padding:10px 12px; border-radius:10px;"></div>
+      <a href="dashboard.html" id="confirmBtn" class="btn-primary" style="display:none; margin-top:16px; justify-content:center;">Go to Dashboard <span class="arrow">↗</span></a>
+      <a href="signin.html" id="signinLink" class="btn-secondary" style="display:none; margin-top:12px; justify-content:center;">Back to Sign In</a>
+    </div>
+  </section>
+  <script src="js/supabase.js"></script>
+  <script>
+    (async () => {
+      const params = new URLSearchParams(window.location.search);
+      const token_hash = params.get('token_hash') || params.get('token');
+      const type = params.get('type') || 'signup';
+      const code = params.get('code');
+      const statusEl = document.getElementById('confirmStatus');
+      const errorEl = document.getElementById('confirmError');
+      const msgEl = document.getElementById('confirmMsg');
+      const btn = document.getElementById('confirmBtn');
+      const signinLink = document.getElementById('signinLink');
+      
+      // Handle PKCE code flow (Supabase sends ?code= for link)
+      if (code) {
+        try {
+          const sb = await getSupabase();
+          if (!sb) throw new Error("Supabase not configured");
+          const { data, error } = await sb.auth.exchangeCodeForSession(code);
+          if (error) throw new Error(error.message);
+          if (data.session) {
+            // Sync to Python backend
+            try {
+              const syncRes = await window.fetchApi('/api/auth/supabase-sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: data.user.email, supabase_user_id: data.user.id, full_name: data.user.user_metadata?.full_name })
+              });
+              const syncData = await syncRes.json();
+              if (syncRes.ok && syncData.access_token) {
+                localStorage.setItem('skilly_token', syncData.access_token);
+                localStorage.setItem('skilly_user', JSON.stringify(syncData.user));
+              } else {
+                localStorage.setItem('skilly_token', data.session.access_token);
+                localStorage.setItem('skilly_user', JSON.stringify({ email: data.user.email, id: data.user.id }));
+              }
+            } catch {}
+            statusEl.textContent = "Email verified successfully! Redirecting to dashboard...";
+            statusEl.style.color = "#8FCCA0";
+            msgEl.textContent = "Your email is confirmed. Welcome to skilly!";
+            btn.style.display = "inline-flex";
+            setTimeout(()=> window.location.href = 'dashboard.html', 1200);
+            return;
+          }
+        } catch (e) {
+          statusEl.textContent = "Link verification failed";
+          errorEl.textContent = e.message;
+          errorEl.style.display = "block";
+          signinLink.style.display = "inline-flex";
+          return;
+        }
+      }
+      
+      if (!token_hash) {
+        statusEl.textContent = "Invalid confirmation link";
+        errorEl.textContent = "Missing token. Please use the OTP code sent to your email via the sign-in page, or request a new link.";
+        errorEl.style.display = "block";
+        signinLink.style.display = "inline-flex";
+        return;
+      }
+      try {
+        const sb = await getSupabase();
+        if (!sb) throw new Error("Supabase not configured");
+        const { data, error } = await sb.auth.verifyOtp({ token_hash, type });
+        if (error) throw new Error(error.message);
+        // Sync to Python backend
+        if (data.session && data.user) {
+          try {
+            const syncRes = await window.fetchApi('/api/auth/supabase-sync', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: data.user.email, supabase_user_id: data.user.id, full_name: data.user.user_metadata?.full_name })
+            });
+            const syncData = await syncRes.json();
+            if (syncRes.ok && syncData.access_token) {
+              localStorage.setItem('skilly_token', syncData.access_token);
+              localStorage.setItem('skilly_user', JSON.stringify(syncData.user));
+            } else {
+              localStorage.setItem('skilly_token', data.session.access_token);
+              localStorage.setItem('skilly_user', JSON.stringify({ email: data.user.email, id: data.user.id }));
+            }
+          } catch {}
+          statusEl.textContent = "Email verified! Redirecting...";
+          statusEl.style.color = "#8FCCA0";
+          msgEl.textContent = "Success! Your email is confirmed.";
+          btn.style.display = "inline-flex";
+          setTimeout(()=> window.location.href = 'dashboard.html', 1000);
+        } else {
+          throw new Error("No session returned");
+        }
+      } catch (e) {
+        statusEl.textContent = "Verification failed";
+        statusEl.style.color = "#E8A0A0";
+        errorEl.textContent = e.message;
+        errorEl.style.display = "block";
+        signinLink.style.display = "inline-flex";
+      }
+    })();
+  </script>
+</body>
+</html>
