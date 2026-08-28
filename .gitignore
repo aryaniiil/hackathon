@@ -1,11 +1,88 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 *.pyo
-.env
+*.pyd
+.Python
+env/
 venv/
 .venv/
+ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.pyre/
+
+# Env & secrets - never commit
+.env
+*.env
+!.env.example
+backend/.env
+backend/.env.local
+
+# Node
 node_modules/
 dist/
+build/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+
+# OS
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Supabase
 supabase/
+.branches
+.temp/
+
+# Agents & MCP - untracked per user request
+.agents/
+.opencode/
+.claude/
+.mcp/
+mcp.json
+skills-lock.json
+.opencode.json
+opencode.json
+opencode.jsonc
+
+# Temp & test artifacts - untracked
+temp/
+tmp/
+*.tmp
+fix_*.py
+test_*.py
+test_*.js
+*_test.py
+*_test.js
+playwright/
+coverage/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Misc
+*.db
+*.sqlite
+*.sqlite3

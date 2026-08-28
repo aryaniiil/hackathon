@@ -1,5 +1,9 @@
 import os
+import sys
 from pathlib import Path
+# Ensure `app` is importable whether running as `main:app` (from backend/) or `backend.main:app` (from project root)
+sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=Path(__file__).parent / ".env")
 load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env", override=False)
@@ -7,8 +11,13 @@ load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env", override=False)
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.db import init_db
-from app.routes import auth, roles, analyze, job, resume, github, roadmap, progress, chat, skill_test, history
+try:
+    from app.db import init_db
+    from app.routes import auth, roles, analyze, job, resume, github, roadmap, progress, chat, skill_test, history
+except ModuleNotFoundError:
+    # fallback when imported as backend.main
+    from backend.app.db import init_db
+    from backend.app.routes import auth, roles, analyze, job, resume, github, roadmap, progress, chat, skill_test, history
 
 app = FastAPI(
     title="skilly API",
@@ -44,7 +53,10 @@ app.include_router(history.router)
 
 @app.get("/")
 def root():
-    from app.config import ROLES, SKILLS_MAP
+    try:
+        from app.config import ROLES, SKILLS_MAP
+    except ModuleNotFoundError:
+        from backend.app.config import ROLES, SKILLS_MAP
     return {"name": "skilly", "tagline": "are you industry ready", "version": "2.0.0", "roles": len(ROLES), "skills": len(SKILLS_MAP)}
 
 @app.get("/api/health")
@@ -52,7 +64,10 @@ def health():
     # check db connectivity
     db_status = "connected"
     try:
-        from app.db import get_conn
+        try:
+            from app.db import get_conn
+        except ModuleNotFoundError:
+            from backend.app.db import get_conn
         conn = get_conn()
         cur = conn.cursor()
         cur.execute("SELECT 1")
@@ -79,8 +94,13 @@ def get_config():
 
 # Serve frontend static files if present (for single-origin deployment)
 try:
-    www_path = Path(__file__).parent.parent.parent / "Website"
+    # backend/main.py -> parent is backend, parent.parent is project root -> /Website
+    www_path = Path(__file__).parent.parent / "Website"
+    if not www_path.exists():
+        # fallback when run as backend.main from root (extra parent)
+        www_path = Path(__file__).parent.parent.parent / "Website"
     if www_path.exists():
         app.mount("/app", StaticFiles(directory=str(www_path), html=True), name="frontend")
+        print(f"[static] mounted Website at {www_path} -> /app")
 except Exception as e:
     print(f"[static] not mounted: {e}")
