@@ -1,6 +1,6 @@
 # skilly — are you industry ready
 
-- frontend is deployed and live on vercel: https://skillyhackathon.vercel.app/
+- frontend is deployed and live on vercel: [https://skillyhackathon.vercel.app/](https://hackathon-theta-virid.vercel.app/)
 - for database and auth we are using: supabase
 - for backend we are using: aws ec2 instance via docker: http://skillyhackathon.duckdns.org/
 - for email services like smtp we are using: resend
