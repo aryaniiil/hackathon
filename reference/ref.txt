@@ -1,0 +1,6 @@
+https://supabase.com/docs/guides/auth/jwts
+https://supabase.com/docs/guides/database/postgres/row-level-security
+https://dribbble.com/shots/25492218-Trading-Landing-Page-Design-with-Engaging-Motion
+ssh cmd: ssh -i "hackathon.pem" ubuntu@ec2-13-127-136-96.ap-south-1.compute.amazonaws.com
+dataset partial: https://huggingface.co/datasets/fazni/role-based-on-skills-2.0
+footer: https://www.footer.design/styles/large-type
