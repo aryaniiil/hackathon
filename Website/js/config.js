@@ -1,4 +1,4 @@
-const BACKEND_URL = "http://127.0.0.1:8000"; 
+const BACKEND_URL = "http://skillyhackathon.duckdns.org/"; 
 (function() {
   let base = BACKEND_URL || window.API_BASE || "";
   if (!base) {
