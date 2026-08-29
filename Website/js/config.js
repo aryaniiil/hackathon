@@ -1,4 +1,4 @@
-const BACKEND_URL = "http://skillyhackathon.duckdns.org/"; 
+const BACKEND_URL = ""; // Vercel rewrite to http://13.127.136.96 via vercel.json - leave empty for same-origin 
 (function() {
   let base = BACKEND_URL || window.API_BASE || "";
   if (!base) {

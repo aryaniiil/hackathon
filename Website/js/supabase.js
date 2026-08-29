@@ -1,11 +1,7 @@
-// skilly - Supabase client properly initialized with backend config (no hardcoded secrets in source)
 let supabaseClient = null;
 let supabaseReadyPromise = null;
 
 function getApiBaseForSupabase() {
-  // No hardcoded deployment URL - uses window.API_BASE or same-origin
-  // For deployment: set window.API_BASE="https://api.yourdomain.com" before loading config.js/supabase.js
-  // or <meta name="api-base" content="https://api.yourdomain.com">
   if (window.getApiUrl) return window.getApiUrl("/api/config");
   if (window.API_BASE !== undefined) return (window.API_BASE || "") + "/api/config";
   return "/api/config";
