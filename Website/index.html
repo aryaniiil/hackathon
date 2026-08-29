@@ -20,6 +20,9 @@
   <!-- Navbar -->
   <nav class="nav">
     <div class="nav-inner">
+      <button class="nav-toggle" aria-label="Menu" style="display:none; margin-right:8px;">
+        <span></span><span></span><span></span>
+      </button>
       <a href="#" class="nav-logo">
         <span class="nav-mark"></span>
         <span class="nav-logo-text">skilly</span>
@@ -32,11 +35,8 @@
       </div>
       <div class="nav-actions">
         <a href="signin.html" class="nav-signin">Sign In</a>
-        <a href="get-started.html" class="btn-primary btn-small">Get Started <span class="arrow">↗</span></a>
+        <a href="get-started.html" class="btn-primary btn-small">Get Started <span class="arrow">&#8599;</span></a>
       </div>
-      <button class="nav-toggle" aria-label="Menu">
-        <span></span><span></span>
-      </button>
     </div>
   </nav>
 
@@ -44,7 +44,7 @@
   <section class="hero">
     <div class="hero-inner">
       <h1 class="hero-title">
-        Close the gap between<br />
+        Close the <span class="rough-underline">gap</span> between<br />
         where you are and <span class="highlight">where you want to be.</span>
       </h1>
       <p class="hero-sub">
@@ -52,38 +52,14 @@
         what you need to learn next.
       </p>
       <div class="hero-actions">
-        <a href="get-started.html" class="btn-primary">Analyze My Skills <span class="arrow">↗</span></a>
+        <a href="get-started.html" class="btn-primary">Analyze My Skills <span class="arrow">&#8599;</span></a>
         <a href="roles.html" class="btn-secondary">Explore Roles</a>
       </div>
 
-      <!-- Subtle skill network visualization -->
-      <div class="hero-visual">
-        <svg class="network" viewBox="0 0 900 320" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <!-- thin lines -->
-          <path d="M120 160 C 220 80, 320 240, 450 160 C 560 80, 680 220, 780 160" stroke="#242629" stroke-width="1" opacity="0.9"/>
-          <path d="M150 110 L 260 150 L 380 120 L 500 180 L 620 140 L 740 190" stroke="#242629" stroke-width="1" opacity="0.5"/>
-          <path d="M130 200 L 270 190 L 430 210 L 590 170 L 760 130" stroke="#242629" stroke-width="1" opacity="0.35"/>
-          <!-- nodes -->
-          <circle cx="120" cy="160" r="3" fill="#1A1C1E" stroke="#2A2E30" stroke-width="1"/>
-          <circle cx="260" cy="150" r="2.5" fill="#1A1C1E" stroke="#2A2E30" stroke-width="1"/>
-          <circle cx="380" cy="120" r="3" fill="#DCEBE1" opacity="0.9"/>
-          <circle cx="450" cy="160" r="4" fill="#1A1C1E" stroke="#C7D6CF" stroke-width="1" opacity="0.9"/>
-          <circle cx="500" cy="180" r="2.5" fill="#1A1C1E" stroke="#2A2E30" stroke-width="1"/>
-          <circle cx="620" cy="140" r="3" fill="#1A1C1E" stroke="#2A2E30" stroke-width="1"/>
-          <circle cx="740" cy="190" r="2.5" fill="#1A1C1E" stroke="#2A2E30" stroke-width="1"/>
-          <circle cx="780" cy="160" r="3" fill="#1A1C1E" stroke="#2A2E30" stroke-width="1"/>
-          <!-- faint glow around center node -->
-          <circle cx="450" cy="160" r="18" fill="#C7D6CF" opacity="0.06"/>
-          <circle cx="380" cy="120" r="12" fill="#DCEBE1" opacity="0.05"/>
-        </svg>
-
-        <!-- floating labels -->
-        <div class="float-label" style="left: 8%; top: 18%;">React</div>
-        <div class="float-label" style="left: 24%; top: 62%;">Python</div>
-        <div class="float-label" style="left: 42%; top: 12%;">TypeScript</div>
-        <div class="float-label" style="left: 58%; top: 68%;">SQL</div>
-        <div class="float-label" style="left: 78%; top: 22%;">AWS</div>
-        <div class="float-label muted" style="left: 68%; top: 48%;">Node.js</div>
+      <!-- Hero image - box matches image ratio 1505x937 + subtle gradient highlight shadow -->
+      <div class="hero-visual" style="padding:0; overflow:hidden; border-radius:24px; aspect-ratio:1505/937; height:auto; max-height:none; box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 8px 24px rgba(199,214,207,0.10), inset 0 1px 0 rgba(255,255,255,0.06); position:relative;">
+        <div style="position:absolute; inset:0; border-radius:24px; background: radial-gradient(700px 240px at 50% 0%, rgba(199,214,207,0.14) 0%, rgba(220,235,225,0.06) 25%, transparent 70%); pointer-events:none; z-index:1;"></div>
+        <img src="images/hero.png" alt="skilly hero" style="width:100%; height:100%; object-fit:cover; border-radius:24px; display:block; border:1px solid #242629; position:relative; z-index:0;" />
       </div>
     </div>
   </section>
@@ -176,9 +152,9 @@
           <div class="next-label">Your next priority</div>
           <div class="next-path">
             <span>Node.js</span>
-            <span class="path-arrow">→</span>
+            <span class="path-arrow">&rarr;</span>
             <span>SQL</span>
-            <span class="path-arrow">→</span>
+            <span class="path-arrow">&rarr;</span>
             <span>Docker</span>
           </div>
         </div>
@@ -199,7 +175,7 @@
     <div class="section-inner">
       <h2 class="cta-title">Know what to learn next.</h2>
       <p class="cta-sub">Turn your current skills into a clear path toward your target role.</p>
-      <a href="get-started.html" class="btn-primary">Start Analysis <span class="arrow">↗</span></a>
+      <a href="get-started.html" class="btn-primary">Start Analysis <span class="arrow">&#8599;</span></a>
     </div>
   </section>
 

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Team - skilly</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .team-row { display:grid; grid-template-columns: 1fr 1fr; gap:32px; align-items:center; max-width: 860px; margin: 0 auto 36px; background: rgba(26,28,30,0.45); border:1px solid #1A1C1E; border-radius:20px; overflow:hidden; }
+    .team-row.reverse { direction: rtl; }
+    .team-row.reverse > * { direction: ltr; }
+    .team-info { padding:32px; }
+    .team-info h3 { font-size:18px; font-weight:600; color:#F5F5F5; letter-spacing:-0.02em; margin-bottom:6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .team-badge { font-size:10px; letter-spacing:0.1em; color:#0A0A0A; background:#C7D6CF; padding:4px 8px; border-radius:999px; font-weight:700; }
+    .team-role { font-size:11px; letter-spacing:0.08em; color:#8FA69A; text-transform:uppercase; margin-bottom:8px; }
+    .team-qual { font-size:11px; letter-spacing:0.06em; color:#DCEBE1; background: rgba(199,214,207,0.08); border:1px solid rgba(199,214,207,0.14); padding:4px 8px; border-radius:999px; display:inline-flex; margin-bottom:12px; }
+    .team-desc { font-size:12.5px; color:#A8AAAD; line-height:1.7; }
+    .team-img { width:100%; height:360px; object-fit:cover; display:block; filter: grayscale(100%) contrast(1.05) brightness(0.95); transition: filter 0.35s ease; }
+    .team-img-wrap { background:#0A0A0A; overflow:hidden; padding:12px; position:relative; }
+    .team-img-wrap img { border-radius:12px; }
+    .team-img-container { position:relative; width:100%; height:360px; border-radius:12px; overflow:hidden; }
+    .team-img-container:hover .team-img { filter: grayscale(0%) contrast(1) brightness(1); }
+    @media (hover: none) {
+      .team-img { filter: grayscale(100%) contrast(1.05) brightness(0.95); }
+    }
+    @media (max-width: 640px){
+      .team-row, .team-row.reverse { grid-template-columns:1fr; direction:ltr; gap:0; }
+      .team-img { height:280px; }
+      .team-row.reverse > * { direction:ltr; }
+      .team-info { padding:24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"><div class="bg-glow bg-glow-1"></div><div class="bg-grain"></div><div class="bg-lines"></div><div class="bg-particles"></div></div>
+  <nav class="nav">
+    <div class="nav-inner">
+      <button class="nav-toggle" aria-label="Menu" style="display:none; margin-right:8px;"><span></span><span></span><span></span></button>
+      <a href="index.html" class="nav-logo"><span class="nav-mark"></span><span>skilly</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="how-it-works.html" class="nav-link">How It Works</a>
+        <a href="roles.html" class="nav-link">Roles</a>
+        <a href="features.html" class="nav-link">Features</a>
+      </div>
+      <div class="nav-actions">
+        <a href="signin.html" class="nav-signin">Sign In</a>
+        <a href="get-started.html" class="btn-primary btn-small">Get Started <span class="arrow">&#8599;</span></a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <div class="page-eyebrow">OUR TEAM</div>
+      <h1 class="page-title">Built by a team<br />that cares.</h1>
+      <p class="page-sub">Four people, one goal - make <span style="color:#8FA69A;">are you industry ready</span> real for everyone.</p>
+    </div>
+  </section>
+
+  <section class="page-content" style="padding-top:28px;">
+    <!-- Aryanil - left details, right image -->
+    <div class="team-row">
+      <div class="team-info">
+        <h3>Aryanil Saikia <span class="team-badge">Team Leader</span></h3>
+        <div class="team-role">Main Code Writer</div>
+        <div class="team-qual">BTech CSE &bull; AI / ML</div>
+        <p class="team-desc">Led the build and architected the entire stack - FastAPI + Supabase Postgres + Gemini AI. Implemented 12 MCQ + 3 written reasoning test flow (18pts), DB-backed history via <code>test_history</code>, Supabase-only OTP (6-digit), and the simplified AI current-state dashboard. Fixed backend imports, SMTP, and production auth.</p>
+      </div>
+      <div class="team-img-wrap">
+        <div class="team-img-container">
+          <img src="images/aryanil.jpeg" alt="Aryanil Saikia" class="team-img" loading="lazy" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Siddharth - left image, right details -->
+    <div class="team-row reverse">
+      <div class="team-info">
+        <h3>Siddharth Gupta</h3>
+        <div class="team-role">Idea Proposer &bull; Critical Thinking</div>
+        <div class="team-qual">BTech &bull; Strategy &amp; Product</div>
+        <p class="team-desc">Proposed the original idea and shaped the user journey - <em>Role &rarr; Skills &rarr; Test &rarr; AI current state</em>. Drove critical decisions on scoring (18pts), human-friendly results, and UX trade-offs. The reason skilly feels simple.</p>
+      </div>
+      <div class="team-img-wrap">
+        <div class="team-img-container">
+          <img src="images/sidh.jpeg" alt="Siddharth Gupta" class="team-img" loading="lazy" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Raushan - left details, right image -->
+    <div class="team-row">
+      <div class="team-info">
+        <h3>Raushan Singh</h3>
+        <div class="team-role">UI/UX Designer &bull; Asset Designer</div>
+        <div class="team-qual">Design &bull; Visual Systems</div>
+        <p class="team-desc">Designed the premium dark SaaS system - glass cards, 2&times;4 grids, pricing, hero with gradient highlight, and all assets. Kept the experience calm, human-friendly, and consistent across mobile and desktop.</p>
+      </div>
+      <div class="team-img-wrap">
+        <div class="team-img-container">
+          <img src="images/raushan.jpeg" alt="Raushan Singh" class="team-img" loading="lazy" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Nikhil - left image, right details -->
+    <div class="team-row reverse">
+      <div class="team-info">
+        <h3>Nikhil Sikarwar</h3>
+        <div class="team-role">Presenter &bull; PPT & Logo Designer</div>
+        <div class="team-qual">Communication &bull; Brand</div>
+        <p class="team-desc">Crafted the presentation, pitch narrative, logo, and demo flow. Made the story clear for hackathon judging - from problem to live AI assessment.</p>
+      </div>
+      <div class="team-img-wrap">
+        <div class="team-img-container">
+          <img src="images/nikhil.jpeg" alt="Nikhil Sikarwar" class="team-img" loading="lazy" />
+        </div>
+      </div>
+    </div>
+
+    <div style="max-width:860px; margin: 8px auto 0; background: rgba(26,28,30,0.45); border:1px solid #1A1C1E; border-radius:16px; padding:18px; text-align:center;">
+      <p style="font-size:12.5px; color:#A8AAAD; margin:0;">Want to contribute? Open a PR at <a href="https://github.com/aryaniiil/hackathon" style="color:#C7D6CF; text-decoration:underline;">github.com/aryaniiil/hackathon</a> - frontend static, backend Python FastAPI + Supabase.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><div class="footer-logo"><span class="nav-mark small"></span> skilly</div><p class="footer-desc">Our team - are you industry ready.</p></div>
+      <div class="footer-col"><div class="footer-heading">Product</div><a href="how-it-works.html">How It Works</a><a href="roles.html">Roles</a><a href="github.html">GitHub</a><a href="team.html">Our Team</a></div>
+      <div class="footer-col"><div class="footer-heading">Resources</div><a href="documentation.html">Documentation</a><a href="dataset.html">Skill Dataset</a><a href="privacy.html">Privacy</a></div>
+    </div>
+    <div class="footer-huge"><div class="footer-huge-inner"><div class="footer-huge-text">skilly</div></div></div>
+    <div class="footer-bottom"><span>© 2026 skilly</span><span>are you industry ready</span></div>
+  </footer>
+  <script src="js/script.js"></script>
+</body>
+</html>

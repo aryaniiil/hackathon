@@ -20,7 +20,7 @@
       </div>
       <div class="nav-actions">
         <a href="signin.html" class="nav-signin">Sign In</a>
-        <a href="get-started.html" class="btn-primary btn-small">Get Started <span class="arrow">↗</span></a>
+        <a href="get-started.html" class="btn-primary btn-small">Get Started <span class="arrow">&#8599;</span></a>
       </div>
       <button class="nav-toggle" aria-label="Menu"><span></span><span></span></button>
     </div>
@@ -47,7 +47,7 @@
           <div class="blur-overlay-inner">
             <h3>Sign up to compare using our tool</h3>
             <p>Unlock all 100 roles, full skill maps and gap analysis. Compare any role instantly with alias-aware matching.</p>
-            <a href="get-started.html" class="btn-primary">Sign Up to Compare <span class="arrow">↗</span></a>
+            <a href="get-started.html" class="btn-primary">Sign Up to Compare <span class="arrow">&#8599;</span></a>
             <a href="signin.html" class="blur-signin">Already have an account? Sign in</a>
           </div>
         </div>
@@ -114,7 +114,7 @@
         grid.innerHTML = list.map(r => `
           <div class="role-card">
             <h3>${r.role}</h3>
-            <p>${r.skills && r.skills.length ? r.skills.slice(0,6).join(' • ') : 'Mainstream skills like Artificial Intelligence, Python, Cloud Computing'}</p>
+            <p>${r.skills && r.skills.length ? r.skills.slice(0,6).join(' &bull; ') : 'Mainstream skills like Artificial Intelligence, Python, Cloud Computing'}</p>
           </div>
         `).join('');
         count.textContent = list.length + ' roles found';
@@ -129,14 +129,14 @@
       grid.innerHTML = visible.map(r => `
         <div class="role-card">
           <h3>${r.role}</h3>
-          <p>${r.skills && r.skills.length ? r.skills.slice(0,6).join(' • ') : 'Mainstream skills like Artificial Intelligence, Python, Cloud Computing'}</p>
+          <p>${r.skills && r.skills.length ? r.skills.slice(0,6).join(' &bull; ') : 'Mainstream skills like Artificial Intelligence, Python, Cloud Computing'}</p>
         </div>
       `).join('');
 
       blurGrid.innerHTML = blurred.map(r => `
         <div class="role-card">
           <h3>${r.role}</h3>
-          <p>${r.skills && r.skills.length ? r.skills.slice(0,6).join(' • ') : 'Mainstream skills like Artificial Intelligence, Python, Cloud Computing'}</p>
+          <p>${r.skills && r.skills.length ? r.skills.slice(0,6).join(' &bull; ') : 'Mainstream skills like Artificial Intelligence, Python, Cloud Computing'}</p>
         </div>
       `).join('');
 

@@ -1,23 +1,24 @@
-// skilly - central frontend config, no hardcoded secrets
+const BACKEND_URL = "http://127.0.0.1:8000"; 
 (function() {
-  // Determine API base dynamically: allow override via window.API_BASE or meta, else use same-origin if /api/health reachable, fallback to localhost:8000 in dev
-  let base = window.API_BASE || "";
+  let base = BACKEND_URL || window.API_BASE || "";
+  if (!base) {
+    const meta = document.querySelector('meta[name="api-base"]');
+    if (meta) base = meta.getAttribute("content") || "";
+  }
   if (!base) {
     const host = location.hostname;
     const isLocal = host === "localhost" || host === "127.0.0.1" || host === "";
     if (isLocal) {
-      // dev: try same-origin first, but default to 8000 if served on 5500 (Live Server)
       const port = location.port;
-      if (port === "5500" || port === "3000" || port === "5173") {
-        base = `${location.protocol}//${host}:8000`;
-      } else if (port === "8000") {
+      if (port === "5500" || port === "3000" || port === "5173" || port === "8001" || port === "5000") {
+        base = "";
+      } else if (port === "8000" || port === "8001") {
         base = "";
       } else {
-        base = `${location.protocol}//${host}:8000`;
-        // will fallback to same-origin if unreachable - handled per fetch
+        base = "";
       }
     } else {
-      base = ""; // production: same origin
+      base = "";
     }
   }
   window.API_BASE = base;
@@ -25,16 +26,21 @@
     if (!path.startsWith("/")) path = "/" + path;
     return (window.API_BASE || "") + path;
   };
-  // helper to try same-origin then localhost fallback
   window.fetchApi = async function(path, opts) {
     const url = window.getApiUrl(path);
     try {
       return await fetch(url, opts);
     } catch (e) {
-      // if same-origin failed and we are on 5500, try localhost:8000
-      if (!window.API_BASE && (location.port === "5500" || location.port === "3000")) {
-        const fallback = `${location.protocol}//${location.hostname}:8000${path}`;
-        return await fetch(fallback, opts);
+      if (!window.API_BASE && (location.port === "5500" || location.port === "3000" || location.port === "5173")) {
+        const tryPorts = ["8000", "8001", "5000"];
+        for (const p of tryPorts) {
+          try {
+            const fallback = `${location.protocol}//${location.hostname}:${p}${path}`;
+            const r = await fetch(fallback, opts);
+            window.API_BASE = `${location.protocol}//${location.hostname}:${p}`;
+            return r;
+          } catch {}
+        }
       }
       throw e;
     }

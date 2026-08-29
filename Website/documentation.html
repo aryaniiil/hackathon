@@ -10,6 +10,7 @@
   <div class="bg"><div class="bg-glow bg-glow-1"></div><div class="bg-grain"></div><div class="bg-lines"></div><div class="bg-particles"></div></div>
   <nav class="nav">
     <div class="nav-inner">
+      <button class="nav-toggle" aria-label="Menu" style="display:none; margin-right:8px;"><span></span><span></span><span></span></button>
       <a href="index.html" class="nav-logo"><span class="nav-mark"></span><span>skilly</span></a>
       <div class="nav-links">
         <a href="index.html" class="nav-link">Home</a>
@@ -19,44 +20,68 @@
       </div>
       <div class="nav-actions">
         <a href="signin.html" class="nav-signin">Sign In</a>
-        <a href="get-started.html" class="btn-primary btn-small">Get Started <span class="arrow">↗</span></a>
+        <a href="get-started.html" class="btn-primary btn-small">Get Started <span class="arrow">&#8599;</span></a>
       </div>
-      <button class="nav-toggle" aria-label="Menu"><span></span><span></span></button>
     </div>
   </nav>
 
   <section class="page-hero">
     <div class="page-hero-inner">
       <div class="page-eyebrow">DOCUMENTATION</div>
-      <h1 class="page-title">How to use the<br />analyzer.</h1>
-      <p class="page-sub">Single HTML/CSS/JS frontend, 100-role dataset, alias-normalized matching.</p>
+      <h1 class="page-title">How to use<br />skilly.</h1>
+      <p class="page-sub">Pick a role, show what you know, take a short test, and get your AI-powered current state - all in under 5 minutes.</p>
     </div>
   </section>
 
   <section class="page-content">
     <div class="prose">
-      <h2>Quick start</h2>
-      <p>Open <code>Website/index.html</code> in a browser. No build step. Choose a role in <code>get-started.html</code>, enter skills comma-separated, and see gaps.</p>
-      <h2>Dataset</h2>
-      <p>Files live in <code>dataset/</code> and <code>Datasets/</code>: <code>role_skills_dataset.json</code> (100 roles), <code>skill_aliases.json</code> (200 skills, 1600 aliases), <code>skill_alias_map.json</code> for fuzzy lookup, and <code>skill_normalizer.py</code> with <code>normalize_skill()</code>.</p>
-      <h2>Alias matching</h2>
-      <p>Normalize by lowercasing and stripping spaces, underscores, hyphens and slashes. Example: <code>machine_learning</code> and <code>ML</code> both map to <code>Machine Learning</code>.</p>
-      <h2>Styling</h2>
-      <p>All pages share <code>css/style.css</code> with Helvetica, dark glass (#0A0A0A, #1A1C1E, #242629), mint accents used subtly, and sticky stacked cards.</p>
+      <h2>1 - Create your account</h2>
+      <p>Go to <a href="get-started.html">Get Started</a> → enter <b>Full name, Email, Password (6+ chars)</b> → <b>Create Account</b>. Check your inbox for a <b>6-digit OTP</b> via Supabase SMTP (also in spam, expires in 10 minutes). Enter it → you’re in. Already have an account? Use <a href="signin.html">Sign In</a> → email + password → OTP again. No demo - real verification only.</p>
+
+      <h2>2 - Choose your target role</h2>
+      <p>Dashboard → <b>Start setup: Choose role &amp; skills</b> → search 160 roles (e.g., <code>Frontend Developer</code>, <code>Data Engineer</code>) in the 2&times;4 grid. Tap one → <b>Continue</b>.</p>
+
+      <h2>3 - Tell us what you know</h2>
+      <p>Search 216 skills (e.g., <code>Python, React, SQL</code>) - alias-aware: <code>ml</code> &rarr; <code>machine_learning</code>, <code>py</code> &rarr; <code>python</code>, <code>reactjs</code> &rarr; <code>react</code>. Tap to select (role skills show <code>role</code> badge) or type custom comma-separated at the bottom. The count shows <code>X selected &bull; 216 available</code>.</p>
+
+      <h2>4 - Take the test - 15 questions, 5 minutes</h2>
+      <p>Click <b>Take skill test (12 MCQ + 3 written)</b> → Gemini generates 12 multiple-choice (4 easy, 4 medium, 4 hard, pick one) + 3 <b>written reasoning</b> (write 2-3 sentences, e.g., <em>How would you debug a slow SQL query?</em>). Timer is 5:00, progress shows <code>8/15 answered</code>. Written is scored 0 (blank) / 1 (partial) / 2 (strong reasoning with trade-offs).</p>
+
+      <h2>5 - See your result - human, not cryptic</h2>
+      <p>After <b>Submit</b>, you see <b>Test complete!</b> → <code>Beginner / Intermediate / Advanced / Expert</code> + <code>11/18 &bull; 61%</code> → <b>Multiple Choice 9/12 • Written 2/6</b> → mastery bars per skill (e.g., <code>Python &bull; Intermediate &bull; 78% mastery</code>) + <b>Written feedback</b> per question (<code>1/2 Good start - add trade-offs</code>) → <b>Next focus</b>.</p>
+      <p>Scoring is <b>18 points</b> total: <code>Beginner 0-40% • Intermediate 41-70% • Advanced 71-85% • Expert 86-100%</code>. No <code>-/12</code> - every point is explained.</p>
+
+      <h2>6 - Your AI Current State - the main dashboard card</h2>
+      <p>Click <b>See my AI current state</b> → Gemini is fed with <b>all skills needed for your role (weighted 1-5) + what you claimed + test results + your written reasoning</b> and returns:</p>
+      <ul>
+        <li><b>Summary</b> - 3 sentences on where you stand for that role</li>
+        <li><b>What you have</b> (strong, mint) vs <b>What you lack</b> (priority, dashed)</li>
+        <li><b>Strengths / Gaps to close</b> (test-validated)</li>
+        <li><b>Recommendation</b> + <b>Next steps 1-2-3</b> in priority order (highest weight first)</li>
+      </ul>
+      <p>Readiness bar shows %. This is the only card on Dashboard - simple by design.</p>
+
+      <h2>7 - History, Pricing, Account</h2>
+      <p>Top nav: <b>Dashboard</b> (current state) | <b>History</b> (every attempt with <code>role • level • 11/18 • MCQ/Written</code>, click <code>View →</code> to reload) | <b>Pricing</b> (Free $0, Pro $9, Team $29) | <b>Account</b> (email, target role, tests taken, avg score, recent 5).</p>
+      <p>History is stored in Supabase Postgres via Python backend (<code>test_history</code>), not just browser. No local demo.</p>
+
+      <h2>Tips</h2>
+      <ul>
+        <li>Answer written questions with <b>steps + why + trade-off</b> (e.g., “I’d add index because…, but trade-off is write slower”). That’s what AI scores 2/2.</li>
+        <li>Retake anytime: Dashboard → <b>Retake test</b> or <b>Change role / skills</b>.</li>
+        <li>On mobile, hamburger is on the <b>left</b> → tap to open nav.</li>
+        <li>Need help? See <a href="team.html">Our Team</a> or <a href="how-it-works.html">How It Works</a>.</li>
+      </ul>
     </div>
   </section>
 
   <footer class="footer">
     <div class="footer-inner">
-      <div class="footer-brand"><div class="footer-logo"><span class="nav-mark small"></span> skilly</div><p class="footer-desc">Documentation and guide.</p></div>
-      <div class="footer-col"><div class="footer-heading">Product</div><a href="how-it-works.html">How It Works</a><a href="roles.html">Roles</a><a href="github.html">GitHub</a><a href="contact.html">Contact</a></div>
+      <div class="footer-brand"><div class="footer-logo"><span class="nav-mark small"></span> skilly</div><p class="footer-desc">Documentation - how to use skilly.</p></div>
+      <div class="footer-col"><div class="footer-heading">Product</div><a href="how-it-works.html">How It Works</a><a href="roles.html">Roles</a><a href="github.html">GitHub</a><a href="team.html">Our Team</a></div>
       <div class="footer-col"><div class="footer-heading">Resources</div><a href="documentation.html">Documentation</a><a href="dataset.html">Skill Dataset</a><a href="privacy.html">Privacy</a></div>
     </div>
-        <div class="footer-huge">
-      <div class="footer-huge-inner">
-        <div class="footer-huge-text">skilly</div>
-      </div>
-    </div>
+    <div class="footer-huge"><div class="footer-huge-inner"><div class="footer-huge-text">skilly</div></div></div>
     <div class="footer-bottom"><span>© 2026 skilly</span><span>are you industry ready</span></div>
   </footer>
   <script src="js/script.js"></script>

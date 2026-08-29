@@ -3,13 +3,11 @@ let supabaseClient = null;
 let supabaseReadyPromise = null;
 
 function getApiBaseForSupabase() {
+  // No hardcoded deployment URL - uses window.API_BASE or same-origin
+  // For deployment: set window.API_BASE="https://api.yourdomain.com" before loading config.js/supabase.js
+  // or <meta name="api-base" content="https://api.yourdomain.com">
   if (window.getApiUrl) return window.getApiUrl("/api/config");
   if (window.API_BASE !== undefined) return (window.API_BASE || "") + "/api/config";
-  const host = location.hostname;
-  const isLocal = host === "localhost" || host === "127.0.0.1";
-  if (isLocal && (location.port === "5500" || location.port === "3000" || location.port === "5173")) {
-    return `${location.protocol}//${host}:8000/api/config`;
-  }
   return "/api/config";
 }
 

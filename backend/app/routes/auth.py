@@ -193,7 +193,7 @@ def _ensure_user_exists(email: str, full_name: Optional[str] = None, password: O
         # fallback demo user
         return {"id": str(uuid.uuid4()), "email": email, "full_name": full_name or email.split("@")[0], "password_hash": None, "is_verified": True}
 
-# Auth helper for protected routes
+# Auth helper for protected routes - supports both Python JWT and Supabase JWT (only Supabase stored in localStorage per user request)
 def get_current_user(authorization: str = Header(None)):
     if not authorization:
         raise HTTPException(status_code=401, detail="Missing token")
@@ -203,27 +203,77 @@ def get_current_user(authorization: str = Header(None)):
             raise HTTPException(status_code=401, detail="Invalid scheme")
     except:
         raise HTTPException(status_code=401, detail="Invalid authorization header")
+    # Try Python JWT first (legacy, still issued by supabase-sync)
     payload = decode_token(token)
-    if not payload:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
-    user_id = payload.get("sub")
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Invalid token payload")
-    # Try DB lookup, fallback to payload if DB unavailable
+    if payload and payload.get("sub"):
+        user_id = payload.get("sub")
+        try:
+            conn = get_conn()
+            cur = get_cursor(conn)
+            cur.execute("SELECT id, email, full_name FROM public.profiles WHERE id = %s", (user_id,))
+            user = cur.fetchone()
+            cur.close(); conn.close()
+            if user:
+                return user
+            # fallback to payload if not found but token valid
+            return {"id": user_id, "email": payload.get("email"), "full_name": payload.get("email")}
+        except HTTPException:
+            raise
+        except Exception as e:
+            print(f"[auth] get_current_user DB failed, using token payload: {e}")
+            return {"id": user_id, "email": payload.get("email"), "full_name": payload.get("email")}
+    # Try Supabase JWT - verify via Supabase Auth API and ensure profile exists
     try:
-        conn = get_conn()
-        cur = get_cursor(conn)
-        cur.execute("SELECT id, email, full_name FROM public.profiles WHERE id = %s", (user_id,))
-        user = cur.fetchone()
-        cur.close(); conn.close()
-        if not user:
-            raise HTTPException(status_code=401, detail="User not found")
-        return user
+        from app.config import SUPABASE_URL, SUPABASE_ANON_KEY
+        import httpx
+        if not SUPABASE_URL or not SUPABASE_ANON_KEY:
+            raise HTTPException(status_code=401, detail="Invalid or expired token")
+        # Verify token by calling Supabase auth user endpoint
+        try:
+            r = httpx.get(f"{SUPABASE_URL}/auth/v1/user", headers={"apikey": SUPABASE_ANON_KEY, "Authorization": f"Bearer {token}"}, timeout=5)
+        except Exception as e:
+            print(f"[auth] Supabase verify failed: {e}")
+            raise HTTPException(status_code=401, detail="Invalid or expired token")
+        if r.status_code != 200:
+            raise HTTPException(status_code=401, detail="Invalid or expired token")
+        data = r.json()
+        email = data.get("email")
+        user_id = data.get("id")
+        if not email or not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token payload")
+        # Ensure profile exists in our DB for history (create if not)
+        try:
+            conn = get_conn()
+            cur = get_cursor(conn)
+            cur.execute("SELECT id, email, full_name FROM public.profiles WHERE id = %s", (user_id,))
+            user = cur.fetchone()
+            if not user:
+                # try by email
+                cur.execute("SELECT id, email, full_name FROM public.profiles WHERE email = %s", (email.lower(),))
+                user = cur.fetchone()
+                if not user:
+                    # create profile with Supabase ID
+                    cur2 = conn.cursor()
+                    full_name = data.get("user_metadata", {}).get("full_name") or data.get("user_metadata", {}).get("name") or ""
+                    cur2.execute("INSERT INTO public.profiles (id, email, full_name, is_verified) VALUES (%s, %s, %s, %s)", (user_id, email.lower(), full_name, True))
+                    conn.commit()
+                    cur2.close()
+                    user = {"id": user_id, "email": email.lower(), "full_name": full_name}
+                else:
+                    # existing email with different ID - use existing but ensure is_verified
+                    user_id = user["id"]
+            cur.close(); conn.close()
+            return {"id": user_id, "email": email.lower(), "full_name": user.get("full_name") or email}
+        except HTTPException:
+            raise
+        except Exception as e:
+            print(f"[auth] Supabase profile ensure failed: {e}")
+            return {"id": user_id, "email": email.lower(), "full_name": email}
     except HTTPException:
         raise
     except Exception as e:
-        print(f"[auth] get_current_user DB failed, using token payload: {e}")
-        return {"id": user_id, "email": payload.get("email"), "full_name": payload.get("email")}
+        print(f"[auth] get_current_user failed: {e}")
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
 # Request OTP
 class RequestOtpIn(BaseModel):
